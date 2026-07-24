@@ -425,24 +425,29 @@ export default function WorkOrderDetail() {
         {/* ════════════════ OVERVIEW ════════════════ */}
         {activeTab === 'overview' && (
           <>
-            {/* Sender + Recipient */}
+            {/* Customer + Vehicle */}
             <div className="od-overview-grid">
               <div className="od-card od-card-sender">
-                <div className="od-card-header"><div className="od-card-icon sender"><MapPin width={16} height={16} /></div><h4>{t('orderDetail.section.sender')}</h4></div>
+                <div className="od-card-header"><div className="od-card-icon sender"><User width={16} height={16} /></div><h4>{t('orderDetail.section.customer', 'Customer')}</h4></div>
                 <div className="od-card-body">
-                  <InfoRow icon={User} label={t('orderDetail.name')} value={order.sender_name} />
-                  <InfoRow icon={Phone} label={t('orderDetail.phone')} value={<span className="od-phone-row"><span className="mono">{order.sender_phone}</span>{order.sender_phone && <button className="wa-share-inline sm" onClick={() => shareViaWhatsApp(order.sender_phone, buildOrderMessage(order, t, window.location.origin))}><WhatsAppIcon width={14} height={14} color="#fff" /></button>}</span>} />
-                  <InfoRow icon={MapPin} label={t('orderDetail.address')} value={order.sender_address} />
+                  <InfoRow icon={User} label={t('orderDetail.name')} value={order.customer_name || order.sender_name} />
+                  <InfoRow icon={Phone} label={t('orderDetail.phone')} value={<span className="od-phone-row"><span className="mono">{order.customer_phone || order.sender_phone}</span>{(order.customer_phone || order.sender_phone) && <button className="wa-share-inline sm" onClick={() => shareViaWhatsApp(order.customer_phone || order.sender_phone, buildOrderMessage(order, t, window.location.origin))}><WhatsAppIcon width={14} height={14} color="#fff" /></button>}</span>} />
+                  {order.customer_email && <InfoRow icon={User} label={t('orderDetail.email', 'Email')} value={order.customer_email} />}
                 </div>
               </div>
               <div className="od-card od-card-recipient">
-                <div className="od-card-header"><div className="od-card-icon recipient"><User width={16} height={16} /></div><h4>{t('orderDetail.section.recipient')}</h4></div>
+                <div className="od-card-header"><div className="od-card-icon recipient"><Wrench width={16} height={16} /></div><h4>{t('orderDetail.section.vehicle', 'Vehicle')}</h4></div>
                 <div className="od-card-body">
-                  <InfoRow icon={User} label={t('orderDetail.name')} value={order.recipient_name} />
-                  <InfoRow icon={Phone} label={t('orderDetail.phone')} value={<span className="od-phone-row"><span className="mono">{order.recipient_phone}</span>{order.recipient_phone && <button className="wa-share-inline sm" onClick={() => shareViaWhatsApp(order.recipient_phone, buildOrderMessage(order, t, window.location.origin))}><WhatsAppIcon width={14} height={14} color="#fff" /></button>}</span>} />
-                  <InfoRow icon={MapPin} label={t('orderDetail.address')} value={order.recipient_address} />
-                  {order.recipient_area && <InfoRow icon={MapPin} label={t('orderDetail.area')} value={order.recipient_area} />}
-                  <InfoRow icon={Globe} label={t('orderDetail.emirate')} value={order.recipient_emirate} />
+                  {(order.vehicle_make || order.vehicle_model) ? (
+                    <>
+                      <InfoRow icon={Wrench} label={t('orderDetail.vehicle_make_model', 'Make / Model')} value={[order.vehicle_make, order.vehicle_model, order.vehicle_year].filter(Boolean).join(' ')} />
+                      {order.vehicle_plate_number && <InfoRow icon={Hashtag} label={t('orderDetail.plate', 'Plate')} value={order.vehicle_plate_number} mono />}
+                      {order.vehicle_color && <InfoRow icon={Box3dPoint} label={t('orderDetail.color', 'Color')} value={order.vehicle_color} />}
+                      {order.vehicle_vin && <InfoRow icon={Hashtag} label="VIN" value={order.vehicle_vin} mono />}
+                    </>
+                  ) : (
+                    <div style={{ fontSize: 13, color: '#94a3b8', padding: '8px 0' }}>{t('orderDetail.no_vehicle', 'No vehicle linked to this job card.')}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -491,7 +496,13 @@ export default function WorkOrderDetail() {
                     <>
                       <div className="od-mechanic-hero">
                         <div className="od-mechanic-avatar">{order.mechanic_name.charAt(0).toUpperCase()}</div>
-                        <div><div className="od-mechanic-name">{order.mechanic_name}</div><div className="od-mechanic-vehicle">{fmtType(order.vehicle_type)} {order.vehicle_plate && `\u2022 ${order.vehicle_plate}`}</div></div>
+                        <div>
+                          <div className="od-mechanic-name">{order.mechanic_name}</div>
+                          <div className="od-mechanic-vehicle">
+                            {order.mechanic_specialty ? fmtType(order.mechanic_specialty) : ''}
+                            {order.service_bay_name ? ` • ${order.service_bay_name}` : ''}
+                          </div>
+                        </div>
                       </div>
                       <InfoRow icon={Phone} label={t('orderDetail.phone')} value={<span className="od-phone-row"><span className="mono">{order.mechanic_phone}</span>{order.mechanic_phone && <button className="wa-share-inline sm" onClick={() => shareViaWhatsApp(order.mechanic_phone, buildOrderMessage(order, t, window.location.origin))}><WhatsAppIcon width={14} height={14} color="#fff" /></button>}</span>} />
                     </>
@@ -502,7 +513,7 @@ export default function WorkOrderDetail() {
                     <div className="od-reassign-row">
                       <select className="od-select" value={reassignMechanic} onChange={e => setReassignMechanic(e.target.value)}>
                         <option value="">{t('orderDetail.select_mechanic')}</option>
-                        {mechanics.map(d => <option key={d.id} value={d.id}>{d.full_name} ({fmtType(d.vehicle_type)}){d.status === 'busy' ? ` ⚠ ${t('orderDetail.status.busy', 'Busy')}` : ''}</option>)}
+                        {mechanics.map(d => <option key={d.id} value={d.id}>{d.full_name}{d.specialty ? ` (${fmtType(d.specialty)})` : ''}{d.status === 'busy' ? ` ⚠ ${t('orderDetail.status.busy', 'Busy')}` : ''}</option>)}
                       </select>
                       <button className="module-btn module-btn-primary sm" onClick={handleReassign} disabled={!reassignMechanic || reassigning}>{reassigning ? t('orderDetail.assigning') : t('orderDetail.confirm')}</button>
                       <button className="module-btn module-btn-outline sm" onClick={() => setShowReassign(false)}>{t("common.cancel")}</button>

@@ -48,6 +48,18 @@ const STATUS_META = {
   cancelled:        { label:'Cancelled',        bg:'#f1f5f9', color:'#64748b', icon: Prohibition },
 };
 const ORDER_TYPES   = ['standard','express','same_day','scheduled','return'];
+// Valid status transitions — mirrors backend VALID_TRANSITIONS
+const VALID_TRANSITIONS_FRONTEND = {
+  pending:          ['confirmed', 'cancelled'],
+  confirmed:        ['assigned', 'in_progress', 'cancelled'],
+  assigned:         ['accepted', 'in_progress', 'cancelled', 'confirmed'],
+  accepted:         ['in_progress', 'cancelled', 'assigned'],
+  in_progress:      ['ready_for_pickup', 'failed'],
+  ready_for_pickup: ['completed', 'failed'],
+  completed:        [],
+  failed:           ['confirmed'],
+  cancelled:        ['pending'],
+};
 // EMIRATES removed — now using getRegions(workshop.country) from lib/regions.js
 // Fallback used only before categories are fetched from settings
 const DEFAULT_CATEGORIES = [
@@ -539,6 +551,7 @@ export default function WorkOrders() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showNewWO, setShowNewWO] = useState(false);
   const [newWOPresetCustomerId, setNewWOPresetCustomerId] = useState(null);
+  const [editWorkOrder, setEditWorkOrder] = useState(null);
 
   /* Auto-open new order if ?customer_id= is in the URL (from Customers drawer) */
   useEffect(() => {
@@ -799,113 +812,10 @@ export default function WorkOrders() {
     setShowNewWO(true);
   };
 
-  const openEdit = async (order) => {
-    setSelected(order);
-    setForm({
-      sender_type:    order.sender_type    || (order.customer_id ? 'customer' : 'business'),
-      customer_id:      order.customer_id      || '',
-      sender_name:    order.sender_name    || '',
-      sender_phone:   order.sender_phone   || '',
-      sender_address: order.sender_address || '',
-      sender_lat:     order.sender_lat     || '',
-      sender_lng:     order.sender_lng     || '',
-      payment_method: order.payment_method || 'cod',
-      discount:       order.discount       || '',
-      internal_notes: order.notes          || '',
-      pickup_notes:   '',
-      pregenerated_token: '',
-    });
-
-    /* ---- Fetch packages for this order to rebuild stops ---- */
-    let pkgs = [];
-    try {
-      // Use already-loaded drawerPackages if they belong to this order
-      const cached = (drawerPackages || []).filter(p => p.work_order_id === order.id || p.work_order_id === Number(order.id));
-      if (cached.length > 0) {
-        pkgs = cached;
-      } else {
-        const pkgRes = await api.get(`/packages/work-order/${order.id}`);
-        if (pkgRes.success) pkgs = pkgRes.data?.packages || [];
-      }
-    } catch {}
-
-    if (pkgs.length > 0) {
-      /* Group packages by recipient (name + phone + address) → each group = 1 stop */
-      const grouped = {};
-      pkgs.forEach(p => {
-        const key = `${(p.recipient_name || '').trim()}|${(p.recipient_phone || '').trim()}|${(p.address || '').trim()}`;
-        if (!grouped[key]) {
-          grouped[key] = {
-            recipient_name:    p.recipient_name  || order.recipient_name  || '',
-            recipient_phone:   p.recipient_phone || order.recipient_phone || '',
-            recipient_email:   p.recipient_email || '',
-            recipient_address: p.address          || '',
-            recipient_area:    p.area             || '',
-            recipient_emirate: p.emirate          || '',
-            recipient_lat:     p.lat              || '',
-            recipient_lng:     p.lng              || '',
-            service_bay_id:           order.service_bay_id      || '',
-            work_order_type:        order.work_order_type   || 'standard',
-            service_fee:      '',
-            scheduled_at:      order.scheduled_at ? order.scheduled_at.slice(0,16) : '',
-            payment_method:    order.payment_method || 'cod',
-            discount:          '',
-            _mapOpen: false,
-            packages: [],
-          };
-        }
-        grouped[key].packages.push({
-          category:             p.category             || 'parcel',
-          weight_kg:            p.weight_kg            || '',
-          dimensions:           p.dimensions           || '',
-          cash_amount:           p.cash_amount           || '',
-          description:          p.description          || '',
-          special_instructions: p.special_instructions || '',
-        });
-      });
-
-      const formStops = Object.values(grouped);
-      /* Distribute service_fee & discount evenly across stops for display */
-      if (formStops.length > 0) {
-        const feeEach = parseFloat(order.service_fee || 0) / formStops.length;
-        const discEach = parseFloat(order.discount || 0) / formStops.length;
-        formStops.forEach(s => {
-          s.service_fee = feeEach ? String(Math.round(feeEach * 100) / 100) : '';
-          s.discount     = discEach ? String(Math.round(discEach * 100) / 100) : '';
-        });
-      }
-      setStops(formStops);
-      setOrderMode(formStops.length > 1 ? 'multi' : 'single');
-    } else {
-      /* Fallback: single stop from flattened order data */
-      setStops([{
-        recipient_name:    order.recipient_name    || '',
-        recipient_phone:   order.recipient_phone   || '',
-        recipient_email:   order.recipient_email   || '',
-        recipient_address: order.recipient_address || '',
-        recipient_area:    order.recipient_area    || '',
-        recipient_emirate: order.recipient_emirate || '',
-        recipient_lat:     order.recipient_lat     || '',
-        recipient_lng:     order.recipient_lng     || '',
-        service_bay_id:           order.service_bay_id           || '',
-        work_order_type:        order.work_order_type        || 'standard',
-        service_fee:      order.service_fee      || '',
-        scheduled_at:      order.scheduled_at ? order.scheduled_at.slice(0,16) : '',
-        payment_method:    order.payment_method    || 'cod',
-        discount:          order.discount          || '',
-        _mapOpen: false,
-        packages: [{
-          category:             order.category             || 'parcel',
-          weight_kg:            order.weight_kg            || '',
-          dimensions:           order.dimensions           || '',
-          cash_amount:           order.cash_amount           || '',
-          description:          order.description          || '',
-          special_instructions: order.special_instructions || '',
-        }],
-      }]);
-      setOrderMode('single');
-    }
-    setStep(1); setFormError(''); setShowForm(true);
+  const openEdit = (order) => {
+    // Use the new car-workshop job-card modal for editing
+    setEditWorkOrder(order);
+    setShowNewWO(true);
   };
 
   const closeForm = () => {
@@ -1649,12 +1559,26 @@ export default function WorkOrders() {
               {/* Status + quick change */}
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
                 <StatusPill status={drawerFull?.status || drawer.status} />
-                <select value={drawerFull?.status || drawer.status}
-                  onChange={e => handleStatusChange(drawer.id, e.target.value)}
-                  style={{ padding:'5px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.15)',
-                    background:'rgba(255,255,255,0.06)', color:'#cbd5e1', fontSize:11, fontWeight:600, cursor:'pointer' }}>
-                  {Object.entries(STATUS_META).map(([k]) => <option key={k} value={k} style={{ color:'#1e293b' }}>{t(`orders.status.${k}`)}</option>)}
-                </select>
+                {(() => {
+                  const curStatus = drawerFull?.status || drawer.status;
+                  const allowed = VALID_TRANSITIONS_FRONTEND[curStatus] || [];
+                  return (
+                    <select value={curStatus}
+                      onChange={e => handleStatusChange(drawer.id, e.target.value)}
+                      style={{ padding:'5px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.15)',
+                        background:'rgba(255,255,255,0.06)', color:'#cbd5e1', fontSize:11, fontWeight:600, cursor: allowed.length > 0 ? 'pointer' : 'default' }}>
+                      {Object.entries(STATUS_META).map(([k]) => {
+                        const isAllowed = k === curStatus || allowed.includes(k);
+                        return (
+                          <option key={k} value={k} disabled={!isAllowed}
+                            style={{ color: isAllowed ? '#1e293b' : '#94a3b8' }}>
+                            {t(`orders.status.${k}`)}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  );
+                })()}
               </div>
 
               {/* Action buttons + WhatsApp - single icon row */}
@@ -1970,16 +1894,17 @@ export default function WorkOrders() {
                   <div style={{ background:'#fff', borderRadius:12, padding:'12px 14px', border:'1px solid #e2e8f0', marginBottom:14 }}>
                     <div style={{ fontWeight:700, fontSize:10, marginBottom:8, color:'#64748b',
                       display:'flex', alignItems:'center', gap:5, textTransform:'uppercase', letterSpacing:'0.06em' }}>
-                      <DeliveryTruck width={12} height={12} color="#8b5cf6" /> {t('orders.drawer.delivery_details')}
+                      <Wrench width={12} height={12} color="#8b5cf6" /> {t('orders.drawer.job_details', 'Job Details')}
                     </div>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px 16px' }}>
                       {[
-                        { label:t('orders.drawer.bay'), value: drawerFull.zone_name },
-                        { label:t('orders.drawer.mechanic'), value: drawerFull.mechanic_name, assignable: !drawerFull.mechanic_name },
-                        { label:t('orders.drawer.category'), value: (() => { const cat = categories.find(c=>c.slug===drawerFull.category); return cat ? (isRTL && cat.name_ar ? cat.name_ar : cat.name) : fmtType(drawerFull.category); })() },
-                        { label:t('orders.drawer.payment'), value: t(`orders.payment.${drawerFull.payment_method}`) || drawerFull.payment_method },
-                        { label:t('orders.drawer.dimensions'), value: drawerFull.dimensions },
-                        { label:t('orders.drawer.scheduled'), value: drawerFull.scheduled_at ? `${fmtDate(drawerFull.scheduled_at)} ${fmtTime(drawerFull.scheduled_at)}` : null },
+                        { label:t('orders.drawer.bay', 'Service Bay'), value: drawerFull.service_bay_name || drawerFull.zone_name },
+                        { label:t('orders.drawer.mechanic', 'Technician'), value: drawerFull.mechanic_name ? `${drawerFull.mechanic_name}${drawerFull.mechanic_specialty ? ` · ${fmtType(drawerFull.mechanic_specialty)}` : ''}` : null, assignable: !drawerFull.mechanic_name },
+                        { label:t('orders.drawer.service_category', 'Category'), value: drawerFull.service_category ? fmtType(drawerFull.service_category) : ((() => { const cat = categories.find(c=>c.slug===drawerFull.category); return cat ? (isRTL && cat.name_ar ? cat.name_ar : cat.name) : fmtType(drawerFull.category); })()) },
+                        { label:t('orders.drawer.payment', 'Payment'), value: t(`orders.payment.${drawerFull.payment_method}`) || drawerFull.payment_method },
+                        { label:t('orders.drawer.vehicle', 'Vehicle'), value: [drawerFull.vehicle_make, drawerFull.vehicle_model, drawerFull.vehicle_year].filter(Boolean).join(' ') || null },
+                        { label:t('orders.drawer.plate', 'Plate'), value: drawerFull.vehicle_plate_number },
+                        { label:t('orders.drawer.scheduled', 'Scheduled'), value: drawerFull.scheduled_at ? `${fmtDate(drawerFull.scheduled_at)} ${fmtTime(drawerFull.scheduled_at)}` : null },
                       ].filter(r=>r.value || r.assignable).map(row => (
                         <div key={row.label} style={{ padding:'4px 0' }}>
                           <div style={{ fontSize:9, fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.04em', marginBottom:2 }}>{row.label}</div>
@@ -1988,7 +1913,7 @@ export default function WorkOrders() {
                               style={{ background:'#eef2ff', color:'#6366f1', border:'none', borderRadius:6,
                                 padding:'3px 8px', fontSize:11, fontWeight:700, cursor:'pointer',
                                 display:'flex', alignItems:'center', gap:3 }}>
-                              <Plus width={10} height={10} /> {t('orders.drawer.assign')}
+                              <Plus width={10} height={10} /> {t('orders.drawer.assign', 'Assign')}
                             </button>
                           ) : (
                             <div style={{ fontSize:12, fontWeight:600, color:'#1e293b' }}>{row.value || '\u2014'}</div>
@@ -3156,14 +3081,25 @@ export default function WorkOrders() {
       <NewWorkOrderModal
         open={showNewWO}
         presetCustomerId={newWOPresetCustomerId}
+        editOrder={editWorkOrder}
         currency={cur}
-        onClose={() => setShowNewWO(false)}
+        onClose={() => { setShowNewWO(false); setEditWorkOrder(null); setNewWOPresetCustomerId(null); }}
         onCreated={(created) => {
           setShowNewWO(false);
+          setEditWorkOrder(null);
+          setNewWOPresetCustomerId(null);
           fetchWorkOrders();
           fetchStats();
           dispatchPlanUpdate();
           showToast(`Job card created${created?.work_order_number ? ` — ${created.work_order_number}` : ''} ✓`, 'success');
+        }}
+        onUpdated={(updated) => {
+          setShowNewWO(false);
+          setEditWorkOrder(null);
+          fetchWorkOrders();
+          fetchStats();
+          if (drawerFull && drawerFull.id === updated?.id) setDrawerFull(prev => ({ ...prev, ...updated }));
+          showToast(`Job card updated${updated?.work_order_number ? ` — ${updated.work_order_number}` : ''} ✓`, 'success');
         }}
       />
     </div>

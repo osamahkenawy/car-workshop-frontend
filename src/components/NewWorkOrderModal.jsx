@@ -58,7 +58,7 @@ const NAVY = '#1e3a6b';
 const EMPTY_VEHICLE = { make: '', model: '', year: '', plate_number: '', vin: '', color: '', mileage: '', fuel_type: 'petrol', transmission: 'automatic' };
 const EMPTY_ITEM = { name: '', quantity: 1, unit_price: '', notes: '' };
 
-export default function NewWorkOrderModal({ open, presetCustomerId = null, onClose, onCreated, currency = 'AED' }) {
+export default function NewWorkOrderModal({ open, presetCustomerId = null, onClose, onCreated, onUpdated, editOrder = null, currency = 'AED' }) {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -123,10 +123,47 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
         if (cRes.success) setCustomers(cRes.data || []);
         if (bRes.success) setServiceBays(bRes.data || []);
         if (mRes.success) setMechanics(mRes.data || []);
-        if (presetCustomerId) setCustomerId(String(presetCustomerId));
+
+        if (editOrder) {
+          // Edit mode — populate all fields from the existing work order
+          const isWalkIn = !editOrder.customer_id;
+          setWalkIn(isWalkIn);
+          if (!isWalkIn) {
+            setCustomerId(String(editOrder.customer_id));
+          } else {
+            setCustomerName(editOrder.customer_name || '');
+            setCustomerPhone(editOrder.customer_phone || '');
+            setCustomerEmail(editOrder.customer_email || '');
+          }
+          setVehicleId(editOrder.vehicle_id ? String(editOrder.vehicle_id) : '');
+          setWorkOrderType(editOrder.work_order_type || 'standard');
+          setServiceCategory(editOrder.service_category || 'general_maintenance');
+          setDescription(editOrder.description || '');
+          setSpecialInstructions(editOrder.special_instructions || '');
+          setScheduledAt(editOrder.scheduled_at ? editOrder.scheduled_at.slice(0, 16) : '');
+          setServiceFee(editOrder.service_fee != null && editOrder.service_fee !== '' ? String(editOrder.service_fee) : '');
+          setDiscount(editOrder.discount != null && editOrder.discount !== '' ? String(editOrder.discount) : '');
+          setPaymentMethod(editOrder.payment_method || 'cash');
+          setServiceBayId(editOrder.service_bay_id ? String(editOrder.service_bay_id) : '');
+          setMechanicId(editOrder.mechanic_id ? String(editOrder.mechanic_id) : '');
+          // Fetch existing line items
+          try {
+            const iRes = await api.get(`/work-orders/${editOrder.id}/items`);
+            if (iRes.success && iRes.data?.length > 0) {
+              setItems(iRes.data.map(it => ({
+                name: it.name || '',
+                quantity: String(it.quantity ?? 1),
+                unit_price: it.unit_price != null ? String(it.unit_price) : '',
+                notes: it.notes || '',
+              })));
+            }
+          } catch {}
+        } else if (presetCustomerId) {
+          setCustomerId(String(presetCustomerId));
+        }
       } catch (e) { console.error(e); }
     })();
-  }, [open, presetCustomerId, resetAll]);
+  }, [open, presetCustomerId, editOrder, resetAll]);
 
   // Load vehicles whenever a real customer is selected
   useEffect(() => {
@@ -240,22 +277,42 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
           .map(it => ({ name: it.name.trim(), quantity: parseFloat(it.quantity) || 1, unit_price: parseFloat(it.unit_price) || 0, notes: it.notes.trim() || null })),
       };
 
-      const res = await api.post('/work-orders', payload);
-      if (!res.success) {
-        if (res.upgrade_required) setError(res.message || 'Work order limit reached — upgrade your plan.');
-        else setError(res.message || 'Could not create the work order.');
+      if (editOrder) {
+        // ── EDIT MODE ──
+        const res = await api.put(`/work-orders/${editOrder.id}`, payload);
+        if (!res.success) { setError(res.message || 'Could not update the work order.'); setSubmitting(false); return; }
+        // Refresh line items: delete old, create new
+        try {
+          const existingRes = await api.get(`/work-orders/${editOrder.id}/items`);
+          for (const it of (existingRes.data || [])) {
+            await api.delete(`/work-orders/${editOrder.id}/items/${it.id}`);
+          }
+          for (const it of payload.items) {
+            await api.post(`/work-orders/${editOrder.id}/items`, it);
+          }
+        } catch { /* non-fatal: items will be stale but the core update succeeded */ }
+        // Re-assign mechanic if changed
+        if (mechanicId && String(mechanicId) !== String(editOrder.mechanic_id)) {
+          try { await api.patch(`/work-orders/${editOrder.id}/assign-mechanic`, { mechanic_id: Number(mechanicId) }); } catch {}
+        }
         setSubmitting(false);
-        return;
+        onUpdated?.(res.data);
+      } else {
+        // ── CREATE MODE ──
+        const res = await api.post('/work-orders', payload);
+        if (!res.success) {
+          if (res.upgrade_required) setError(res.message || 'Work order limit reached — upgrade your plan.');
+          else setError(res.message || 'Could not create the work order.');
+          setSubmitting(false);
+          return;
+        }
+        const created = res.data;
+        if (mechanicId && created?.id) {
+          try { await api.patch(`/work-orders/${created.id}/assign-mechanic`, { mechanic_id: Number(mechanicId) }); } catch { /* non-fatal */ }
+        }
+        setSubmitting(false);
+        onCreated?.(created);
       }
-
-      const created = res.data;
-      // Assign a technician if one was chosen
-      if (mechanicId && created?.id) {
-        try { await api.patch(`/work-orders/${created.id}/assign-mechanic`, { mechanic_id: Number(mechanicId) }); } catch { /* non-fatal */ }
-      }
-
-      setSubmitting(false);
-      onCreated?.(created);
     } catch (e) {
       console.error(e);
       setError('Network error — please try again.');
@@ -271,8 +328,8 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
         {/* Header */}
         <div style={st.header}>
           <div>
-            <h2 style={st.title}>New Job Card</h2>
-            <p style={st.subtitle}>Step {step} of {STEPS.length} — {STEPS[step - 1].title}</p>
+            <h2 style={st.title}>{editOrder ? 'Edit Job Card' : 'New Job Card'}</h2>
+            <p style={st.subtitle}>{editOrder ? `${editOrder.work_order_number} — ` : ''}Step {step} of {STEPS.length} — {STEPS[step - 1].title}</p>
           </div>
           <button style={st.closeBtn} onClick={onClose} aria-label="Close"><Xmark width={20} height={20} /></button>
         </div>
@@ -514,7 +571,7 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
             : <button style={st.ghostBtn} onClick={onClose}>Cancel</button>}
           {step < STEPS.length
             ? <button style={st.primaryBtn} onClick={next}>Next <NavArrowRight width={16} height={16} /></button>
-            : <button style={{ ...st.primaryBtn, opacity: submitting ? 0.7 : 1 }} disabled={submitting} onClick={submit}>{submitting ? 'Creating…' : 'Create job card'}</button>}
+            : <button style={{ ...st.primaryBtn, opacity: submitting ? 0.7 : 1 }} disabled={submitting} onClick={submit}>{submitting ? (editOrder ? 'Saving…' : 'Creating…') : (editOrder ? 'Save changes' : 'Create job card')}</button>}
         </div>
       </div>
     </div>
