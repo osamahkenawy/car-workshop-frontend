@@ -142,8 +142,8 @@ export default function App() {
         <Route path="/api-keys" element={<Protected><Integrations /></Protected>} />
 
         {/* ── Mechanic app ── */}
-        <Route path="/mechanic/dashboard" element={<Protected><MechanicDashboard /></Protected>} />
-        <Route path="/mechanic/work-orders" element={<Protected><MechanicHome /></Protected>} />
+        <Route path="/mechanic/dashboard" element={<Protected><MechanicHome /></Protected>} />
+        <Route path="/mechanic/work-orders" element={<Protected><MechanicDashboard /></Protected>} />
         <Route path="/mechanic/scan" element={<Protected><MechanicScan /></Protected>} />
 
         {/* ── Customer portal ── */}
