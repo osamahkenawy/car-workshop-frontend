@@ -16,6 +16,7 @@
     "customers": "Customers",
     "vehicles": "Vehicles",
     "parts": "Parts",
+    "inventory": "Inventory",
     "mechanics": "Mechanics",
     "service_bays": "Service Bays",
     "job-assignment": "Job Assignment",

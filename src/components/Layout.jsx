@@ -6,7 +6,7 @@ import {
   HomeSimple, Package, DeliveryTruck, Map, User, MapPin,
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
-  RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench
+  RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -25,6 +25,7 @@ const iconMap = {
   'customers':          User,
   'vehicles':           DeliveryTruck,
   'parts':              Wrench,
+  'inventory':          Archive,
   'service_bays':            MapPin,
   'pricing':          DollarCircle,
   'notifications':    Bell,
@@ -89,6 +90,7 @@ const navSections = [
     items: [
       { path: '/service-bays',              labelKey: 'service_bays',           iconKey: 'service_bays',            moduleKey: 'service-bays',             roles: ['admin'] },
       { path: '/service-pricing',            labelKey: 'pricing',         iconKey: 'pricing',          moduleKey: 'pricing',           roles: ['admin'] },
+      { path: '/inventory',                  labelKey: 'inventory',       iconKey: 'inventory',        moduleKey: 'inventory',         roles: ['admin'] },
     ]
   },
   /* ── FINANCE ──────────────────────────────────────── */

@@ -18,6 +18,7 @@ const ServiceTracking   = lazy(() => import('./pages/ServiceTracking'));
 const WarrantyClaims    = lazy(() => import('./pages/WarrantyClaims'));
 const ServiceBays       = lazy(() => import('./pages/ServiceBays'));
 const ServicePricing    = lazy(() => import('./pages/ServicePricing'));
+const Inventory         = lazy(() => import('./pages/Inventory'));
 const MechanicEarnings  = lazy(() => import('./pages/MechanicEarnings'));
 const Wallet            = lazy(() => import('./pages/Wallet'));
 const Invoices          = lazy(() => import('./pages/Invoices'));
@@ -131,6 +132,7 @@ export default function App() {
         <Route path="/warranty-claims" element={<Protected><WarrantyClaims /></Protected>} />
         <Route path="/service-bays" element={<Protected><ServiceBays /></Protected>} />
         <Route path="/service-pricing" element={<Protected><ServicePricing /></Protected>} />
+        <Route path="/inventory" element={<Protected><Inventory /></Protected>} />
         <Route path="/mechanic-earnings" element={<Protected><MechanicEarnings /></Protected>} />
         <Route path="/wallet" element={<Protected><Wallet /></Protected>} />
         <Route path="/invoices" element={<Protected><Invoices /></Protected>} />
