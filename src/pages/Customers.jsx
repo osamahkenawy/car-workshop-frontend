@@ -7,6 +7,7 @@ import {
   StatsUpSquare, Wallet, Filter, Eye, Clock,
 } from 'iconoir-react';
 import api from '../lib/api';
+import { CAR_CATALOG, CAR_MAKES } from '../lib/carCatalog';
 import { TableSkeleton } from '../components/Loader';
 import { shareViaWhatsApp, buildCustomerMessage } from '../lib/whatsapp';
 import Toast, { useToast } from '../components/Toast';
@@ -46,6 +47,8 @@ const emptyForm = {
   service_bay_id:'', latitude:'', longitude:'',
   credit_limit:'', notes:'', is_active:true,
 };
+const EMPTY_VEHICLE = { make:'', model:'', year:'', plate_number:'', vin:'', color:'', mileage:'', fuel_type:'petrol', transmission:'automatic' };
+const FUEL_TYPES = ['petrol', 'diesel', 'hybrid', 'electric', 'lpg'];
 
 /* ── Helpers ── */
 function Avatar({ name, size = 44 }) {
@@ -305,6 +308,8 @@ export default function Customers() {
   const [form, setForm] = useState(emptyForm);
   const [phoneCode, setPhoneCode] = useState('+971');
   const [phoneAltCode, setPhoneAltCode] = useState('+971');
+  const [vehicleForm, setVehicleForm] = useState({ ...EMPTY_VEHICLE });
+  const setVeh = (k, v) => setVehicleForm(p => ({ ...p, [k]: v }));
   const set = (k, v) => setForm(p => {
     const next = { ...p, [k]: v };
     if (k === 'service_bay_id') {
@@ -318,10 +323,17 @@ export default function Customers() {
   const { toasts, showToast } = useToast();
 
   /* ── Steps ── */
-  const STEPS = [
+  // Vehicle step only makes sense on creation — editing an existing customer
+  // already has vehicles managed from the Vehicles page / a work order.
+  const STEPS = selected ? [
     { num:1, title: 'Basic Info',     desc: 'Name & contact details' },
     { num:2, title: 'Business Info',  desc: 'Customer type & account details' },
     { num:3, title: 'Address & Limit',desc: 'Location, credit limit & notes' },
+  ] : [
+    { num:1, title: 'Basic Info',     desc: 'Name & contact details' },
+    { num:2, title: 'Business Info',  desc: 'Customer type & account details' },
+    { num:3, title: 'Address & Limit',desc: 'Location, credit limit & notes' },
+    { num:4, title: 'Vehicle',        desc: 'Optional — add their vehicle now' },
   ];
 
   /* ── ServiceBays ── */
@@ -378,6 +390,7 @@ export default function Customers() {
   const openCreate = () => {
     setSelected(null); setForm(emptyForm);
     setPhoneCode('+971'); setPhoneAltCode('+971');
+    setVehicleForm({ ...EMPTY_VEHICLE });
     setFormError(''); setStep(1);
     setShowForm(true);
   };
@@ -402,6 +415,7 @@ export default function Customers() {
     setSaving(true); setFormError('');
     const payload = {
       ...form,
+      client_category: form.customer_category, // backend field is client_category, not customer_category
       phone: form.phone ? `${phoneCode}${form.phone}` : '',
       phone_alt: form.phone_alt ? `${phoneAltCode}${form.phone_alt}` : '',
     };
@@ -409,6 +423,17 @@ export default function Customers() {
       ? await api.put(`/customers/${selected.id}`, payload)
       : await api.post('/customers', payload);
     if (res.success) {
+      // Optional vehicle, new customers only — never blocks the customer
+      // creation itself if it fails, since it's a "nice to have" add-on.
+      if (!selected && vehicleForm.make.trim() && vehicleForm.model.trim()) {
+        try {
+          const vRes = await api.post('/vehicles', {
+            customer_id: res.data.id, ...vehicleForm,
+            year: vehicleForm.year || null, mileage: vehicleForm.mileage || null,
+          });
+          if (!vRes.success) showToast(t('customers.toast.created') + ' — vehicle could not be saved: ' + (vRes.message || ''), 'error');
+        } catch { showToast(t('customers.toast.created') + ' — vehicle could not be saved (network error).', 'error'); }
+      }
       showToast(selected ? t('customers.toast.updated') : t('customers.toast.created'));
       setShowForm(false); setSelected(null);
       fetchCustomers();
@@ -1281,6 +1306,70 @@ export default function Customers() {
                     </div>
                   );
                 })()}
+
+                {/* ── Step 4: Vehicle (optional, creation only) ── */}
+                {step === 4 && !selected && (
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+                    <div style={{ gridColumn:'1/-1', display:'flex', alignItems:'center', gap:8, marginBottom:2 }}>
+                      <div style={{ width:3, height:18, borderRadius:4, background:'#f97316' }} />
+                      <span style={{ fontSize:11, fontWeight:800, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.07em' }}>
+                        Vehicle (optional)
+                      </span>
+                    </div>
+                    <div style={{ gridColumn:'1/-1', padding:'10px 14px', background:'#f8fafc', borderRadius:10, border:'1px solid #e2e8f0', fontSize:13, color:'#64748b' }}>
+                      Leave this blank to skip — you can always add a vehicle for this customer later from the Vehicles page.
+                    </div>
+
+                    <div>
+                      <label style={LABEL}>Make</label>
+                      <select value={vehicleForm.make} onChange={e => setVehicleForm(v => ({ ...v, make: e.target.value, model: '' }))} style={INPUT}>
+                        <option value="">Select make…</option>
+                        {CAR_MAKES.map(m => <option key={m} value={m}>{m}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={LABEL}>Model</label>
+                      {vehicleForm.make && CAR_CATALOG[vehicleForm.make]?.length > 0 ? (
+                        <select value={vehicleForm.model} onChange={e => setVeh('model', e.target.value)} style={INPUT}>
+                          <option value="">Select model…</option>
+                          {CAR_CATALOG[vehicleForm.make].map(m => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                      ) : (
+                        <input value={vehicleForm.model} onChange={e => setVeh('model', e.target.value)} style={INPUT}
+                          placeholder={vehicleForm.make ? 'Enter model' : 'Select make first'} disabled={!vehicleForm.make} />
+                      )}
+                    </div>
+
+                    <div>
+                      <label style={LABEL}>Year</label>
+                      <input value={vehicleForm.year} onChange={e => setVeh('year', e.target.value)} style={INPUT} placeholder="2021" />
+                    </div>
+                    <div>
+                      <label style={LABEL}>Plate number</label>
+                      <input value={vehicleForm.plate_number} onChange={e => setVeh('plate_number', e.target.value)} style={INPUT} placeholder="A 12345" />
+                    </div>
+
+                    <div>
+                      <label style={LABEL}>Color</label>
+                      <input value={vehicleForm.color} onChange={e => setVeh('color', e.target.value)} style={INPUT} placeholder="White" />
+                    </div>
+                    <div>
+                      <label style={LABEL}>VIN</label>
+                      <input value={vehicleForm.vin} onChange={e => setVeh('vin', e.target.value)} style={INPUT} placeholder="Optional" />
+                    </div>
+
+                    <div>
+                      <label style={LABEL}>Odometer (km)</label>
+                      <input value={vehicleForm.mileage} onChange={e => setVeh('mileage', e.target.value)} style={INPUT} placeholder="45000" />
+                    </div>
+                    <div>
+                      <label style={LABEL}>Fuel type</label>
+                      <select value={vehicleForm.fuel_type} onChange={e => setVeh('fuel_type', e.target.value)} style={INPUT}>
+                        {FUEL_TYPES.map(f => <option key={f} value={f}>{f}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Footer nav — sticky */}
