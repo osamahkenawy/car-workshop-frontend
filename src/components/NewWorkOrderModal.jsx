@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
-  Xmark, User, Car, Wrench, ClipboardCheck, Plus, Trash, Search,
+  Xmark, User, UserPlus, Car, Wrench, ClipboardCheck, Plus, Trash, Search,
   Calendar, Timer, NavArrowLeft, NavArrowRight, Check,
 } from 'iconoir-react';
 import api from '../lib/api';
@@ -73,7 +73,7 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
   // step 1 — customer & vehicle
   const [customerId, setCustomerId] = useState('');
   const [customerSearch, setCustomerSearch] = useState('');
-  const [walkIn, setWalkIn] = useState(false);
+  const [customerMode, setCustomerMode] = useState('existing'); // 'existing' | 'new' | 'walkin'
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -100,7 +100,7 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
 
   const resetAll = useCallback(() => {
     setStep(1); setSubmitting(false); setError('');
-    setCustomerId(''); setCustomerSearch(''); setWalkIn(false);
+    setCustomerId(''); setCustomerSearch(''); setCustomerMode('existing');
     setCustomerName(''); setCustomerPhone(''); setCustomerEmail('');
     setVehicleId(''); setAddingVehicle(false); setNewVehicle({ ...EMPTY_VEHICLE });
     setWorkOrderType('standard'); setServiceCategory('general_maintenance');
@@ -127,7 +127,7 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
         if (editOrder) {
           // Edit mode — populate all fields from the existing work order
           const isWalkIn = !editOrder.customer_id;
-          setWalkIn(isWalkIn);
+          setCustomerMode(isWalkIn ? 'walkin' : 'existing');
           if (!isWalkIn) {
             setCustomerId(String(editOrder.customer_id));
           } else {
@@ -210,11 +210,11 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
   /* ── validation ── */
   const validateStep = (s) => {
     if (s === 1) {
-      if (walkIn) {
+      if (customerMode !== 'existing') {
         if (!customerName.trim()) return 'Enter the customer name.';
         if (!customerPhone.trim()) return 'Enter the customer phone.';
       } else {
-        if (!customerId) return 'Select a customer, or switch to a walk-in.';
+        if (!customerId) return 'Select a customer, or add a new one.';
       }
       if (addingVehicle) {
         if (!newVehicle.make.trim() || !newVehicle.model.trim()) return 'Vehicle make and model are required.';
@@ -244,9 +244,24 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
     setSubmitting(true); setError('');
     try {
       let vId = vehicleId || null;
+      let finalCustomerId = customerMode === 'existing' ? (customerId ? Number(customerId) : null) : null;
+      const finalCustomerName = customerMode === 'existing' ? (selectedCustomer?.full_name || '') : customerName.trim();
+      const finalCustomerPhone = customerMode === 'existing' ? (selectedCustomer?.phone || '') : customerPhone.trim();
+      const finalCustomerEmail = customerMode === 'existing' ? (selectedCustomer?.email || '') : customerEmail.trim();
+
+      // "New customer" mode actually creates a customers row (unlike "Walk-in",
+      // which is intentionally anonymous/one-off) so they show up in the
+      // Customers list afterward.
+      if (customerMode === 'new') {
+        const custRes = await api.post('/customers', {
+          full_name: finalCustomerName, phone: finalCustomerPhone, email: finalCustomerEmail || undefined,
+        });
+        if (!custRes.success) { setError(custRes.message || 'Could not create the customer.'); setSubmitting(false); return; }
+        finalCustomerId = custRes.data?.id || null;
+      }
 
       // Create a new vehicle first if the user is adding one (needs a real customer)
-      if (!walkIn && addingVehicle && customerId) {
+      if (customerMode === 'existing' && addingVehicle && customerId) {
         const vRes = await api.post('/vehicles', { customer_id: Number(customerId), ...newVehicle,
           year: newVehicle.year || null, mileage: newVehicle.mileage || null });
         if (!vRes.success) { setError(vRes.message || 'Could not save the vehicle.'); setSubmitting(false); return; }
@@ -254,14 +269,14 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
       }
 
       const payload = {
-        customer_id: walkIn ? null : (customerId ? Number(customerId) : null),
+        customer_id: finalCustomerId,
         vehicle_id: vId,
         service_bay_id: serviceBayId ? Number(serviceBayId) : null,
         work_order_type: workOrderType,
         service_category: serviceCategory,
-        customer_name: walkIn ? customerName.trim() : (selectedCustomer?.full_name || ''),
-        customer_phone: walkIn ? customerPhone.trim() : (selectedCustomer?.phone || ''),
-        customer_email: walkIn ? customerEmail.trim() : (selectedCustomer?.email || ''),
+        customer_name: finalCustomerName,
+        customer_phone: finalCustomerPhone,
+        customer_email: finalCustomerEmail,
         description: description.trim(),
         special_instructions: specialInstructions.trim() || null,
         scheduled_at: scheduledAt || null,
@@ -362,15 +377,18 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
               <div>
                 <div style={st.sectionLabel}>Customer</div>
                 <div style={st.toggleRow}>
-                  <button style={{ ...st.toggle, ...(!walkIn ? st.toggleOn : {}) }} onClick={() => setWalkIn(false)}>
+                  <button style={{ ...st.toggle, ...(customerMode === 'existing' ? st.toggleOn : {}) }} onClick={() => setCustomerMode('existing')}>
                     <User width={16} height={16} /> Existing customer
                   </button>
-                  <button style={{ ...st.toggle, ...(walkIn ? st.toggleOn : {}) }} onClick={() => { setWalkIn(true); setCustomerId(''); }}>
+                  <button style={{ ...st.toggle, ...(customerMode === 'new' ? st.toggleOn : {}) }} onClick={() => { setCustomerMode('new'); setCustomerId(''); }}>
+                    <UserPlus width={16} height={16} /> New customer
+                  </button>
+                  <button style={{ ...st.toggle, ...(customerMode === 'walkin' ? st.toggleOn : {}) }} onClick={() => { setCustomerMode('walkin'); setCustomerId(''); }}>
                     <Plus width={16} height={16} /> Walk-in
                   </button>
                 </div>
 
-                {!walkIn ? (
+                {customerMode === 'existing' ? (
                   <>
                     <div style={st.searchWrap}>
                       <Search width={16} height={16} style={{ color: '#94a3b8' }} />
@@ -388,6 +406,9 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
                   </>
                 ) : (
                   <div style={st.fieldStack}>
+                    {customerMode === 'new' && (
+                      <div style={st.emptyHint}>This will create a new customer record in your Customers list.</div>
+                    )}
                     <Field label="Customer name *"><input style={st.input} value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Full name" /></Field>
                     <Field label="Phone *"><input style={st.input} value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder="+971 50 000 0000" /></Field>
                     <Field label="Email"><input style={st.input} value={customerEmail} onChange={e => setCustomerEmail(e.target.value)} placeholder="name@example.com" /></Field>
@@ -398,8 +419,8 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
               {/* Vehicle */}
               <div>
                 <div style={st.sectionLabel}>Vehicle</div>
-                {walkIn ? (
-                  <div style={st.emptyHint}>Walk-in job — vehicle details are optional and can be added later from the job card.</div>
+                {customerMode !== 'existing' ? (
+                  <div style={st.emptyHint}>{customerMode === 'new' ? 'New customer — vehicle details are optional and can be added later from the job card.' : 'Walk-in job — vehicle details are optional and can be added later from the job card.'}</div>
                 ) : !customerId ? (
                   <div style={st.emptyHint}>Select a customer to see their vehicles.</div>
                 ) : addingVehicle ? (
@@ -550,7 +571,9 @@ export default function NewWorkOrderModal({ open, presetCustomerId = null, onClo
 
               <div style={st.reviewCard}>
                 <ReviewRow icon={User} label="Customer"
-                  value={walkIn ? `${customerName || '—'} · ${customerPhone || ''} (walk-in)` : (selectedCustomer ? `${selectedCustomer.full_name} · ${selectedCustomer.phone || ''}` : '—')} />
+                  value={customerMode === 'existing'
+                    ? (selectedCustomer ? `${selectedCustomer.full_name} · ${selectedCustomer.phone || ''}` : '—')
+                    : `${customerName || '—'} · ${customerPhone || ''} ${customerMode === 'new' ? '(new customer)' : '(walk-in)'}`} />
                 <ReviewRow icon={Car} label="Vehicle"
                   value={addingVehicle ? `${newVehicle.make} ${newVehicle.model} ${newVehicle.year || ''} (new)`.trim()
                     : (vehicles.find(v => String(v.id) === String(vehicleId)) ? `${vehicles.find(v => String(v.id) === String(vehicleId)).make} ${vehicles.find(v => String(v.id) === String(vehicleId)).model}` : '—')} />
