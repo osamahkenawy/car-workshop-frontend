@@ -94,39 +94,37 @@ function StatusPill({ active }) {
 /* ── Step indicator ── */
 function StepBar({ current, steps }) {
   return (
-    <div style={{ display:'flex', alignItems:'center', padding:'22px 28px 0', position:'relative' }}>
-      {/* Connector lines background */}
-      {steps.map((s, i) => {
-        const done   = current > s.num;
-        const last   = i === steps.length - 1;
-        if (last) return null;
-        return (
-          <div key={`line-${s.num}`} style={{
-            flex:1, height:2, background: done ? '#16a34a' : '#e2e8f0',
-            transition:'background 0.3s', position:'relative', top:16, zIndex:0
-          }} />
-        );
-      })}
-      
-      {/* Reset flex for steps container */}
-      <div style={{ display:'flex', width:'100%', position:'absolute', top:0, left:0, right:0 }}>
-        {steps.map((s, i) => {
+    <div style={{ display:'flex', alignItems:'center', padding:'26px 32px 0', position:'relative' }}>
+      {/* Connector track — full-width background rail + a proportional green fill */}
+      <div style={{ position:'absolute', top:46, left:32+20, right:32+20, height:3, background:'#eef2f7', borderRadius:99, zIndex:0 }} />
+      <div style={{
+        position:'absolute', top:46, left:32+20, height:3, borderRadius:99, zIndex:0,
+        width: `calc((100% - ${2*(32+20)}px) * ${Math.max(0, Math.min(1, (current-1)/(steps.length-1)))})`,
+        background:'linear-gradient(90deg,#16a34a,#22c55e)', transition:'width 0.35s ease',
+      }} />
+
+      <div style={{ display:'flex', width:'100%', position:'relative', zIndex:1 }}>
+        {steps.map((s) => {
           const done   = current > s.num;
           const active = current === s.num;
           return (
-            <div key={s.num} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', position:'relative', zIndex:1 }}>
+            <div key={s.num} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center' }}>
               <div style={{
-                width:36, height:36, borderRadius:'50%', fontWeight:800, fontSize:15,
+                width:40, height:40, borderRadius:'50%', fontWeight:800, fontSize:15,
                 display:'flex', alignItems:'center', justifyContent:'center',
-                background: done?'#16a34a' : active?'#f97316':'#f1f5f9',
+                background: done ? 'linear-gradient(135deg,#22c55e,#16a34a)'
+                          : active ? 'linear-gradient(135deg,#fb923c,#f97316)' : '#fff',
+                border: done||active ? 'none' : '2px solid #e2e8f0',
                 color: done||active?'#fff':'#94a3b8',
-                boxShadow: active?'0 0 0 4px rgba(249,115,22,0.18)':'none',
+                boxShadow: active ? '0 4px 14px rgba(249,115,22,0.35), 0 0 0 5px rgba(249,115,22,0.14)'
+                          : done ? '0 3px 10px rgba(22,163,74,0.25)' : 'none',
+                transform: active ? 'scale(1.06)' : 'scale(1)',
                 transition:'all 0.25s' }}>
-                {done ? <CheckCircle width={18} height={18} /> : s.num}
+                {done ? <CheckCircle width={19} height={19} /> : s.num}
               </div>
-              <div style={{ marginTop:6, fontSize:11, fontWeight:active?700:500,
+              <div style={{ marginTop:9, fontSize:12.5, fontWeight:active?700:600,
                 color:active?'#f97316':done?'#16a34a':'#94a3b8',
-                whiteSpace:'nowrap', textAlign:'center' }}>
+                whiteSpace:'nowrap', textAlign:'center', letterSpacing:'0.01em' }}>
                 {s.title}
               </div>
             </div>
@@ -935,24 +933,58 @@ export default function Customers() {
 
       {/* ── Multi-Step Form Modal ── */}
       {showForm && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', zIndex:9999,
+        <div style={{ position:'fixed', inset:0, background:'rgba(15,23,42,0.55)', zIndex:9999,
           display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
-          <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:600,
-            maxHeight:'92vh', display:'flex', flexDirection:'column', overflow:'hidden', boxShadow:'0 24px 70px rgba(0,0,0,0.2)' }}>
+          <div className="new-customer-modal" style={{ background:'#fff', borderRadius:22, width:'100%', maxWidth:660,
+            maxHeight:'92vh', display:'flex', flexDirection:'column', overflow:'hidden', boxShadow:'0 30px 90px rgba(15,23,42,0.35)' }}>
+            <style>{`
+              .new-customer-modal input:not([type=checkbox]),
+              .new-customer-modal select,
+              .new-customer-modal textarea {
+                border: 1.5px solid #e2e8f0 !important;
+                border-radius: 10px !important;
+                background: #fbfcfe !important;
+                color: #1e293b;
+                transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+              }
+              .new-customer-modal input:focus,
+              .new-customer-modal select:focus,
+              .new-customer-modal textarea:focus {
+                border-color: #f97316 !important;
+                box-shadow: 0 0 0 3px rgba(249,115,22,0.12) !important;
+                background: #fff !important;
+                outline: none !important;
+              }
+              .new-customer-modal select { cursor: pointer; }
+              .new-customer-modal label {
+                color: #64748b !important;
+                font-weight: 700 !important;
+              }
+              .new-customer-modal ::-webkit-scrollbar { width: 7px; }
+              .new-customer-modal ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+              .new-customer-modal ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+            `}</style>
 
             {/* Modal Header */}
-            <div style={{ padding:'22px 28px 0', display:'flex', justifyContent:'space-between', alignItems:'center', position:'relative' }}>
-              <div>
-                <h3 style={{ margin:0, fontSize:20, fontWeight:800, color:'#1e293b' }}>
-                  {selected ? t('customers.modal.edit_title') : t('customers.modal.new_title')}
-                </h3>
-                <p style={{ margin:'3px 0 0', color:'#94a3b8', fontSize:13 }}>
-                  Step {step} of {STEPS.length} — {STEPS[step-1]?.desc}
-                </p>
+            <div style={{ padding:'26px 32px 0', display:'flex', justifyContent:'space-between', alignItems:'center', position:'relative' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+                <div style={{ width:44, height:44, borderRadius:14, flexShrink:0,
+                  background:'linear-gradient(135deg,#fff7ed,#ffedd5)', border:'1px solid #fed7aa',
+                  display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <Group width={22} height={22} color="#f97316" strokeWidth={1.8} />
+                </div>
+                <div>
+                  <h3 style={{ margin:0, fontSize:20, fontWeight:800, color:'#1e293b' }}>
+                    {selected ? t('customers.modal.edit_title') : t('customers.modal.new_title')}
+                  </h3>
+                  <p style={{ margin:'3px 0 0', color:'#94a3b8', fontSize:13 }}>
+                    Step {step} of {STEPS.length} — {STEPS[step-1]?.desc}
+                  </p>
+                </div>
               </div>
               <button type="button" onClick={() => setShowForm(false)}
                 style={{ background:'#f1f5f9', border:'none', cursor:'pointer', color:'#64748b',
-                  width:34, height:34, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  width:34, height:34, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                 <Xmark width={16} height={16} />
               </button>
             </div>
@@ -961,10 +993,10 @@ export default function Customers() {
             <StepBar current={step} steps={STEPS} />
 
             {/* Divider */}
-            <div style={{ margin:'18px 0 0', height:1, background:'#f1f5f9' }} />
+            <div style={{ margin:'22px 0 0', height:1, background:'#f1f5f9' }} />
 
             <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', flex:1, overflow:'hidden' }}>
-              <div style={{ overflowY:'auto', flex:1, padding:'24px 28px 24px' }}>
+              <div style={{ overflowY:'auto', flex:1, padding:'26px 32px 26px' }}>
                 {formError && (
                   <div style={{ background:'#fee2e2', color:'#dc2626', padding:'10px 14px',
                     borderRadius:8, marginBottom:16, fontSize:14,
@@ -1373,10 +1405,10 @@ export default function Customers() {
               </div>
 
               {/* Footer nav — sticky */}
-              <div style={{ padding:'18px 28px 22px', display:'flex', justifyContent:'space-between', alignItems:'center', borderTop:'1px solid #f1f5f9', background:'#fff', flexShrink:0 }}>
+              <div style={{ padding:'20px 32px 24px', display:'flex', justifyContent:'space-between', alignItems:'center', borderTop:'1px solid #f1f5f9', background:'#fff', flexShrink:0 }}>
                 <button type="button"
                   onClick={step > 1 ? (e) => prevStep(e) : () => setShowForm(false)}
-                  style={{ padding:'10px 22px', borderRadius:10, border:'1px solid #e2e8f0',
+                  style={{ padding:'11px 24px', borderRadius:11, border:'1.5px solid #e2e8f0',
                     background:'#fff', cursor:'pointer', fontWeight:600, fontSize:14,
                     display:'flex', alignItems:'center', gap:7, color:'#475569' }}>
                   <NavArrowLeft width={15} height={15} />
@@ -1385,20 +1417,20 @@ export default function Customers() {
 
                 {step < STEPS.length ? (
                   <button type="button" onClick={(e) => nextStep(e)}
-                    style={{ padding:'10px 28px', borderRadius:10, border:'none',
+                    style={{ padding:'11px 30px', borderRadius:11, border:'none',
                       background:'linear-gradient(135deg,#f97316,#ea580c)', color:'#fff',
                       cursor:'pointer', fontWeight:700, fontSize:14,
                       display:'flex', alignItems:'center', gap:7,
-                      boxShadow:'0 4px 14px rgba(249,115,22,0.35)' }}>
+                      boxShadow:'0 6px 18px rgba(249,115,22,0.35)' }}>
                     {t('common.next')} <NavArrowRight width={15} height={15} />
                   </button>
                 ) : (
                   <button type="submit" disabled={saving}
-                    style={{ padding:'10px 28px', borderRadius:10, border:'none',
+                    style={{ padding:'11px 30px', borderRadius:11, border:'none',
                       background:'linear-gradient(135deg,#16a34a,#15803d)', color:'#fff',
                       cursor:saving?'not-allowed':'pointer', fontWeight:700, fontSize:14,
                       opacity:saving?0.7:1, display:'flex', alignItems:'center', gap:7,
-                      boxShadow:'0 4px 14px rgba(22,163,74,0.35)' }}>
+                      boxShadow:'0 6px 18px rgba(22,163,74,0.35)' }}>
                     <CheckCircle width={15} height={15} />
                     {saving ? t('customers.button.saving') : selected ? t('customers.button.update_customer') : t('customers.button.create_customer')}
                   </button>
