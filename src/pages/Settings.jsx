@@ -223,7 +223,7 @@ function GeneralTab({ data, setData, onSave, saving }) {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const token = localStorage.getItem('crm_token');
+      const token = localStorage.getItem('auth_token');
       const res = await fetch(`${API_URL}/uploads/logo/${variant}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
@@ -984,7 +984,7 @@ function ShippingLabelsTab({ data, setData, onSave, saving }) {
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
   const previewLabel = () => {
-    const token = localStorage.getItem('crm_token');
+    const token = localStorage.getItem('auth_token');
     // Use a recent order or a dummy preview - try fetching from API
     fetch(`${API_BASE_URL}/work-orders?limit=1`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())

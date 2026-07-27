@@ -234,9 +234,9 @@ export default function WorkOrderDetail() {
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const openPdf = (url) => {
-    const token = localStorage.getItem('crm_token');
+    const token = localStorage.getItem('auth_token');
     fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => { if (r.status === 401) { localStorage.removeItem('crm_token'); window.location.href = '/login'; throw new Error('Session expired'); } if (!r.ok) throw new Error('Failed'); return r.blob(); })
+      .then(r => { if (r.status === 401) { localStorage.removeItem('auth_token'); window.location.href = '/login'; throw new Error('Session expired'); } if (!r.ok) throw new Error('Failed'); return r.blob(); })
       .then(blob => { const u = URL.createObjectURL(blob); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); })
       .catch(e => console.error('PDF error:', e));
   };

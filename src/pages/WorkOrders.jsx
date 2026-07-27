@@ -1015,14 +1015,14 @@ export default function WorkOrders() {
 
   /* ── MODULE B: Shipping Label helpers ──────────────────────── */
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-  const getAuthToken = () => localStorage.getItem('crm_token');
+  const getAuthToken = () => localStorage.getItem('auth_token');
 
   const printSingleLabel = (workOrderId) => {
     const token = getAuthToken();
     const url = `${API_BASE_URL}/work-orders/${workOrderId}/label`;
     fetch(url, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => {
-        if (r.status === 401) { localStorage.removeItem('crm_token'); window.location.href = '/login'; throw new Error('Session expired'); }
+        if (r.status === 401) { localStorage.removeItem('auth_token'); window.location.href = '/login'; throw new Error('Session expired'); }
         if (!r.ok) throw new Error('Label generation failed');
         return r.blob();
       })
@@ -1044,7 +1044,7 @@ export default function WorkOrders() {
       body: JSON.stringify({ work_order_ids: [...labelSelected] }),
     })
       .then(r => {
-        if (r.status === 401) { localStorage.removeItem('crm_token'); window.location.href = '/login'; throw new Error('Session expired'); }
+        if (r.status === 401) { localStorage.removeItem('auth_token'); window.location.href = '/login'; throw new Error('Session expired'); }
         if (!r.ok) throw new Error('Batch label generation failed');
         return r.blob();
       })

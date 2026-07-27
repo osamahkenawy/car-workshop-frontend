@@ -93,7 +93,7 @@ export default function Invoices() {
 
   const downloadPDF = async (inv) => {
     try {
-      const token = localStorage.getItem('crm_token');
+      const token = localStorage.getItem('auth_token');
       const res = await fetch(`${API_BASE}/invoices/${inv.id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
       });
