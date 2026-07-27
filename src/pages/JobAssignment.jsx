@@ -86,6 +86,7 @@ const VEHICLE_ICONS = { motorcycle: '🏍️', car: '🚗', van: '🚐', truck: 
 function MechanicDropdown({ mechanics, value, onChange, placeholder, t: translate }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [fixedPos, setFixedPos] = useState(null); // desktop-only: escapes scrollable card/column ancestors
   const ref = useRef(null);
   const inputRef = useRef(null);
 
@@ -96,6 +97,23 @@ function MechanicDropdown({ mechanics, value, onChange, placeholder, t: translat
   }, []);
 
   useEffect(() => { if (open && inputRef.current) inputRef.current.focus(); }, [open]);
+
+  const updateFixedPos = useCallback(() => {
+    if (!ref.current || window.innerWidth <= 640) { setFixedPos(null); return; }
+    const r = ref.current.getBoundingClientRect();
+    setFixedPos({ position: 'fixed', top: r.bottom + 6, left: r.left, width: r.width, right: 'auto' });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updateFixedPos();
+    window.addEventListener('scroll', updateFixedPos, true);
+    window.addEventListener('resize', updateFixedPos);
+    return () => {
+      window.removeEventListener('scroll', updateFixedPos, true);
+      window.removeEventListener('resize', updateFixedPos);
+    };
+  }, [open, updateFixedPos]);
 
   const selected = mechanics?.find(d => String(d.id) === String(value));
   const filtered = (mechanics || []).filter(d => {
@@ -109,7 +127,7 @@ function MechanicDropdown({ mechanics, value, onChange, placeholder, t: translat
   return (
     <div className="drv-dd" ref={ref}>
       <button type="button" className={`drv-dd-trigger ${open ? 'open' : ''} ${value ? 'has-value' : ''}`}
-        onClick={() => setOpen(o => !o)}>
+        onClick={() => { if (!open) updateFixedPos(); setOpen(o => !o); }}>
         {selected ? (
           <span className="drv-dd-selected">
             <span className="drv-dd-avatar" style={{ background: MECHANIC_STATUS_META[selected.status]?.bg, color: MECHANIC_STATUS_META[selected.status]?.color }}>
@@ -133,7 +151,7 @@ function MechanicDropdown({ mechanics, value, onChange, placeholder, t: translat
       </button>
 
       {open && (
-        <div className="drv-dd-menu">
+        <div className="drv-dd-menu" style={fixedPos || undefined}>
           <div className="drv-dd-search-wrap">
             <Search width={14} height={14} />
             <input ref={inputRef} className="drv-dd-search" placeholder={translate?.('job-assignment.search_mechanic') || 'Search mechanic...'}
@@ -1453,7 +1471,7 @@ export default function JobAssignment() {
     /* ── Full card ── */
     return (
       <div
-        className={`job-assignment-card${!showUnassign && draggingOrder === order.id ? ' dragging' : ''}`}
+        className={`job-assignment-card${!showUnassign && draggingOrder === order.id ? ' dragging' : ''}${reassigningOrder === order.id ? ' reassigning' : ''}`}
         style={{ borderColor: isSelected ? sc.border : undefined }}
         draggable={!showUnassign}
         onDragStart={!showUnassign ? (e) => {
@@ -2702,7 +2720,7 @@ export default function JobAssignment() {
                         <div
                           key={o.id}
                           id={`map-card-active-${o.id}`}
-                          className={`map-mini-card ${highlightedCard && highlightedCard.match(new RegExp(`^active-(?:stop-|sender-)?${o.id}(?:-|$)`)) ? 'highlighted' : ''}`}
+                          className={`map-mini-card ${highlightedCard && highlightedCard.match(new RegExp(`^active-(?:stop-|sender-)?${o.id}(?:-|$)`)) ? 'highlighted' : ''}${reassigningOrder === o.id ? ' reassigning' : ''}`}
                           onClick={() => handleSidebarCardClick(o, 'active')}
                         >
                           <div className="map-mini-card-accent" style={{ background: sc.border || sc.color }} />

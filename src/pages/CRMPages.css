@@ -1136,6 +1136,16 @@ textarea.form-control {
   opacity: 0.45; transform: scale(0.97);
   box-shadow: 0 0 0 2px #1e3a6b, 0 8px 20px rgba(36,64,102,0.18);
 }
+/* Let the mechanic-picker dropdown escape the card's rounded-corner clipping
+   and paint above later sibling cards while it's open. The dropdown itself
+   switches to position:fixed (see MechanicDropdown in JobAssignment.jsx) so
+   it also escapes the scrollable .job-assignment-col ancestor — but ANY
+   non-'none' transform on this card (even the identity matrix produced by
+   the :hover lift below) would create a containing block that traps a fixed
+   descendant right back inside it, so transform must be forced off here. */
+.job-assignment-card.reassigning { overflow: visible; z-index: 30; }
+.job-assignment-card.reassigning,
+.job-assignment-card.reassigning:hover { transform: none !important; }
 .mechanic-card.drop-ready {
   border-style: dashed; border-color: #93b4d4;
   transition: all 0.2s ease;
