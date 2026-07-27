@@ -1954,7 +1954,7 @@ export default function JobAssignment() {
               }
             }}
             style={{
-              width: '100%', padding: '11px 40px 11px 40px', borderRadius: 12,
+              width: '100%', boxSizing: 'border-box', padding: '11px 40px 11px 40px', borderRadius: 12,
               border: `2px solid ${searchFocused ? '#3b82f6' : '#e2e8f0'}`, fontSize: 14, fontWeight: 500,
               outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
               background: searchFocused ? '#fff' : '#f8fafc',
