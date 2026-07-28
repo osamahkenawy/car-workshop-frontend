@@ -517,10 +517,10 @@ export default function Dashboard() {
                     </div>
                     <div className="recent-info">
                       <strong>{bay.name}</strong>
-                      <span>{bay.emirate}</span>
+                      <span>{bay.bay_type ? bay.bay_type.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()) : bay.bay_number}</span>
                     </div>
                     <span className="status-badge" style={{ background: '#fff7ed', color: '#f97316' }}>
-                      {bay.orders_count || bay.orders} orders
+                      {bay.orders_count || 0} orders
                     </span>
                   </div>
                 ))}
