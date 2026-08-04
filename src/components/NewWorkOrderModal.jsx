@@ -629,7 +629,9 @@ function ReviewRow({ icon: Icon, label, value, strong }) {
 }
 
 const st = {
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(2px)' },
+  // z-index must clear the sidebar (1065) and topbar (1060) in Layout.css —
+  // at 1000 the sidebar painted over the modal's left edge, clipping it.
+  overlay: { position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 16, backdropFilter: 'blur(2px)' },
   modal: { background: '#fff', borderRadius: 20, width: '100%', maxWidth: 860, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 70px rgba(0,0,0,0.28)', overflow: 'hidden' },
   header: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '22px 26px 16px' },
   title: { margin: 0, fontSize: 21, fontWeight: 800, color: NAVY, letterSpacing: '-0.3px' },
