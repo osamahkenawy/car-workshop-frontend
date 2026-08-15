@@ -237,11 +237,6 @@ export default function LoginPage() {
                   {loading ? t('auth.signing_in') : t('auth.sign_in')}
                 </button>
               </form>
-
-              <p className="lp-join-us">
-                {t('auth.no_account', "Don't have an account?")}{' '}
-                <a href="/signup" className="lp-join-link">{t('auth.join_us', 'Join Us — Start Free Trial')}</a>
-              </p>
             </div>
           )}
 
@@ -373,12 +368,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#94a3b8', fontSize: '0.85rem' }}>
-            {t('auth.platform_admin')}{' '}
-            <a href="/super-admin/login" style={{ color: '#159fd9', fontWeight: 600 }}>
-              {t('auth.super_admin_login')} &rarr;
-            </a>
-          </p>
         </div>
       </div>
 
