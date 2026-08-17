@@ -2066,7 +2066,7 @@
     "user_id": "यूज़र आईडी (पुश लक्ष्य)",
     "phone_sms": "फ़ोन (SMS)",
     "send_sms_test": "Twilio के माध्यम से टेस्ट SMS भेजें",
-    "test_email": "Trasealla से टेस्ट ईमेल",
+    "test_email": "Pioneer से टेस्ट ईमेल",
     "status": "स्थिति",
     "date": "तारीख",
     "type": "प्रकार",
@@ -2151,7 +2151,7 @@
       "sub": "Office 365 के माध्यम से टेस्ट ईमेल भेजें",
       "sent": "ईमेल भेजा गया! ID:",
       "to": "प्राप्तकर्ता (ईमेल) *",
-      "subject_placeholder": "Trasealla से टेस्ट ईमेल",
+      "subject_placeholder": "Pioneer से टेस्ट ईमेल",
       "message": "संदेश *",
       "work_order_id": "ऑर्डर आईडी (वैकल्पिक)",
       "sending": "भेजा जा रहा है...",
@@ -2504,7 +2504,7 @@
     "order_details": "ऑर्डर विवरण",
     "journey": "शिपमेंट यात्रा",
     "your_mechanic": "आपका ड्राइवर",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "live": "लाइव",
     "refresh": "रिफ्रेश",
     "last_updated": "अंतिम अपडेट",
@@ -2628,7 +2628,7 @@
     "activate": "एक्टिवेट",
     "delivery_log_title": "वेबहुक डिलीवरी लॉग",
     "no_deliveries_hint": "ट्रिगर होने के बाद वेबहुक इवेंट्स यहाँ दिखेंगे",
-    "hmac_hint": "रिक्वेस्ट्स X-Trasealla-Signature HMAC-SHA256 से साइन होती हैं।",
+    "hmac_hint": "रिक्वेस्ट्स X-Pioneer-Signature HMAC-SHA256 से साइन होती हैं।",
     "create_webhook": "वेबहुक बनाएं",
     "modal": {
       "edit_webhook": "वेबहुक एडिट करें",
@@ -2694,7 +2694,7 @@
     "confirm_password_placeholder": "अपना पासवर्ड दोहराएँ",
     "updated_title": "पासवर्ड अपडेट हो गया!",
     "mismatch": "पासवर्ड मैच नहीं करते",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "missing_token": "रीसेट लिंक गायब या अमान्य है। कृपया नया लिंक रिक्वेस्ट करें।",
     "passwords_no_match": "पासवर्ड मैच नहीं करते।",
     "password_too_short": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।",
@@ -3045,7 +3045,7 @@
     },
     "dashboard": {
       "title": "प्लेटफ़ॉर्म डैशबोर्ड",
-      "subtitle": "Trasealla CRM प्लेटफ़ॉर्म का ओवरव्यू",
+      "subtitle": "Pioneer CRM प्लेटफ़ॉर्म का ओवरव्यू",
       "platform_overview": "प्लेटफ़ॉर्म ओवरव्यू",
       "view_analytics": "एनालिटिक्स देखें",
       "mrr": "मासिक रीक्यूरिंग रेवेन्यू",
@@ -3088,7 +3088,7 @@
       "never_login": "कभी नहीं"
     },
     "login": {
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "डिलीवरी प्लेटफ़ॉर्म एडमिनिस्ट्रेशन",
       "title": "सुपर एडमिन एक्सेस",
       "subtitle": "केवल प्लेटफ़ॉर्म एडमिनिस्ट्रेटर्स के लिए",
@@ -3127,13 +3127,13 @@
     "earlier": "पहले"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — सर्वाधिकार सुरक्षित"
+    "copyright": "© {{year}} Pioneer Solutions — सर्वाधिकार सुरक्षित"
   },
   "signup": {
     "step_company": "कंपनी की जानकारी",
     "step_admin": "एडमिन की जानकारी",
     "start_free_trial": "अपना मुफ़्त ट्रायल शुरू करें",
-    "trial_subtitle": "Traseallo में अपनी कंपनी का वर्कस्पेस सेट करें — क्रेडिट कार्ड की ज़रूरत नहीं।",
+    "trial_subtitle": "Pioneer में अपनी कंपनी का वर्कस्पेस सेट करें — क्रेडिट कार्ड की ज़रूरत नहीं।",
     "company_name": "कंपनी का नाम",
     "company_name_placeholder": "जैसे Falcon Express Delivery",
     "company_name_required": "कंपनी का नाम आवश्यक है।",
@@ -3178,7 +3178,7 @@
     "signup_failed": "साइन अप विफल रहा। कृपया पुनः प्रयास करें।",
     "search_country": "देश खोजें...",
     "hero_title": "आपकी डिलीवरी, सरल बनाई।",
-    "hero_text": "ड्राइवरों का पीछा करना और स्प्रेडशीट ट्रैक करना बंद करें। Traseallo आपके पूरे डिलीवरी वर्कफ़्लो को ऑटोमेट करता है ताकि आप अपने व्यापार को बढ़ाने पर ध्यान दे सकें।",
+    "hero_text": "ड्राइवरों का पीछा करना और स्प्रेडशीट ट्रैक करना बंद करें। Pioneer आपके पूरे डिलीवरी वर्कफ़्लो को ऑटोमेट करता है ताकि आप अपने व्यापार को बढ़ाने पर ध्यान दे सकें।",
     "hero_stat_uptime": "अपटाइम",
     "hero_stat_deliveries": "डिलीवरी",
     "hero_stat_support": "सपोर्ट",
@@ -3399,7 +3399,7 @@
     "payment": "भुगतान",
     "total": "कुल",
     "track_shipment": "शिपमेंट ट्रैक करें",
-    "powered_by": "Trasealla द्वारा संचालित",
+    "powered_by": "Pioneer द्वारा संचालित",
     "merchant_portal_access": "व्यापारी पोर्टल एक्सेस",
     "name": "नाम",
     "company": "कंपनी",

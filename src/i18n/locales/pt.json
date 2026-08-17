@@ -2066,7 +2066,7 @@
     "user_id": "ID do utilizador (push)",
     "phone_sms": "Telefone (SMS)",
     "send_sms_test": "Enviar SMS de teste via Twilio",
-    "test_email": "Email de teste da Trasealla",
+    "test_email": "Email de teste da Pioneer",
     "status": "Estado",
     "date": "Data",
     "type": "Tipo",
@@ -2151,7 +2151,7 @@
       "sub": "Enviar email de teste via Office 365",
       "sent": "Email enviado! ID:",
       "to": "Para (email) *",
-      "subject_placeholder": "Email de teste da Trasealla",
+      "subject_placeholder": "Email de teste da Pioneer",
       "message": "Mensagem *",
       "work_order_id": "ID do pedido (opcional)",
       "sending": "A enviar...",
@@ -2503,7 +2503,7 @@
     "order_details": "Detalhes do pedido",
     "journey": "Percurso do envio",
     "your_mechanic": "O seu motorista",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "live": "Ao vivo",
     "refresh": "Atualizar",
     "last_updated": "Última atualização",
@@ -2627,7 +2627,7 @@
     "activate": "Ativar",
     "delivery_log_title": "Log de entregas de webhook",
     "no_deliveries_hint": "Eventos de webhook aparecerão aqui quando acionados",
-    "hmac_hint": "Requisições assinadas com X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "Requisições assinadas com X-Pioneer-Signature HMAC-SHA256.",
     "create_webhook": "Criar webhook",
     "modal": {
       "edit_webhook": "Editar webhook",
@@ -2693,7 +2693,7 @@
     "confirm_password_placeholder": "Repita a sua palavra-passe",
     "updated_title": "Palavra-passe atualizada!",
     "mismatch": "As palavras-passe não coincidem",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "missing_token": "Link de reposição em falta ou inválido. Solicite um novo.",
     "passwords_no_match": "As palavras-passe não coincidem.",
     "password_too_short": "A palavra-passe deve ter pelo menos 6 caracteres.",
@@ -3044,7 +3044,7 @@
     },
     "dashboard": {
       "title": "Painel da plataforma",
-      "subtitle": "Visão geral da plataforma Trasealla CRM",
+      "subtitle": "Visão geral da plataforma Pioneer CRM",
       "platform_overview": "Visão geral da plataforma",
       "view_analytics": "Ver análises",
       "mrr": "Receita mensal recorrente",
@@ -3087,7 +3087,7 @@
       "never_login": "Nunca"
     },
     "login": {
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "Administração da plataforma de entregas",
       "title": "Acesso de Super Administrador",
       "subtitle": "Restrito apenas a administradores da plataforma",
@@ -3126,13 +3126,13 @@
     "earlier": "Anteriores"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — Todos os direitos reservados"
+    "copyright": "© {{year}} Pioneer Solutions — Todos os direitos reservados"
   },
   "signup": {
     "step_company": "Dados da Empresa",
     "step_admin": "Dados do Administrador",
     "start_free_trial": "Comece seu teste gratuito",
-    "trial_subtitle": "Configure o espaço de trabalho da sua empresa no Traseallo — sem cartão de crédito.",
+    "trial_subtitle": "Configure o espaço de trabalho da sua empresa no Pioneer — sem cartão de crédito.",
     "company_name": "Nome da Empresa",
     "company_name_placeholder": "ex. Falcon Express Delivery",
     "company_name_required": "O nome da empresa é obrigatório.",
@@ -3177,7 +3177,7 @@
     "signup_failed": "Falha no cadastro. Tente novamente.",
     "search_country": "Buscar país...",
     "hero_title": "Suas Entregas, Simplificadas.",
-    "hero_text": "Pare de perseguir motoristas e rastrear planilhas. O Traseallo automatiza todo o seu fluxo de entregas para que você possa focar no crescimento do seu negócio.",
+    "hero_text": "Pare de perseguir motoristas e rastrear planilhas. O Pioneer automatiza todo o seu fluxo de entregas para que você possa focar no crescimento do seu negócio.",
     "hero_stat_uptime": "Disponibilidade",
     "hero_stat_deliveries": "Entregas",
     "hero_stat_support": "Suporte",
@@ -3398,7 +3398,7 @@
     "payment": "Pagamento",
     "total": "Total",
     "track_shipment": "Rastrear envio",
-    "powered_by": "Desenvolvido por Trasealla",
+    "powered_by": "Desenvolvido por Pioneer",
     "merchant_portal_access": "Acesso ao portal do comerciante",
     "name": "Nome",
     "company": "Empresa",

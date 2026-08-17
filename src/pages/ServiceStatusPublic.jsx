@@ -227,7 +227,7 @@ export default function ServiceStatusPublic() {
       <div style={S.header}>
         <div style={S.headerLeft}>
           <a href="https://pioneercarservice.com" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src="/assets/images/logos/trasealla_white_without_bg.png" alt="Pioneer" style={S.logo} />
+            <img src="/assets/images/logos/pioneer_white_without_bg.png" alt="Pioneer" style={S.logo} />
           </a>
           <div>
             <div style={{ color: '#fff', fontSize: 14, fontWeight: 700, letterSpacing: '.02em' }}>Pioneer Car Service Center</div>

@@ -1175,7 +1175,7 @@
     "view_details": "詳細を表示"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — 全著作権所有"
+    "copyright": "© {{year}} Pioneer Solutions — 全著作権所有"
   },
   "integrations": {
     "activate": "有効化",
@@ -1234,7 +1234,7 @@
     "generate_key": "APIキーを生成",
     "generate_key_btn": "キー生成",
     "generating": "生成中…",
-    "hmac_hint": "リクエストはX-Trasealla-Signature HMAC-SHA256で署名されます。",
+    "hmac_hint": "リクエストはX-Pioneer-Signature HMAC-SHA256で署名されます。",
     "key_created_notice": "APIキーが作成されました — 今すぐコピーしてください。再表示されません",
     "key_name": "キー名",
     "last_fired": "最終実行：",
@@ -1638,7 +1638,7 @@
       "sending": "送信中…",
       "sent": "メール送信済み！ID：",
       "sub": "Office 365経由でテストメールを送信",
-      "subject_placeholder": "Trasealla テストメール",
+      "subject_placeholder": "Pioneer テストメール",
       "submit": "メール送信",
       "title": "通知",
       "to": "宛先（メール）*"
@@ -1725,7 +1725,7 @@
       "sms": "SMS",
       "templates": "テンプレート"
     },
-    "test_email": "Trasealla テストメール",
+    "test_email": "Pioneer テストメール",
     "title": "通知",
     "type": "タイプ",
     "use_template": "使用",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "サインインに戻る",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "パスワード確認",
     "confirm_password_placeholder": "パスワードを再入力",
     "go_to_sign_in": "サインインへ",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "配送数",
     "hero_stat_support": "サポート",
     "hero_stat_uptime": "稼働率",
-    "hero_text": "ドライバーを追いかけたりスプレッドシートを追跡する必要はありません。Trasealloが配送ワークフロー全体を自動化し、ビジネスの成長に集中できます。",
+    "hero_text": "ドライバーを追いかけたりスプレッドシートを追跡する必要はありません。Pioneerが配送ワークフロー全体を自動化し、ビジネスの成長に集中できます。",
     "hero_title": "配送を、シンプルに。",
     "password": "パスワード",
     "password_placeholder": "強力なパスワードを作成",
@@ -3101,7 +3101,7 @@
     "step_company": "会社情報",
     "terms_of_service": "利用規約",
     "terms_prefix": "サインアップすることで、",
-    "trial_subtitle": "Trasealloで会社のワークスペースをセットアップ — クレジットカード不要。",
+    "trial_subtitle": "Pioneerで会社のワークスペースをセットアップ — クレジットカード不要。",
     "admin_subtitle_prefix": "これは",
     "admin_subtitle_suffix": "のオーナーアカウントになります。",
     "password_min_length": "パスワードは8文字以上必要です。",
@@ -3160,7 +3160,7 @@
       "mrr": "月間経常収益",
       "platform_overview": "プラットフォーム概要",
       "recent_workshops": "最近のテナント",
-      "subtitle": "Trasealla CRMプラットフォームの概要",
+      "subtitle": "Pioneer CRMプラットフォームの概要",
       "suspended": "一時停止アカウント",
       "title": "スーパー管理者",
       "trial_conversions": "トライアル転換",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "認証中…",
       "back_to": "戻る",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "配送プラットフォーム管理",
       "connection_error": "接続エラー。再度お試しください。",
       "delivery_link": "配送ログイン →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "時点",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "配達済み",
     "delivery_location": "配送先",
     "delivery_platform": "配送プラットフォーム",
@@ -3265,7 +3265,7 @@
     "order_details": "注文詳細",
     "order_not_found": "注文が見つかりません",
     "work_order_number_label": "注文 #{{number}}",
-    "powered_by": "Traseallo 提供",
+    "powered_by": "Pioneer 提供",
     "refresh": "更新",
     "status": {
       "assigned": "ドライバー割り当て済み",
@@ -3372,7 +3372,7 @@
     "payment": "支払い",
     "phone": "電話",
     "portal_link": "ポータルリンク",
-    "powered_by": "Powered by Trasealla",
+    "powered_by": "Powered by Pioneer",
     "recipient": "受取人",
     "share": "共有",
     "share_credentials": "WhatsAppでポータルアクセスを共有",

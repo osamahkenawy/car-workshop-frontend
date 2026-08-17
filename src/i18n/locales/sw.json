@@ -1175,7 +1175,7 @@
     "view_details": "Tazama Maelezo"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — Haki zote zimehifadhiwa"
+    "copyright": "© {{year}} Pioneer Solutions — Haki zote zimehifadhiwa"
   },
   "integrations": {
     "activate": "Amilisha",
@@ -1234,7 +1234,7 @@
     "generate_key": "Tengeneza Ufunguo wa API",
     "generate_key_btn": "Tengeneza Ufunguo",
     "generating": "Inatengeneza…",
-    "hmac_hint": "Maombi yamesainiwa na X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "Maombi yamesainiwa na X-Pioneer-Signature HMAC-SHA256.",
     "key_created_notice": "Ufunguo wa API umeundwa — nakili sasa, hautaonyeshwa tena",
     "key_name": "Jina la Ufunguo",
     "last_fired": "Iliyochochewa mwisho:",
@@ -1638,7 +1638,7 @@
       "sending": "Inatuma…",
       "sent": "Barua pepe imetumwa! ID:",
       "sub": "Tuma barua pepe ya majaribio kupitia Office 365",
-      "subject_placeholder": "Barua Pepe ya Majaribio kutoka Trasealla",
+      "subject_placeholder": "Barua Pepe ya Majaribio kutoka Pioneer",
       "submit": "Tuma Barua Pepe",
       "title": "Arifa",
       "to": "Kwa (barua pepe) *"
@@ -1725,7 +1725,7 @@
       "sms": "SMS",
       "templates": "Violezo"
     },
-    "test_email": "Barua Pepe ya Majaribio kutoka Trasealla",
+    "test_email": "Barua Pepe ya Majaribio kutoka Pioneer",
     "title": "Arifa",
     "type": "Aina",
     "use_template": "Tumia",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "Rudi Kuingia",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "Thibitisha Neno la Siri",
     "confirm_password_placeholder": "Rudia nenosiri lako",
     "go_to_sign_in": "Nenda Kuingia",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "Utoaji",
     "hero_stat_support": "Msaada",
     "hero_stat_uptime": "Muda wa Kufanya Kazi",
-    "hero_text": "Acha kufuatia madereva na kufuatilia majedwali. Traseallo inasimamia mtiririko wako wote wa utoaji ili uweze kuzingatia kukuza biashara yako.",
+    "hero_text": "Acha kufuatia madereva na kufuatilia majedwali. Pioneer inasimamia mtiririko wako wote wa utoaji ili uweze kuzingatia kukuza biashara yako.",
     "hero_title": "Utoaji Wako, Umesahilishwa.",
     "password": "Nenosiri",
     "password_placeholder": "Tengeneza nenosiri imara",
@@ -3101,7 +3101,7 @@
     "step_company": "Taarifa za Kampuni",
     "terms_of_service": "Masharti ya Huduma",
     "terms_prefix": "Kwa kujisajili, unakubali",
-    "trial_subtitle": "Weka nafasi ya kazi ya kampuni yako katika Traseallo — hakuna kadi ya mkopo inayohitajika.",
+    "trial_subtitle": "Weka nafasi ya kazi ya kampuni yako katika Pioneer — hakuna kadi ya mkopo inayohitajika.",
     "admin_subtitle_prefix": "Hii itakuwa akaunti ya mmiliki wa",
     "admin_subtitle_suffix": ".",
     "password_min_length": "Nenosiri lazima iwe na herufi 8 au zaidi.",
@@ -3160,7 +3160,7 @@
       "mrr": "Mapato Yanayojirudia kwa Mwezi",
       "platform_overview": "Muhtasari wa Jukwaa",
       "recent_workshops": "Wapangaji wa Hivi Karibuni",
-      "subtitle": "Muhtasari wa jukwaa la Trasealla CRM",
+      "subtitle": "Muhtasari wa jukwaa la Pioneer CRM",
       "suspended": "Imesimamishwa",
       "title": "Msimamizi Mkuu",
       "trial_conversions": "Ubadilishaji wa Majaribio",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "Inathibitisha…",
       "back_to": "Rudi kwa",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "Usimamizi wa Jukwaa la Uwasilishaji",
       "connection_error": "Hitilafu ya muunganisho. Tafadhali jaribu tena.",
       "delivery_link": "Kuingia Uwasilishaji →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "kufikia",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "Umewasilishwa: {{date}}",
     "delivery_location": "Mahali pa Uwasilishaji",
     "delivery_platform": "Jukwaa la Uwasilishaji",
@@ -3265,7 +3265,7 @@
     "order_details": "Maelezo ya Oda",
     "order_not_found": "Oda haijapatikana",
     "work_order_number_label": "Oda #{{number}}",
-    "powered_by": "Inaendeshwa na Traseallo",
+    "powered_by": "Inaendeshwa na Pioneer",
     "refresh": "Sasisha",
     "status": {
       "assigned": "Dereva Ameteuliwa",
@@ -3372,7 +3372,7 @@
     "payment": "Malipo",
     "phone": "Simu",
     "portal_link": "Kiungo cha Lango",
-    "powered_by": "Inaendeshwa na Trasealla",
+    "powered_by": "Inaendeshwa na Pioneer",
     "recipient": "Mpokeaji",
     "share": "Shiriki",
     "share_credentials": "Shiriki ufikiaji wa lango kupitia WhatsApp",

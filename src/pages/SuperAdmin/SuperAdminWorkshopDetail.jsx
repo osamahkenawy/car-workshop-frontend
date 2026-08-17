@@ -6,7 +6,7 @@ import {
   Calendar, Globe, Mail, CreditCard, Palette, StatsReport, Shield,
   OpenNewWindow, RefreshDouble, Xmark, Clock
 } from 'iconoir-react';
-import avatarPlaceholder from '../../assets/images/TrasealloLogos/avatar-placeholder.png';
+import avatarPlaceholder from '../../assets/images/PioneerLogos/avatar-placeholder.png';
 import './SuperAdminModern.css';
 import './SuperAdmin.css';
 

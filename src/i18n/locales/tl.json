@@ -2092,7 +2092,7 @@
     "user_id": "User ID (push target)",
     "phone_sms": "Telepono (SMS)",
     "send_sms_test": "Magpadala ng test SMS gamit ang Twilio",
-    "test_email": "Test Email mula sa Trasealla",
+    "test_email": "Test Email mula sa Pioneer",
     "status": "Katayuan",
     "date": "Petsa",
     "type": "Uri",
@@ -2177,7 +2177,7 @@
       "sub": "Magpadala ng test email gamit ang Office 365",
       "sent": "Naipadala ang email! ID:",
       "to": "Para Sa (email) *",
-      "subject_placeholder": "Test Email mula sa Trasealla",
+      "subject_placeholder": "Test Email mula sa Pioneer",
       "message": "Mensahe *",
       "work_order_id": "WorkOrder ID (opsyonal)",
       "sending": "Ipinapadala...",
@@ -2529,7 +2529,7 @@
     "order_details": "Mga Detalye ng WorkOrder",
     "journey": "Biyahe ng Padala",
     "your_mechanic": "Ang Iyong Mechanic",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "live": "Live",
     "refresh": "I-refresh",
     "last_updated": "Huling na-update",
@@ -2653,7 +2653,7 @@
     "activate": "I-activate",
     "delivery_log_title": "Log ng Webhook Delivery",
     "no_deliveries_hint": "Lalabas dito ang mga webhook event kapag na-trigger",
-    "hmac_hint": "Ang mga request ay pumipirmado gamit ang X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "Ang mga request ay pumipirmado gamit ang X-Pioneer-Signature HMAC-SHA256.",
     "create_webhook": "Gumawa ng Webhook",
     "modal": {
       "edit_webhook": "I-edit ang Webhook",
@@ -2719,7 +2719,7 @@
     "confirm_password_placeholder": "Ulitin ang iyong password",
     "updated_title": "Na-update ang Password!",
     "mismatch": "Hindi tugma ang mga password",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "missing_token": "Nawawala o hindi wastong reset link. Humiling ng bago.",
     "passwords_no_match": "Hindi tugma ang mga password.",
     "password_too_short": "Ang password ay dapat may hindi bababa sa 6 na character.",
@@ -3070,7 +3070,7 @@
     },
     "dashboard": {
       "title": "Dashboard ng Platform",
-      "subtitle": "Pangkalahatang tingin sa Trasealla CRM platform",
+      "subtitle": "Pangkalahatang tingin sa Pioneer CRM platform",
       "platform_overview": "Pangkalahatang Tingin sa Platform",
       "view_analytics": "Tingnan ang Analytics",
       "mrr": "Buwanang Recurring Revenue",
@@ -3113,7 +3113,7 @@
       "never_login": "Hindi pa"
     },
     "login": {
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "Administrasyon ng Delivery Platform",
       "title": "Access ng Super Admin",
       "subtitle": "Para sa mga platform administrator lamang",
@@ -3152,13 +3152,13 @@
     "earlier": "Mas maaga"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — Lahat ng karapatan ay nakalaan"
+    "copyright": "© {{year}} Pioneer Solutions — Lahat ng karapatan ay nakalaan"
   },
   "signup": {
     "step_company": "Impormasyon ng Kumpanya",
     "step_admin": "Impormasyon ng Admin",
     "start_free_trial": "Simulan ang iyong libreng trial",
-    "trial_subtitle": "I-setup ang workspace ng iyong kumpanya sa Traseallo — walang kinakailangang credit card.",
+    "trial_subtitle": "I-setup ang workspace ng iyong kumpanya sa Pioneer — walang kinakailangang credit card.",
     "company_name": "Pangalan ng Kumpanya",
     "company_name_placeholder": "hal. Falcon Express Delivery",
     "company_name_required": "Kinakailangan ang pangalan ng kumpanya.",
@@ -3203,7 +3203,7 @@
     "signup_failed": "Nabigo ang pag-sign up. Pakisubukan muli.",
     "search_country": "Maghanap ng bansa...",
     "hero_title": "Ang Iyong mga Delivery, Pinasimple.",
-    "hero_text": "Itigil na ang paghahabol sa mga mechanic at pagsusubaybay ng mga spreadsheet. Ino-automate ng Traseallo ang buong delivery workflow mo para makapag-focus ka sa pagpapalago ng iyong negosyo.",
+    "hero_text": "Itigil na ang paghahabol sa mga mechanic at pagsusubaybay ng mga spreadsheet. Ino-automate ng Pioneer ang buong delivery workflow mo para makapag-focus ka sa pagpapalago ng iyong negosyo.",
     "hero_stat_uptime": "Uptime",
     "hero_stat_deliveries": "Mga Delivery",
     "hero_stat_support": "Suporta",
@@ -3400,7 +3400,7 @@
     "payment": "Pagbabayad",
     "total": "Kabuuan",
     "track_shipment": "I-track ang Service",
-    "powered_by": "Pinapagana ng Trasealla",
+    "powered_by": "Pinapagana ng Pioneer",
     "merchant_portal_access": "Access sa Portal ng Merchant",
     "name": "Pangalan",
     "company": "Kumpanya",

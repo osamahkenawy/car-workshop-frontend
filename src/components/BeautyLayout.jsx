@@ -170,7 +170,7 @@ export default function BeautyLayout({ children }) {
       <div className="nav-header">
         <Link to="/beauty-dashboard" className="brand-logo">
           <img 
-            src="/assets/images/logos/TRASEALLA._WHITE_LOGOsvg.svg" 
+            src="/assets/images/logos/PIONEER._WHITE_LOGOsvg.svg" 
             alt="Pioneer" 
             className="logo-abbr"
             style={{ height: '40px' }} 

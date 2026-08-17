@@ -1175,7 +1175,7 @@
     "view_details": "تفصیلات دیکھیں"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — جملہ حقوق محفوظ ہیں"
+    "copyright": "© {{year}} Pioneer Solutions — جملہ حقوق محفوظ ہیں"
   },
   "integrations": {
     "activate": "فعال کریں",
@@ -1234,7 +1234,7 @@
     "generate_key": "API کلید بنائیں",
     "generate_key_btn": "کلید بنائیں",
     "generating": "بنایا جا رہا ہے…",
-    "hmac_hint": "درخواستیں X-Trasealla-Signature HMAC-SHA256 سے دستخط شدہ۔",
+    "hmac_hint": "درخواستیں X-Pioneer-Signature HMAC-SHA256 سے دستخط شدہ۔",
     "key_created_notice": "API کلید بنائی گئی — ابھی کاپی کریں، دوبارہ نہیں دکھائی جائے گی",
     "key_name": "کلید کا نام",
     "last_fired": "آخری بار:",
@@ -1638,7 +1638,7 @@
       "sending": "بھیجا جا رہا ہے…",
       "sent": "ای میل بھیج دی گئی! ID:",
       "sub": "Office 365 سے ٹیسٹ ای میل بھیجیں",
-      "subject_placeholder": "Trasealla سے ٹیسٹ ای میل",
+      "subject_placeholder": "Pioneer سے ٹیسٹ ای میل",
       "submit": "ای میل بھیجیں",
       "title": "اطلاعات",
       "to": "وصول کنندہ (ای میل) *"
@@ -1725,7 +1725,7 @@
       "sms": "ایس ایم ایس",
       "templates": "ٹیمپلیٹس"
     },
-    "test_email": "Trasealla سے ٹیسٹ ای میل",
+    "test_email": "Pioneer سے ٹیسٹ ای میل",
     "title": "اطلاعات",
     "type": "قسم",
     "use_template": "استعمال کریں",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "سائن ان پر واپس جائیں",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "پاسورڈ تصدیق",
     "confirm_password_placeholder": "اپنا پاس ورڈ دہرائیں",
     "go_to_sign_in": "سائن ان پر جائیں",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "ڈیلیوریز",
     "hero_stat_support": "سپورٹ",
     "hero_stat_uptime": "اپ ٹائم",
-    "hero_text": "ڈرائیورز کا پیچھا کرنا اور سپریڈشیٹ ٹریک کرنا بند کریں۔ Traseallo آپ کے پورے ڈیلیوری ورک فلو کو آٹومیٹ کرتا ہے تاکہ آپ اپنے کاروبار کی ترقی پر توجہ دے سکیں۔",
+    "hero_text": "ڈرائیورز کا پیچھا کرنا اور سپریڈشیٹ ٹریک کرنا بند کریں۔ Pioneer آپ کے پورے ڈیلیوری ورک فلو کو آٹومیٹ کرتا ہے تاکہ آپ اپنے کاروبار کی ترقی پر توجہ دے سکیں۔",
     "hero_title": "آپ کی ڈیلیوریز، آسان۔",
     "password": "پاس ورڈ",
     "password_placeholder": "ایک مضبوط پاس ورڈ بنائیں",
@@ -3101,7 +3101,7 @@
     "step_company": "کمپنی کی معلومات",
     "terms_of_service": "سروس کی شرائط",
     "terms_prefix": "سائن اپ کرکے، آپ ہماری",
-    "trial_subtitle": "Traseallo میں اپنی کمپنی کا ورک سپیس سیٹ اپ کریں — کریڈٹ کارڈ کی ضرورت نہیں۔",
+    "trial_subtitle": "Pioneer میں اپنی کمپنی کا ورک سپیس سیٹ اپ کریں — کریڈٹ کارڈ کی ضرورت نہیں۔",
     "admin_subtitle_prefix": "یہ",
     "admin_subtitle_suffix": "کا مالک اکاؤنٹ ہوگا۔",
     "password_min_length": "پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے۔",
@@ -3160,7 +3160,7 @@
       "mrr": "ماہانہ بار بار آمدنی",
       "platform_overview": "پلیٹ فارم جائزہ",
       "recent_workshops": "حالیہ ٹیننٹس",
-      "subtitle": "Trasealla CRM پلیٹ فارم کا جائزہ",
+      "subtitle": "Pioneer CRM پلیٹ فارم کا جائزہ",
       "suspended": "معطل اکاؤنٹس",
       "title": "سپر ایڈمن",
       "trial_conversions": "ٹرائل تبدیلیاں",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "تصدیق ہو رہی ہے…",
       "back_to": "واپس",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "ڈیلیوری پلیٹ فارم ایڈمنسٹریشن",
       "connection_error": "کنکشن خرابی۔ دوبارہ کوشش کریں۔",
       "delivery_link": "ڈیلیوری لاگ ان →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "بحیثیت",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "ڈیلیور شدہ",
     "delivery_location": "ڈیلیوری مقام",
     "delivery_platform": "ڈیلیوری پلیٹ فارم",
@@ -3265,7 +3265,7 @@
     "order_details": "آرڈر کی تفصیلات",
     "order_not_found": "آرڈر نہیں ملا",
     "work_order_number_label": "آرڈر #{{number}}",
-    "powered_by": "Traseallo کی طاقت سے",
+    "powered_by": "Pioneer کی طاقت سے",
     "refresh": "ریفریش",
     "status": {
       "assigned": "ڈرائیور تفویض شدہ",
@@ -3372,7 +3372,7 @@
     "payment": "ادائیگی",
     "phone": "فون",
     "portal_link": "پورٹل لنک",
-    "powered_by": "Trasealla کے ذریعے",
+    "powered_by": "Pioneer کے ذریعے",
     "recipient": "وصول کنندہ",
     "share": "شیئر",
     "share_credentials": "WhatsApp کے ذریعے پورٹل رسائی شیئر کریں",

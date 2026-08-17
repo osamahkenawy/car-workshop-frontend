@@ -123,7 +123,7 @@ export default function CustomerLogin() {
 
   const logoUrl = branding?.logo_url
     ? '/api/file?path=' + encodeURIComponent(branding.logo_url.replace(/^\/uploads\//, ''))
-    : '/assets/images/logos/trasealla_with_bg.jpg';
+    : '/assets/images/logos/pioneer_with_bg.jpg';
 
   return (
     <div className="ca-page">

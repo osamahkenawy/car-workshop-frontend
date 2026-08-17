@@ -2790,7 +2790,7 @@
     "activate": "تفعيل",
     "delivery_log_title": "سجل توصيل الخطّافات",
     "no_deliveries_hint": "تظهر أحداث الخطّافات هنا بمجرد تشغيلها",
-    "hmac_hint": "الطلبات موقّعة بـ X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "الطلبات موقّعة بـ X-Pioneer-Signature HMAC-SHA256.",
     "create_webhook": "إنشاء خطّاف",
     "modal": {
       "edit_webhook": "تعديل الخطّاف",
@@ -3517,7 +3517,7 @@
     },
     "dashboard": {
       "title": "لوحة تحكم المنصة",
-      "subtitle": "نظرة عامة على منصة Trasealla CRM",
+      "subtitle": "نظرة عامة على منصة Pioneer CRM",
       "platform_overview": "نظرة عامة على المنصة",
       "view_analytics": "عرض التحليلات",
       "mrr": "الإيرادات الشهرية المتكررة",
@@ -3560,7 +3560,7 @@
       "never_login": "أبداً"
     },
     "login": {
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "إدارة منصة التوصيل",
       "title": "وصول المشرف الأعلى",
       "subtitle": "مخصص لمسؤولي المنصة فقط",

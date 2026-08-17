@@ -6,7 +6,7 @@ import {
   CheckCircle, ViewGrid, List, Calendar, ArrowUp, ArrowDown,
   Activity, Mail, Clock, CreditCard, ArrowLeft, ArrowRight, Bell,
 } from 'iconoir-react';
-import avatarPlaceholder from '../../assets/images/TrasealloLogos/avatar-placeholder.png';
+import avatarPlaceholder from '../../assets/images/PioneerLogos/avatar-placeholder.png';
 import { useSAToast } from './SAToastContext';
 import './SuperAdminModern.css';
 
@@ -354,7 +354,7 @@ const SuperAdminWorkshops = () => {
                 <div className="sa-card-body">
                   <h3 className="sa-card-name" title={tName}>{tName}</h3>
                   <p className="sa-card-domain">
-                    {t.subdomain ? `${t.subdomain}.traseallo.com` : (t.domain || t.email || '—')}
+                    {t.subdomain ? `${t.subdomain}.pioneercarservice.com` : (t.domain || t.email || '—')}
                   </p>
                   {t.plan && (
                     <div className="sa-card-plan">
@@ -447,7 +447,7 @@ const SuperAdminWorkshops = () => {
                         />
                         <div>
                           <div className="sa-table-name-line">{t.name || 'Unnamed'}</div>
-                          <div className="sa-table-sub-line">{t.subdomain ? `${t.subdomain}.traseallo.com` : (t.email || '—')}</div>
+                          <div className="sa-table-sub-line">{t.subdomain ? `${t.subdomain}.pioneercarservice.com` : (t.email || '—')}</div>
                         </div>
                       </div>
                     </td>

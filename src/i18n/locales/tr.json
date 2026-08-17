@@ -1175,7 +1175,7 @@
     "view_details": "Detayları Gör"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — Tüm hakları saklıdır"
+    "copyright": "© {{year}} Pioneer Solutions — Tüm hakları saklıdır"
   },
   "integrations": {
     "activate": "Etkinleştir",
@@ -1234,7 +1234,7 @@
     "generate_key": "API Anahtarı Oluştur",
     "generate_key_btn": "Anahtar Oluştur",
     "generating": "Oluşturuluyor…",
-    "hmac_hint": "İstekler X-Trasealla-Signature HMAC-SHA256 ile imzalanır.",
+    "hmac_hint": "İstekler X-Pioneer-Signature HMAC-SHA256 ile imzalanır.",
     "key_created_notice": "API Anahtarı oluşturuldu — şimdi kopyalayın, tekrar gösterilmeyecek",
     "key_name": "Anahtar Adı",
     "last_fired": "Son tetikleme:",
@@ -1638,7 +1638,7 @@
       "sending": "Gönderiliyor…",
       "sent": "E-posta gönderildi! ID:",
       "sub": "Office 365 üzerinden test e-postası gönderin",
-      "subject_placeholder": "Trasealla Test E-postası",
+      "subject_placeholder": "Pioneer Test E-postası",
       "submit": "E-posta Gönder",
       "title": "Bildirimler",
       "to": "Kime (e-posta) *"
@@ -1725,7 +1725,7 @@
       "sms": "SMS",
       "templates": "Sablonlar"
     },
-    "test_email": "Trasealla Test E-postası",
+    "test_email": "Pioneer Test E-postası",
     "title": "Bildirimler",
     "type": "Tür",
     "use_template": "Kullan",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "Girişe Dön",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "Sifreyi Onayla",
     "confirm_password_placeholder": "Şifrenizi tekrar girin",
     "go_to_sign_in": "Giriş Yap'a Git",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "Teslimatlar",
     "hero_stat_support": "Destek",
     "hero_stat_uptime": "Çalışma Süresi",
-    "hero_text": "Sürücüleri kovalamayı ve elektronik tabloları takip etmeyi bırakın. Traseallo tüm teslimat iş akışınızı otomatikleştirerek işinizi büyütmeye odaklanmanızı sağlar.",
+    "hero_text": "Sürücüleri kovalamayı ve elektronik tabloları takip etmeyi bırakın. Pioneer tüm teslimat iş akışınızı otomatikleştirerek işinizi büyütmeye odaklanmanızı sağlar.",
     "hero_title": "Teslimatlarınız, Basitleştirildi.",
     "password": "Şifre",
     "password_placeholder": "Güçlü bir şifre oluşturun",
@@ -3101,7 +3101,7 @@
     "step_company": "Şirket Bilgileri",
     "terms_of_service": "Hizmet Şartları",
     "terms_prefix": "Kayıt olarak,",
-    "trial_subtitle": "Traseallo’da şirketinizin çalışma alanını kurun — kredi kartı gerekmez.",
+    "trial_subtitle": "Pioneer’da şirketinizin çalışma alanını kurun — kredi kartı gerekmez.",
     "admin_subtitle_prefix": "Bu,",
     "admin_subtitle_suffix": "için sahip hesabı olacaktır.",
     "password_min_length": "Şifre en az 8 karakter olmalıdır.",
@@ -3160,7 +3160,7 @@
       "mrr": "Aylik Yinelenen Gelir",
       "platform_overview": "Platform Genel Bakışı",
       "recent_workshops": "Son Kiracılar",
-      "subtitle": "Trasealla CRM platformuna genel bakış",
+      "subtitle": "Pioneer CRM platformuna genel bakış",
       "suspended": "Askiya Alinmis",
       "title": "Super Yonetici",
       "trial_conversions": "Deneme Dönüşümleri",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "Doğrulanıyor…",
       "back_to": "Geri dön",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "Teslimat Platformu Yönetimi",
       "connection_error": "Bağlantı hatası. Lütfen tekrar deneyin.",
       "delivery_link": "Teslimat Girişi →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "itibarıyla",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "Teslim edildi: {{date}}",
     "delivery_location": "Teslimat Konumu",
     "delivery_platform": "Teslimat Platformu",
@@ -3265,7 +3265,7 @@
     "order_details": "Sipariş Detayları",
     "order_not_found": "Sipariş bulunamadı",
     "work_order_number_label": "Sipariş #{{number}}",
-    "powered_by": "Traseallo tarafindan desteklenmektedir",
+    "powered_by": "Pioneer tarafindan desteklenmektedir",
     "refresh": "Yenile",
     "status": {
       "assigned": "Sürücü Atandı",
@@ -3372,7 +3372,7 @@
     "payment": "Ödeme",
     "phone": "Telefon",
     "portal_link": "Portal Bağlantısı",
-    "powered_by": "Trasealla tarafından desteklenmektedir",
+    "powered_by": "Pioneer tarafından desteklenmektedir",
     "recipient": "Alıcı",
     "share": "Paylaş",
     "share_credentials": "WhatsApp ile portal erişimini paylaş",

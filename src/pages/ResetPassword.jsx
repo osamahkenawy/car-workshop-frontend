@@ -73,7 +73,7 @@ export default function ResetPassword() {
           <div className="login-header">
             <div className="logo">
               <img
-                src="/assets/images/logos/trasealla_logo_logistics_without_bg.png"
+                src="/assets/images/logos/pioneer_logo_logistics_without_bg.png"
                 alt="Pioneer Car Service Center"
                 onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}
               />

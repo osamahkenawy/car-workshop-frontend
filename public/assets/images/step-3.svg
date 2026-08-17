@@ -15,7 +15,7 @@
   <rect x="50" y="25" width="400" height="45" rx="12" fill="#244066"/>
   <rect x="50" y="55" width="400" height="15" fill="#244066"/>
   <circle cx="80" cy="47" r="12" fill="#fff" opacity="0.9"/>
-  <text x="100" y="52" font-size="12" fill="#fff" font-weight="600">Trasealla CRM</text>
+  <text x="100" y="52" font-size="12" fill="#fff" font-weight="600">Pioneer CRM</text>
   <rect x="380" y="38" width="55" height="20" rx="5" fill="#f2421b"/>
   <text x="407" y="52" font-size="8" fill="#fff" text-anchor="middle">+ New Deal</text>
   

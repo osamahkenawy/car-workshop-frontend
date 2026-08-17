@@ -1175,7 +1175,7 @@
     "view_details": "Voir les détails"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — Tous droits réservés"
+    "copyright": "© {{year}} Pioneer Solutions — Tous droits réservés"
   },
   "integrations": {
     "activate": "Activer",
@@ -1234,7 +1234,7 @@
     "generate_key": "Générer une clé API",
     "generate_key_btn": "Générer la clé",
     "generating": "Génération…",
-    "hmac_hint": "Requêtes signées avec X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "Requêtes signées avec X-Pioneer-Signature HMAC-SHA256.",
     "key_created_notice": "Clé API créée — copiez mainworkshop, elle ne sera plus affichée",
     "key_name": "Nom de la clé",
     "last_fired": "Dernier déclenchement :",
@@ -1638,7 +1638,7 @@
       "sending": "Envoi…",
       "sent": "E-mail envoyé ! ID :",
       "sub": "Envoyer un e-mail test via Office 365",
-      "subject_placeholder": "E-mail test de Trasealla",
+      "subject_placeholder": "E-mail test de Pioneer",
       "submit": "Envoyer l'e-mail",
       "title": "Notifications",
       "to": "À (e-mail) *"
@@ -1725,7 +1725,7 @@
       "sms": "SMS",
       "templates": "Modèles"
     },
-    "test_email": "E-mail test de Trasealla",
+    "test_email": "E-mail test de Pioneer",
     "title": "Notifications",
     "type": "Type",
     "use_template": "Utiliser",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "Retour à la connexion",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "Confirmer le mot de passe",
     "confirm_password_placeholder": "Répétez votre mot de passe",
     "go_to_sign_in": "Aller à la connexion",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "Livraisons",
     "hero_stat_support": "Support",
     "hero_stat_uptime": "Disponibilité",
-    "hero_text": "Arrêtez de courir après les chauffeurs et de suivre des feuilles de calcul. Traseallo automatise tout votre flux de livraison pour que vous puissiez vous concentrer sur la croissance de votre entreprise.",
+    "hero_text": "Arrêtez de courir après les chauffeurs et de suivre des feuilles de calcul. Pioneer automatise tout votre flux de livraison pour que vous puissiez vous concentrer sur la croissance de votre entreprise.",
     "hero_title": "Vos livraisons, simplifiées.",
     "password": "Mot de passe",
     "password_placeholder": "Créez un mot de passe fort",
@@ -3101,7 +3101,7 @@
     "step_company": "Informations entreprise",
     "terms_of_service": "Conditions d’utilisation",
     "terms_prefix": "En vous inscrivant, vous acceptez nos",
-    "trial_subtitle": "Configurez l’espace de travail de votre entreprise sur Traseallo — sans carte de crédit.",
+    "trial_subtitle": "Configurez l’espace de travail de votre entreprise sur Pioneer — sans carte de crédit.",
     "admin_subtitle_prefix": "Ce sera le compte propriétaire de",
     "admin_subtitle_suffix": ".",
     "password_min_length": "Le mot de passe doit contenir au moins 8 caractères.",
@@ -3160,7 +3160,7 @@
       "mrr": "Revenu mensuel récurrent",
       "platform_overview": "Vue d'ensemble de la plateforme",
       "recent_workshops": "Locataires récents",
-      "subtitle": "Vue d'ensemble de la plateforme CRM Trasealla",
+      "subtitle": "Vue d'ensemble de la plateforme CRM Pioneer",
       "suspended": "Comptes suspendus",
       "title": "Super administrateur",
       "trial_conversions": "Conversions d'essai",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "Authentification…",
       "back_to": "Retour à",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "Administration de la plateforme de livraison",
       "connection_error": "Erreur de connexion. Veuillez réessayer.",
       "delivery_link": "Connexion livraison →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "au",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "Livré",
     "delivery_location": "Lieu de livraison",
     "delivery_platform": "Plateforme de livraison",
@@ -3265,7 +3265,7 @@
     "order_details": "Détails de la commande",
     "order_not_found": "Commande introuvable",
     "work_order_number_label": "Commande #{{number}}",
-    "powered_by": "Propulsé par Traseallo",
+    "powered_by": "Propulsé par Pioneer",
     "refresh": "Actualiser",
     "status": {
       "assigned": "Chauffeur assigné",
@@ -3372,7 +3372,7 @@
     "payment": "Paiement",
     "phone": "Téléphone",
     "portal_link": "Lien du portail",
-    "powered_by": "Propulsé par Trasealla",
+    "powered_by": "Propulsé par Pioneer",
     "recipient": "Destinataire",
     "share": "Partager",
     "share_credentials": "Partager l'accès au portail via WhatsApp",

@@ -1175,7 +1175,7 @@
     "view_details": "查看详情"
   },
   "footer": {
-    "copyright": "© {{year}} Trasealla Solutions — 保留所有权利"
+    "copyright": "© {{year}} Pioneer Solutions — 保留所有权利"
   },
   "integrations": {
     "activate": "激活",
@@ -1234,7 +1234,7 @@
     "generate_key": "生成API密钥",
     "generate_key_btn": "生成密钥",
     "generating": "正在生成…",
-    "hmac_hint": "请求使用X-Trasealla-Signature HMAC-SHA256签名。",
+    "hmac_hint": "请求使用X-Pioneer-Signature HMAC-SHA256签名。",
     "key_created_notice": "API密钥已创建 — 请立即复制，不会再次显示",
     "key_name": "密钥名称",
     "last_fired": "最后触发：",
@@ -1638,7 +1638,7 @@
       "sending": "正在发送…",
       "sent": "通知已发送",
       "sub": "通过Office 365发送测试邮件",
-      "subject_placeholder": "Trasealla测试邮件",
+      "subject_placeholder": "Pioneer测试邮件",
       "submit": "发送邮件",
       "title": "通知",
       "to": "收件人（邮箱）*"
@@ -1725,7 +1725,7 @@
       "sms": "短信通知",
       "templates": "模板"
     },
-    "test_email": "Trasealla测试邮件",
+    "test_email": "Pioneer测试邮件",
     "title": "通知",
     "type": "类型",
     "use_template": "使用模板",
@@ -2574,7 +2574,7 @@
   },
   "resetPassword": {
     "back_to_sign_in": "返回登录",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "confirm_password": "确认密码",
     "confirm_password_placeholder": "重复您的密码",
     "go_to_sign_in": "前往登录",
@@ -3085,7 +3085,7 @@
     "hero_stat_deliveries": "配送量",
     "hero_stat_support": "支持",
     "hero_stat_uptime": "正常运行",
-    "hero_text": "不再追赶司机和跟踪电子表格。Traseallo 自动化您的整个配送工作流程，让您专注于业务增长。",
+    "hero_text": "不再追赶司机和跟踪电子表格。Pioneer 自动化您的整个配送工作流程，让您专注于业务增长。",
     "hero_title": "您的配送，简单化。",
     "password": "密码",
     "password_placeholder": "创建一个强密码",
@@ -3101,7 +3101,7 @@
     "step_company": "公司信息",
     "terms_of_service": "服务条款",
     "terms_prefix": "注册即表示您同意我们的",
-    "trial_subtitle": "在 Traseallo 中设置您的公司工作区 — 无需信用卡。",
+    "trial_subtitle": "在 Pioneer 中设置您的公司工作区 — 无需信用卡。",
     "admin_subtitle_prefix": "这将是",
     "admin_subtitle_suffix": "的所有者账户。",
     "password_min_length": "密码至少需要8个字符。",
@@ -3160,7 +3160,7 @@
       "mrr": "月度经常性收入",
       "platform_overview": "平台概览",
       "recent_workshops": "最近租户",
-      "subtitle": "Trasealla CRM平台概览",
+      "subtitle": "Pioneer CRM平台概览",
       "suspended": "已暂停账户",
       "title": "超级管理员面板",
       "trial_conversions": "试用转化",
@@ -3170,7 +3170,7 @@
     "login": {
       "authenticating": "认证中…",
       "back_to": "返回",
-      "brand": "Trasealla Solutions",
+      "brand": "Pioneer Solutions",
       "brand_sub": "配送平台管理",
       "connection_error": "连接错误，请重试。",
       "delivery_link": "配送登录 →",
@@ -3239,7 +3239,7 @@
   },
   "trackingPublic": {
     "as_of": "截至",
-    "brand": "Trasealla",
+    "brand": "Pioneer",
     "completed_at": "已送达",
     "delivery_location": "配送位置",
     "delivery_platform": "配送平台",
@@ -3265,7 +3265,7 @@
     "order_details": "订单详情",
     "order_not_found": "订单未找到",
     "work_order_number_label": "订单号 #{{number}}",
-    "powered_by": "由 Trasealla 提供支持",
+    "powered_by": "由 Pioneer 提供支持",
     "refresh": "刷新状态",
     "status": {
       "assigned": "已分配司机",
@@ -3372,7 +3372,7 @@
     "payment": "支付",
     "phone": "电话",
     "portal_link": "门户链接",
-    "powered_by": "由 Trasealla 提供支持",
+    "powered_by": "由 Pioneer 提供支持",
     "recipient": "收件人",
     "share": "分享",
     "share_credentials": "通过 WhatsApp 分享门户访问权限",

@@ -386,7 +386,7 @@ data['integrations'].update({
     "delivery_log_title": "Webhook Delivery Log",
     "no_deliveries": "No deliveries yet",
     "no_deliveries_hint": "Webhook events appear here once triggered",
-    "hmac_hint": "Requests signed with X-Trasealla-Signature HMAC-SHA256.",
+    "hmac_hint": "Requests signed with X-Pioneer-Signature HMAC-SHA256.",
     "create_webhook": "Create Webhook",
     "modal": {"edit_webhook": "Edit Webhook", "add_webhook": "Add Webhook Endpoint"},
     "form": {
@@ -528,7 +528,7 @@ data['superAdmin'] = {
     "stats": {"total_tenants": "Total Tenants", "active_tenants": "Active Tenants", "trial_tenants": "Trial Tenants", "total_users": "Total Users"},
     "dashboard": {
         "title": "Platform Dashboard",
-        "subtitle": "Overview of Trasealla CRM platform",
+        "subtitle": "Overview of Pioneer CRM platform",
         "platform_overview": "Platform Overview",
         "view_analytics": "View Analytics",
         "mrr": "Monthly Recurring Revenue",
@@ -569,7 +569,7 @@ data['superAdmin'] = {
         "never_login": "Never"
     },
     "login": {
-        "brand": "Trasealla Solutions",
+        "brand": "Pioneer Solutions",
         "brand_sub": "Delivery Platform Administration",
         "title": "Super Admin Access",
         "subtitle": "Restricted to platform administrators only",

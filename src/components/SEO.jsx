@@ -30,7 +30,7 @@ export const seoConfig = {
     title: 'Pioneer - Smart Delivery Management System | Pioneer Car Service Center',
     description: 'Streamline your delivery operations with Pioneer. Real-time tracking, automated job-assignment, mechanic management, COD handling, and powerful analytics for courier and logistics businesses in the UAE. Start today.',
     keywords: 'Pioneer, Pioneer Car Service Center, delivery management system, courier software, last mile delivery UAE, delivery tracking, job-assignment management, mechanic management, COD management, logistics software Dubai, fleet management, service tracking, delivery analytics, multi-workshop delivery, e-commerce delivery, same day delivery, route optimization, delivery automation',
-    image: 'https://app.pioneercarservice.com/assets/images/traseallo-delivery-dashboard.png',
+    image: 'https://app.pioneercarservice.com/assets/images/pioneer-delivery-dashboard.png',
     isPublic: true
   },
 

@@ -66,7 +66,7 @@ export default function CustomerLayout({ children }) {
   const rawLogo = workshop?.logo_url;
   const logoSrc = rawLogo
     ? '/api/file?path=' + encodeURIComponent(rawLogo.replace(/^\/uploads\//, ''))
-    : '/assets/images/logos/trasealla_with_bg.jpg';
+    : '/assets/images/logos/pioneer_with_bg.jpg';
 
   const customerName = user?.full_name || user?.company_name || 'Merchant';
 
