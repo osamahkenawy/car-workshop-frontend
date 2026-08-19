@@ -210,7 +210,9 @@ export default function CustomerFeedback() {
   const nb = stats?.npsBreakdown || {};
   const rz = stats?.resolution || {};
 
-  const publicSurveyUrl = `${window.location.origin}/survey`;
+  // Qualify the public link with the workshop slug: a bare /survey cannot be
+  // resolved when the deployment hosts more than one workshop.
+  const publicSurveyUrl = `${window.location.origin}${stats?.workshop?.surveyPath || '/survey'}`;
 
   return (
     <div style={{ padding: '0 0 40px' }}>
@@ -225,7 +227,7 @@ export default function CustomerFeedback() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button onClick={load} style={st.ghostBtn}><Refresh width={15} height={15} /> Refresh</button>
           <button
-            onClick={() => { setLink(`${window.location.origin}/survey`); setCopied(false); }}
+            onClick={() => { setLink(publicSurveyUrl); setCopied(false); }}
             style={st.ghostBtn}
           >
             <QrCode width={15} height={15} /> Public link / QR
