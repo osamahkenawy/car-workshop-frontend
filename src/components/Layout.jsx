@@ -6,7 +6,8 @@ import {
   HomeSimple, Package, DeliveryTruck, Map, User, MapPin,
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
-  RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone
+  RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
+  EmojiSatisfied
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -39,6 +40,7 @@ const iconMap = {
   'returns':          RefreshDouble,
   'cod':              CreditCard,
   'performance':      Medal,
+  'customer_feedback': EmojiSatisfied,
 };
 
 /*
@@ -111,6 +113,7 @@ const navSections = [
     items: [
       { path: '/reports',            labelKey: 'reports',         iconKey: 'reports',          moduleKey: 'reports',           roles: ['admin', 'dispatcher'] },
       { path: '/performance',        labelKey: 'performance',     iconKey: 'performance',      moduleKey: 'performance',       roles: ['admin', 'dispatcher'] },
+      { path: '/customer-feedback',  labelKey: 'customer_feedback', iconKey: 'customer_feedback', moduleKey: 'customer-feedback', roles: ['admin', 'dispatcher'] },
     ]
   },
   /* ── SYSTEM (admin-only) ──────────────────────────── */

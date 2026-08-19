@@ -11,6 +11,8 @@ const WorkOrders        = lazy(() => import('./pages/WorkOrders'));
 const WorkOrderDetail   = lazy(() => import('./pages/WorkOrderDetail'));
 const Customers         = lazy(() => import('./pages/Customers'));
 const Enquiries         = lazy(() => import('./pages/Enquiries'));
+const CustomerFeedback  = lazy(() => import('./pages/CustomerFeedback'));
+const CustomerSurveyPublic = lazy(() => import('./pages/CustomerSurveyPublic'));
 const Vehicles          = lazy(() => import('./pages/Vehicles'));
 const Parts             = lazy(() => import('./pages/Parts'));
 const Mechanics         = lazy(() => import('./pages/Mechanics'));
@@ -119,12 +121,16 @@ export default function App() {
         <Route path="/signup-success" element={<SignupSuccess />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/service-status/:token" element={<ServiceStatusPublic />} />
+        {/* Public customer feedback survey — personalised link or anonymous / QR */}
+        <Route path="/survey" element={<CustomerSurveyPublic />} />
+        <Route path="/survey/:token" element={<CustomerSurveyPublic />} />
 
         {/* ── Staff app ── */}
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
         <Route path="/work-orders" element={<Protected><WorkOrders /></Protected>} />
         <Route path="/work-orders/:id" element={<Protected><WorkOrderDetail /></Protected>} />
         <Route path="/enquiries" element={<Protected><Enquiries /></Protected>} />
+        <Route path="/customer-feedback" element={<Protected><CustomerFeedback /></Protected>} />
         <Route path="/customers" element={<Protected><Customers /></Protected>} />
         <Route path="/vehicles" element={<Protected><Vehicles /></Protected>} />
         <Route path="/parts" element={<Protected><Parts /></Protected>} />
