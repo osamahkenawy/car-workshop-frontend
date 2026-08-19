@@ -249,11 +249,6 @@ export default function Layout({ children }) {
             </div>
           ))}
         </nav>
-
-        {/* D.5 — Plan usage badge in sidebar */}
-        {user?.role !== 'mechanic' && (
-          <PlanBadge collapsed={!sidebarOpen && !isMobile} />
-        )}
       </aside>
 
       <header className={`custom-topbar ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
