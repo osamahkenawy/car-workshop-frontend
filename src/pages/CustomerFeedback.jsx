@@ -27,20 +27,22 @@ const GREEN  = '#16a34a';
 const AMBER  = '#d97706';
 const RED    = '#dc2626';
 
+// Colours only — the labels come from the translation files, keyed by
+// `cat_<category>` and `res_<resolution>`.
 const CATEGORY = {
-  promoter:  { label: 'Promoter',  color: GREEN, bg: '#dcfce7' },
-  passive:   { label: 'Passive',   color: AMBER, bg: '#fef3c7' },
-  detractor: { label: 'Detractor', color: RED,   bg: '#fee2e2' },
+  promoter:  { color: GREEN, bg: '#dcfce7' },
+  passive:   { color: AMBER, bg: '#fef3c7' },
+  detractor: { color: RED,   bg: '#fee2e2' },
 };
 
 const RESOLUTION = {
-  yes:       { label: 'Resolved',  color: GREEN },
-  partially: { label: 'Partially', color: AMBER },
-  no:        { label: 'Not resolved', color: RED },
+  yes:       { color: GREEN },
+  partially: { color: AMBER },
+  no:        { color: RED },
 };
 
-const fmtDate = (d) => d
-  ? new Date(String(d).replace(' ', 'T')).toLocaleDateString('en-AE', { day: '2-digit', month: 'short', year: 'numeric' })
+const fmtDate = (d, locale) => d
+  ? new Date(String(d).replace(' ', 'T')).toLocaleDateString(locale || 'en-AE', { day: '2-digit', month: 'short', year: 'numeric' })
   : '—';
 
 /** Isolates numbers from surrounding RTL/LTR text so they always read correctly. */
