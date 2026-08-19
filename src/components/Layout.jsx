@@ -349,7 +349,9 @@ export default function Layout({ children }) {
       </main>
 
       <footer className={`custom-footer ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        {t('footer.copyright', { year: new Date().getFullYear() })}
+        {i18n.language === 'ar'
+          ? `© ${new Date().getFullYear()} مركز بايونير لخدمة السيارات — جميع الحقوق محفوظة`
+          : `© ${new Date().getFullYear()} Pioneer Car Service Center — All rights reserved`}
       </footer>
     </div>
   );

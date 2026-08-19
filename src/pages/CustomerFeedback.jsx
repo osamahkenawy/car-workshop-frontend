@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   StatsUpSquare, EmojiSatisfied, Flash, WarningTriangle, Xmark, Link as LinkIcon,
   Copy, CheckCircle, Search, Refresh, MessageText, Building, Wrench, QrCode,
 } from 'iconoir-react';
 import { useTranslation } from 'react-i18next';
-import QRCodeLib from 'qrcode';
+import * as QRCodeModule from 'qrcode';
 import api from '../lib/api';
 
 /**
@@ -127,8 +127,8 @@ export default function CustomerFeedback() {
   const [compose, setCompose] = useState(null);
   const [creating, setCreating] = useState(false);
   const [qrModal, setQrModal]   = useState(null);   // URL string when QR modal is open
-  const [qrDataUrl, setQrDataUrl] = useState('');
   const [qrCopied, setQrCopied]   = useState(false);
+  const qrCanvasRef = useRef(null);
 
   const qs = useMemo(() => {
     const p = new URLSearchParams();
@@ -137,10 +137,12 @@ export default function CustomerFeedback() {
   }, [filters]);
 
   useEffect(() => {
-    if (!qrModal) { setQrDataUrl(''); return; }
-    QRCodeLib.toDataURL(qrModal, { width: 256, margin: 2, color: { dark: '#1e3a6b', light: '#ffffff' } })
-      .then(setQrDataUrl)
-      .catch(() => setQrDataUrl(''));
+    if (!qrModal || !qrCanvasRef.current) return;
+    const QR = QRCodeModule.default || QRCodeModule;
+    QR.toCanvas(qrCanvasRef.current, qrModal, {
+      width: 224, margin: 2,
+      color: { dark: '#1e3a6b', light: '#ffffff' },
+    }).catch(console.error);
   }, [qrModal]);
 
   const load = useCallback(async () => {
@@ -763,13 +765,10 @@ export default function CustomerFeedback() {
             <p style={{ fontSize: 12.5, color: '#64748b', margin: '0 0 20px' }}>
               {t('customerFeedback.qr_subtitle')}
             </p>
-            {qrDataUrl
-              ? <img src={qrDataUrl} alt="QR Code" style={{ width: 220, height: 220, borderRadius: 12, border: '1px solid #e2e8f0' }} />
-              : <div style={{ width: 220, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '1px solid #e2e8f0', borderRadius: 12, color: '#94a3b8', fontSize: 13, margin: '0 auto' }}>
-                  {t('common.loading')}
-                </div>
-            }
+            <canvas
+              ref={qrCanvasRef}
+              style={{ borderRadius: 12, border: '1px solid #e2e8f0', display: 'block', margin: '0 auto' }}
+            />
             <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
               <code style={{ ...st.code, maxWidth: '100%', display: 'block', wordBreak: 'break-all' }}>{qrModal}</code>
               <button
