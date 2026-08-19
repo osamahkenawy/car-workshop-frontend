@@ -383,6 +383,12 @@ export default function CustomerSurveyPublic() {
       <div className="svy-shell">
         <header className="svy-header">
           <LangToggle />
+          <img
+            src="/assets/images/logos/pioneer/pioneer_logo_white.svg"
+            alt="Pioneer Car Service Center"
+            style={{ height: 64, width: 'auto', display: 'block', marginBottom: 12 }}
+            onError={e => { e.target.style.display = 'none'; }}
+          />
           <h1 className="svy-brand">{t.brand}</h1>
           <p className="svy-intro">{t.intro}</p>
           {context && (context.workOrderNumber || context.branch || context.service) && (
