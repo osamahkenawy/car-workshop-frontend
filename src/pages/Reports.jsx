@@ -11,7 +11,7 @@ import autoTable from 'jspdf-autotable';
 import { convertArabic } from 'arabic-reshaper';
 import api from '../lib/api';
 import { AuthContext } from '../context/AuthContext';
-import { fmtCurrency } from '../utils/currency';
+import { fmtCurrency, fmtCurrencyCompact } from '../utils/currency';
 import './CRMPages.css';
 import './Reports.css';
 import { useTranslation } from 'react-i18next';
@@ -47,6 +47,8 @@ export default function Reports() {
   const { workshop } = useContext(AuthContext);
   const cur = workshop?.currency || 'AED';
   const fmtAED = v => fmtCurrency(v, cur);
+  // Headline KPI cards are too narrow for fils; tables keep full precision.
+  const fmtAEDShort = v => fmtCurrencyCompact(v, cur);
   const [period,   setPeriod]   = useState('30');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo,   setDateTo]   = useState('');
@@ -386,8 +388,8 @@ export default function Reports() {
                 <KPI icon={Package}      label={t('reports.kpi.total_orders')}  value={ov.total_orders || 0}    color="#1e3a6b" />
                 <KPI icon={Check}        label={t('reports.kpi.delivered')}     value={ov.delivered || 0}         color="#16a34a" sub={pct(ov.delivered, ov.total_orders) + ' ' + t('reports.success_rate_suffix')} />
                 <KPI icon={Xmark}        label={t('reports.kpi.failed')}        value={ov.failed || 0}            color="#dc2626" sub={pct(ov.failed, ov.total_orders) + ' ' + t('reports.of_total_suffix')} />
-                <KPI icon={DollarCircle} label={t('reports.kpi.revenue')}       value={fmtAED(ov.total_revenue)}  color="#f97316" />
-                <KPI icon={DollarCircle} label={t('reports.kpi.cash_collected')} value={fmtAED(ov.cash_collected)}  color="#8b5cf6" />
+                <KPI icon={DollarCircle} label={t('reports.kpi.revenue')}       value={fmtAEDShort(ov.total_revenue)}  color="#f97316" />
+                <KPI icon={DollarCircle} label={t('reports.kpi.cash_collected')} value={fmtAEDShort(ov.cash_collected)}  color="#8b5cf6" />
                 <KPI icon={StatsReport}  label={t('reports.kpi.success_rate')}  value={(ov.success_rate || 0) + '%'} color="#0ea5e9" />
               </div>
               {statusBreakdown.length > 0 && (
@@ -852,12 +854,12 @@ export default function Reports() {
                   <>
                     {/* Financial KPI Cards */}
                     <div className="rpt-kpi-grid">
-                      <KPI icon={DollarCircle} label={t('reports.financial.gross_fees')}     value={fmtAED(fk.gross_service_fees)} color="#1e3a6b" />
-                      <KPI icon={Xmark}        label={t('reports.financial.discounts')}      value={fmtAED(fk.total_discounts)}     color="#ef4444" />
-                      <KPI icon={Wallet}       label={t('reports.financial.net_revenue')}    value={fmtAED(fk.net_revenue)}         color="#16a34a" sub={t('reports.financial.delivered_orders_sub', { count: fk.delivered || 0 })} />
-                      <KPI icon={CreditCard}   label={t('reports.financial.cash_collected')}  value={fmtAED(fk.cash_collected)}       color="#f97316" />
-                      <KPI icon={Bank}         label={t('reports.financial.cod_settled')}    value={fmtAED(fk.cod_settled)}         color="#22c55e" />
-                      <KPI icon={Clock}        label={t('reports.financial.cod_pending')}    value={fmtAED(fk.cod_unsettled)}       color="#dc2626" sub={t('reports.financial.outstanding_sub', { amount: fmtAED(fk.cod_outstanding) })} />
+                      <KPI icon={DollarCircle} label={t('reports.financial.gross_fees')}     value={fmtAEDShort(fk.gross_service_fees)} color="#1e3a6b" />
+                      <KPI icon={Xmark}        label={t('reports.financial.discounts')}      value={fmtAEDShort(fk.total_discounts)}     color="#ef4444" />
+                      <KPI icon={Wallet}       label={t('reports.financial.net_revenue')}    value={fmtAEDShort(fk.net_revenue)}         color="#16a34a" sub={t('reports.financial.delivered_orders_sub', { count: fk.delivered || 0 })} />
+                      <KPI icon={CreditCard}   label={t('reports.financial.cash_collected')}  value={fmtAEDShort(fk.cash_collected)}       color="#f97316" />
+                      <KPI icon={Bank}         label={t('reports.financial.cod_settled')}    value={fmtAEDShort(fk.cod_settled)}         color="#22c55e" />
+                      <KPI icon={Clock}        label={t('reports.financial.cod_pending')}    value={fmtAEDShort(fk.cod_unsettled)}       color="#dc2626" sub={t('reports.financial.outstanding_sub', { amount: fmtAEDShort(fk.cod_outstanding) })} />
                     </div>
 
                     {/* Revenue Trend Chart */}

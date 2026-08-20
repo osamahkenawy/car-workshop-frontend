@@ -282,7 +282,10 @@
 /* ── KPI Cards ───────────────────────────────────────────────── */
 .rpt-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  /* 240px, not 220: after 40px padding, the 46px icon and its 14px gap, a
+     220px card left only ~120px for the figure, so a six-figure currency
+     value was clipped by the card's overflow:hidden. */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -340,11 +343,14 @@
 }
 
 .rpt-kpi-value {
-  font-size: 1.4rem;
+  font-size: 1.28rem;
   font-weight: 700;
   color: var(--gray-800);
   letter-spacing: -0.02em;
   line-height: 1.2;
+  /* The card clips its overflow to keep the rounded top bar, so an unusually
+     large figure must wrap rather than be silently cut mid-number. */
+  overflow-wrap: anywhere;
 }
 
 .rpt-kpi-label {
