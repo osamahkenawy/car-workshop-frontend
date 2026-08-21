@@ -21,6 +21,19 @@ import api from '../lib/api';
  *     worth collecting if somebody actually calls the customer back.
  */
 
+/**
+ * Hidden for now at the customer's request. Both are fully wired and working —
+ * flip a flag back to true to restore that piece, no other change needed.
+ *   SHOW_KPI_SUBTEXT — the small qualifier under each headline score
+ *                      ("from 6 scored", "50% rated 4 or 5", ...)
+ *   SHOW_FILTERS     — the date / branch / category / follow-up controls. The
+ *                      filter state and its query building stay in place, so
+ *                      with this off the page simply reports on all responses.
+ * The search box is deliberately not covered by either flag.
+ */
+const SHOW_KPI_SUBTEXT = false;
+const SHOW_FILTERS     = false;
+
 const NAVY   = '#1e3a6b';
 const TEAL   = '#0d6273';
 const GREEN  = '#16a34a';
@@ -289,35 +302,35 @@ export default function CustomerFeedback() {
           icon={StatsUpSquare}
           label={t('customerFeedback.kpi_nps')}
           value={h.nps === null || h.nps === undefined ? '—' : h.nps}
-          sub={t('customerFeedback.kpi_nps_sub', { count: h.npsScored || 0 })}
+          sub={SHOW_KPI_SUBTEXT ? t('customerFeedback.kpi_nps_sub', { count: h.npsScored || 0 }) : undefined}
           color={npsColor(h.nps)}
         />
         <KPICard
           icon={EmojiSatisfied}
           label={t('customerFeedback.kpi_csat')}
           value={h.csatAvg ? `${h.csatAvg} / 5` : '—'}
-          sub={t('customerFeedback.kpi_csat_sub', { pct: h.csatPercent || 0 })}
+          sub={SHOW_KPI_SUBTEXT ? t('customerFeedback.kpi_csat_sub', { pct: h.csatPercent || 0 }) : undefined}
           color={scoreColor(h.csatAvg)}
         />
         <KPICard
           icon={Flash}
           label={t('customerFeedback.kpi_ces')}
           value={h.cesAvg ? `${h.cesAvg} / 5` : '—'}
-          sub={t('customerFeedback.kpi_ces_sub', { pct: h.cesEasyPercent || 0 })}
+          sub={SHOW_KPI_SUBTEXT ? t('customerFeedback.kpi_ces_sub', { pct: h.cesEasyPercent || 0 }) : undefined}
           color={scoreColor(h.cesAvg)}
         />
         <KPICard
           icon={CheckCircle}
           label={t('customerFeedback.kpi_resolved')}
           value={`${rz.resolvedPercent || 0}%`}
-          sub={t('customerFeedback.kpi_resolved_sub', { partially: rz.partially || 0, no: rz.no || 0 })}
+          sub={SHOW_KPI_SUBTEXT ? t('customerFeedback.kpi_resolved_sub', { partially: rz.partially || 0, no: rz.no || 0 }) : undefined}
           color={scoreColor((rz.resolvedPercent || 0) / 20)}
         />
         <KPICard
           icon={WarningTriangle}
           label={t('customerFeedback.kpi_followup')}
           value={h.needsFollowUp || 0}
-          sub={t('customerFeedback.kpi_followup_sub')}
+          sub={SHOW_KPI_SUBTEXT ? t('customerFeedback.kpi_followup_sub') : undefined}
           color={Number(h.needsFollowUp) > 0 ? RED : '#94a3b8'}
         />
       </div>
@@ -325,6 +338,7 @@ export default function CustomerFeedback() {
       {/* ── Filters ────────────────────────────────────────────────────── */}
       <Card>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          {SHOW_FILTERS && (<>
           <label style={st.field}>
             <span style={st.fieldLabel}>{t('customerFeedback.filter_from')}</span>
             <input type="date" value={filters.from} style={st.input}
@@ -361,6 +375,7 @@ export default function CustomerFeedback() {
           >
             <WarningTriangle width={14} height={14} /> {t('customerFeedback.filter_followup_only')}
           </button>
+          </>)}
           <div style={{ flex: 1 }} />
           <div style={{ position: 'relative', minWidth: 210 }}>
             <Search width={15} height={15} color="#94a3b8"
