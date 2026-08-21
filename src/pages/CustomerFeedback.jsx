@@ -29,10 +29,14 @@ import api from '../lib/api';
  *   SHOW_FILTERS     — the date / branch / category / follow-up controls. The
  *                      filter state and its query building stay in place, so
  *                      with this off the page simply reports on all responses.
- * The search box is deliberately not covered by either flag.
+ *   SHOW_ALL_RESPONSES — the "All responses" table, which lists individual
+ *                      customers by name. The aggregate scores above it are
+ *                      unaffected.
+ * The search box is deliberately not covered by any flag.
  */
-const SHOW_KPI_SUBTEXT = false;
-const SHOW_FILTERS     = false;
+const SHOW_KPI_SUBTEXT   = false;
+const SHOW_FILTERS       = false;
+const SHOW_ALL_RESPONSES = false;   // the per-response table at the foot of the page
 
 const NAVY   = '#1e3a6b';
 const TEAL   = '#0d6273';
@@ -336,6 +340,9 @@ export default function CustomerFeedback() {
       </div>
 
       {/* ── Filters ────────────────────────────────────────────────────── */}
+      {/* The search box only narrows the responses table, so it is tied to it;
+          with both hidden this card would otherwise render empty. */}
+      {(SHOW_FILTERS || SHOW_ALL_RESPONSES) && (
       <Card>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
           {SHOW_FILTERS && (<>
@@ -377,6 +384,7 @@ export default function CustomerFeedback() {
           </button>
           </>)}
           <div style={{ flex: 1 }} />
+          {SHOW_ALL_RESPONSES && (
           <div style={{ position: 'relative', minWidth: 210 }}>
             <Search width={15} height={15} color="#94a3b8"
               style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)' }} />
@@ -387,8 +395,10 @@ export default function CustomerFeedback() {
               style={{ ...st.input, width: '100%', paddingLeft: 34, boxSizing: 'border-box' }}
             />
           </div>
+          )}
         </div>
       </Card>
+      )}
 
       {loading && <Card><div style={{ color: '#94a3b8', fontSize: 13 }}>{t('common.loading')}</div></Card>}
 
@@ -563,6 +573,7 @@ export default function CustomerFeedback() {
           </Card>
 
           {/* ── All responses ───────────────────────────────────────── */}
+          {SHOW_ALL_RESPONSES && (
           <Card
             title={t('customerFeedback.all_responses')}
             subtitle={search
@@ -630,6 +641,7 @@ export default function CustomerFeedback() {
               </div>
             )}
           </Card>
+          )}
         </>
       )}
 
