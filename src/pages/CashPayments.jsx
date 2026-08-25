@@ -9,6 +9,7 @@ import './CashPayments.css';
 import { useTranslation } from 'react-i18next';
 import Toast, { useToast } from '../components/Toast';
 import { AuthContext } from '../context/AuthContext';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 function formatCurrency(amount, currency = 'AED') {
   return `${currency} ${parseFloat(amount || 0).toFixed(2)}`;
@@ -151,12 +152,10 @@ export default function CashPayments() {
       parseFloat(o.cash_amount || 0).toFixed(2), o.status,
       o.created_at ? new Date(o.created_at).toLocaleDateString() : ''
     ]);
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `cod_report_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-    URL.revokeObjectURL(url);
+    // SR-15 — was headers.join(',') with no escaping at all: a comma in a
+    // recipient name shifted every later column, and a value starting with
+    // = or + was evaluated as a formula when the export was opened.
+    downloadCsv(`cod_report_${new Date().toISOString().slice(0,10)}.csv`, headers, rows);
   };
 
   const { workshop } = useContext(AuthContext);

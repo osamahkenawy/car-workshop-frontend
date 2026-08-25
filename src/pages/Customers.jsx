@@ -14,6 +14,7 @@ import Toast, { useToast } from '../components/Toast';
 import PhoneInputShared from '../components/PhoneInput';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 /* ── WhatsApp SVG Icon ── */
 const WhatsAppIcon = ({ width = 16, height = 16, color = 'currentColor' }) => (
@@ -486,7 +487,8 @@ export default function Customers() {
       c.total_orders||0, c.delivered_orders||0, c.credit_limit||0,
       c.is_active?'Active':'Inactive',
     ]);
-    const csv = [headers, ...rows].map(r => r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    // SR-15 — quoting was correct but a leading = + @ was still a formula.
+    const csv = toCsv(headers, rows);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
     a.download = `customers-${new Date().toISOString().slice(0,10)}.csv`;

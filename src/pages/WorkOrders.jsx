@@ -24,6 +24,7 @@ import 'leaflet/dist/leaflet.css';
 import { AuthContext } from '../context/AuthContext';
 import { fmtCurrency } from '../utils/currency';
 import { getRegions, getRegionLabel } from '../lib/regions';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 /* Fix leaflet marker icon paths (Vite) */
 delete L.Icon.Default.prototype._getIconUrl;
@@ -999,7 +1000,8 @@ export default function WorkOrders() {
         o.recipient_emirate, o.zone_name||'', o.work_order_type, o.payment_method,
         o.cash_amount||0, o.service_fee||0, fmtDate(o.created_at)
       ]);
-      const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      // SR-15 — quoting was correct but a leading = + @ was still a formula.
+      const csv = toCsv(headers, rows);
       const blob = new Blob([csv], { type:'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

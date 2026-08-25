@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
 import { getPhoneCodeForCountry } from '../components/PhoneInput';
 import { escapeHtml } from '../utils/escapeHtml';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 /* ── Barcode SVG ─────────────────────────────────────────── */
 function BarcodeDisplay({ value, small }) {
@@ -1224,10 +1225,9 @@ export default function JobAssignment() {
       ...(board.completed_today || []).map(o => ({ ...o, _section: 'Completed' })),
     ];
     if (!allWorkOrders.length) return;
-    const esc = (v) => {
-      const s = String(v ?? '').replace(/"/g, '""');
-      return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s}"` : s;
-    };
+    // SR-15 — quoted correctly but did not neutralise spreadsheet
+    // formulas; csvCell does both.
+    const esc = csvCell;
     const headers = ['Section','WorkOrder #','Status','Recipient','Phone','Address','ServiceBay','Mechanic','Payment','COD','Fee','Packages','Created','Updated'];
     const rows = allWorkOrders.map(o => [
       o._section,

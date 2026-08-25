@@ -15,6 +15,7 @@ import { fmtCurrency, fmtCurrencyCompact } from '../utils/currency';
 import './CRMPages.css';
 import './Reports.css';
 import { useTranslation } from 'react-i18next';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 /* ── Helpers ──────────────────────────────────────────────────── */
 const pct    = (a, b) => b > 0 ? ((a / b) * 100).toFixed(1) + '%' : '0%';
@@ -139,13 +140,9 @@ export default function Reports() {
 
   const exportCSV = (rows, filename) => {
     if (!rows?.length) return;
-    const headers = Object.keys(rows[0]).join(',');
-    const body = rows.map(r => Object.values(r).join(',')).join('\n');
-    const blob = new Blob([headers + '\n' + body], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = filename + '.csv'; a.click();
-    URL.revokeObjectURL(url);
+    // SR-15 — see utils/csv.js. This used a bare join(','), so any value
+    // containing a comma corrupted the columns and a leading = was a formula.
+    downloadCsv(`${filename}.csv`, Object.keys(rows[0]), rows.map(r => Object.values(r)));
   };
 
   const exportPDF = async () => {

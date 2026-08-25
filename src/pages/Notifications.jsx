@@ -8,6 +8,7 @@ import api from '../lib/api';
 import { CardListSkeleton } from '../components/Loader';
 import './Notifications.css';
 import { useTranslation } from 'react-i18next';
+import { downloadCsv, toCsv, csvCell } from '../utils/csv';
 
 /* ── Channel config with icons ────────────────────────────────── */
 const CH = {
@@ -138,10 +139,9 @@ export default function Notifications() {
   const exportCSV = () => {
     if (!filtered.length) return;
     const headers = ['channel', 'recipient', 'message', 'order', 'status', 'date'];
-    const escape = (v) => {
-      const s = String(v ?? '').replace(/"/g, '""');
-      return /[",\n]/.test(s) ? `"${s}"` : s;
-    };
+    // SR-15 — quoted correctly but did not neutralise spreadsheet
+    // formulas; csvCell does both.
+    const escape = csvCell;
     const rows = filtered.map(n => [
       n.type || tab,
       n.recipient_phone || n.recipient_email || '',
