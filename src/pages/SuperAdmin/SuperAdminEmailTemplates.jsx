@@ -7,6 +7,7 @@ import {
 import './SuperAdmin.css';
 
 import { useConfirm } from './components';
+import HtmlPreview from '../../components/HtmlPreview';
 const API = import.meta.env.VITE_API_URL || '/api';
 const hdrs = () => ({ Authorization: `Bearer ${localStorage.getItem('superAdminToken')}`, 'Content-Type': 'application/json' });
 
@@ -470,7 +471,7 @@ const SuperAdminEmailTemplates = () => {
                       fontSize: 14, lineHeight: 1.7, color: '#374151'
                     }}>
                       {form.body ? (
-                        <div dangerouslySetInnerHTML={{ __html: form.body }} />
+                        <HtmlPreview html={form.body} minHeight={160} />
                       ) : (
                         <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>Write HTML in the editor to see a preview here</p>
                       )}
@@ -536,7 +537,7 @@ const SuperAdminEmailTemplates = () => {
               </div>
               <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, background: '#fff', overflow: 'hidden' }}>
                 <div style={{ background: '#f97316', height: 4 }} />
-                <div style={{ padding: 24 }} dangerouslySetInnerHTML={{ __html: showPreview.body }} />
+                <HtmlPreview html={showPreview.body} minHeight={320} style={{ padding: 0 }} />
               </div>
               {safeVars(showPreview.variables).length > 0 && (
                 <div style={{ marginTop: 16 }}>

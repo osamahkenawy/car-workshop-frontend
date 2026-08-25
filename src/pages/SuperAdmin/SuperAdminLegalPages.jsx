@@ -4,6 +4,7 @@ import {
   RefreshDouble, Globe
 } from 'iconoir-react';
 import './SuperAdmin.css';
+import HtmlPreview from '../../components/HtmlPreview';
 
 const API = import.meta.env.VITE_API_URL || '/api';
 const hdrs = () => ({
@@ -236,12 +237,14 @@ const SuperAdminLegalPages = () => {
               style={{
                 border: '1px solid #e2e8f0', borderRadius: 8, padding: 24,
                 minHeight: 400, background: '#fff',
-                direction: tab === 'ar' ? 'rtl' : 'ltr',
               }}
-              dangerouslySetInnerHTML={{
-                __html: tab === 'ar' ? form.content_ar : form.content_en,
-              }}
-            />
+            >
+              <HtmlPreview
+                html={tab === 'ar' ? form.content_ar : form.content_en}
+                dir={tab === 'ar' ? 'rtl' : 'ltr'}
+                minHeight={360}
+              />
+            </div>
           ) : (
             <textarea
               value={tab === 'ar' ? form.content_ar : form.content_en}

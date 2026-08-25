@@ -7,6 +7,7 @@ import {
   MapPin, Phone, Refresh, Map, NavArrowRight, Prohibition,
   WarningTriangle, Calendar, Timer, Wrench,
 } from 'iconoir-react';
+import { escapeHtml } from '../utils/escapeHtml';
 
 let leafletLoaded = false;
 function ensureLeaflet() {
@@ -161,8 +162,8 @@ export default function ServiceStatusPublic() {
               ${t('trackingPublic.your_mechanic')}
             </div>
             <div style="padding:8px 10px;font-size:12px;color:#374151">
-              <div style="font-weight:600;font-size:13px;margin-bottom:2px">${order.mechanic_name || t('trackingPublic.mechanic_fallback')}</div>
-              ${order.mechanic_phone ? `<div style="color:#6b7280;margin-top:2px">${order.mechanic_phone}</div>` : ''}
+              <div style="font-weight:600;font-size:13px;margin-bottom:2px">${escapeHtml(order.mechanic_name) || t('trackingPublic.mechanic_fallback')}</div>
+              ${order.mechanic_phone ? `<div style="color:#6b7280;margin-top:2px">${escapeHtml(order.mechanic_phone)}</div>` : ''}
             </div>
           </div>`);
       }
@@ -181,8 +182,8 @@ export default function ServiceStatusPublic() {
               ${t('trackingPublic.delivery_location')}
             </div>
             <div style="padding:8px 10px;font-size:12px;color:#374151">
-              <div style="font-weight:600;font-size:13px;margin-bottom:2px">${order.customer_name || ''}</div>
-              <div style="color:#6b7280">${order.dropoff_address || ''}</div>
+              <div style="font-weight:600;font-size:13px;margin-bottom:2px">${escapeHtml(order.customer_name)}</div>
+              <div style="color:#6b7280">${escapeHtml(order.dropoff_address)}</div>
             </div>
           </div>`);
       }

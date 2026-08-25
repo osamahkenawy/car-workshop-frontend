@@ -14,6 +14,7 @@ import './CRMPages.css';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
 import { getPhoneCodeForCountry } from '../components/PhoneInput';
+import { escapeHtml } from '../utils/escapeHtml';
 
 /* ── Barcode SVG ─────────────────────────────────────────── */
 function BarcodeDisplay({ value, small }) {
@@ -1283,18 +1284,18 @@ export default function JobAssignment() {
     html += `<h1>JobAssignment Report</h1>`;
     html += `<div class="meta">${now.toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} — ${now.toLocaleTimeString('en-AE', { hour: '2-digit', minute: '2-digit' })}</div>`;
     for (const [section, orders] of Object.entries(grouped)) {
-      html += `<h2>${section} (${orders.length})</h2>`;
+      html += `<h2>${escapeHtml(section)} (${orders.length})</h2>`;
       html += `<table><thead><tr><th>WorkOrder #</th><th>Status</th><th>Recipient</th><th>Address</th><th>ServiceBay</th><th>Mechanic</th><th>Payment</th><th>COD</th></tr></thead><tbody>`;
       orders.forEach(o => {
         const sc = statusColor[o.status] || '#64748b';
         html += `<tr>
-          <td><strong>${o.work_order_number || o.id}</strong></td>
-          <td><span class="badge" style="background:${sc}18;color:${sc}">${o.status}</span></td>
-          <td>${o.recipient_name || '—'}</td>
-          <td>${[o.recipient_area, o.recipient_emirate].filter(Boolean).join(', ') || o.recipient_address || '—'}</td>
-          <td>${o.zone_name || '—'}</td>
-          <td>${o.mechanic_name || '—'}</td>
-          <td>${o.payment_method || '—'}</td>
+          <td><strong>${escapeHtml(o.work_order_number || o.id)}</strong></td>
+          <td><span class="badge" style="background:${sc}18;color:${sc}">${escapeHtml(o.status)}</span></td>
+          <td>${escapeHtml(o.recipient_name) || '—'}</td>
+          <td>${escapeHtml([o.recipient_area, o.recipient_emirate].filter(Boolean).join(', ') || o.recipient_address) || '—'}</td>
+          <td>${escapeHtml(o.zone_name) || '—'}</td>
+          <td>${escapeHtml(o.mechanic_name) || '—'}</td>
+          <td>${escapeHtml(o.payment_method) || '—'}</td>
           <td>${o.cash_amount ? parseFloat(o.cash_amount).toFixed(2) : '—'}</td>
         </tr>`;
       });

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Eye, EyeClosed, WarningTriangle, Mail, ArrowLeft, CheckCircle, Language } from 'iconoir-react';
 import { AuthContext } from '../context/AuthContext';
 import './LoginPage.css';
+import { escapeHtml } from '../utils/escapeHtml';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -286,7 +287,10 @@ export default function LoginPage() {
               </div>
               <h1 style={{ marginBottom: 8 }}>{t('auth.check_inbox')}</h1>
               <p className="lp-subtitle" style={{ marginBottom: 20 }}
-                dangerouslySetInnerHTML={{ __html: t('auth.check_inbox_desc', { email: fpEmail }) }}
+                /* i18next runs with escapeValue:false, so the email must be escaped here
+                   before it reaches innerHTML. The <strong> in the translation is
+                   ours; only the value is untrusted. */
+                dangerouslySetInnerHTML={{ __html: t('auth.check_inbox_desc', { email: escapeHtml(fpEmail) }) }}
               />
               <div className="lp-sent-tips">
                 <p style={{ margin: '0 0 8px', fontWeight: 700, fontSize: 13, color: '#374151' }}>{t('auth.didnt_get_email')}</p>

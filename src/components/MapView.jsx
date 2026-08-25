@@ -189,9 +189,12 @@ const MapView = forwardRef(function MapView({
               {m.popup && (
                 <Popup>
                   <div className="map-popup">
-                    {typeof m.popup === 'string'
-                      ? <span dangerouslySetInnerHTML={{ __html: m.popup }} />
-                      : m.popup}
+                    {/* A string popup is rendered as text. It used to go through
+                        dangerouslySetInnerHTML, so any stored script in a
+                        customer or mechanic name executed in the admin's
+                        session. Callers that need markup pass a React element,
+                        which is the branch below. */}
+                    {typeof m.popup === 'string' ? <span>{m.popup}</span> : m.popup}
                   </div>
                 </Popup>
               )}
