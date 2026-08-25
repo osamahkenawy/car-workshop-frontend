@@ -1122,7 +1122,7 @@
     "col": {
       "reason": "السبب",
       "count": "العدد",
-      "pct_failed": "% من الفاشل",
+      "pct_failed": "٪ من الفاشلة والملغاة",
       "success_rate": "معدل النجاح",
       "revenue": "الإيرادات",
       "rating": "التقييم",
@@ -1145,7 +1145,8 @@
       "type": "النوع",
       "customer": "العميل",
       "status": "الحالة",
-      "actions": "الإجراءات"
+      "actions": "الإجراءات",
+      "specialty": "التخصص"
     },
     "chart": {
       "status_breakdown": "توزيع حالات الطلبات",
@@ -1234,7 +1235,8 @@
       "total": "الإجمالي",
       "top_customers": "أفضل العملاء",
       "customer": "العميل",
-      "avg_value": "متوسط القيمة"
+      "avg_value": "متوسط القيمة",
+      "specialty": "التخصص"
     }
   },
   "invoices": {

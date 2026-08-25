@@ -250,9 +250,9 @@ export default function Reports() {
       doc.text(ar(t('reports.pdf.mechanic_performance')), textX, startY, { align: textAlign });
       autoTable(doc, {
         startY: startY + 4,
-        head: [[ar(t('reports.pdf.mechanic')), ar(t('reports.pdf.vehicle')), ar(t('reports.pdf.total')), ar(t('reports.pdf.delivered')), ar(t('reports.pdf.failed')), ar(t('reports.pdf.success_pct')), ar(t('reports.pdf.revenue'))]],
+        head: [[ar(t('reports.pdf.mechanic')), ar(t('reports.pdf.specialty')), ar(t('reports.pdf.total')), ar(t('reports.pdf.delivered')), ar(t('reports.pdf.failed')), ar(t('reports.pdf.success_pct')), ar(t('reports.pdf.revenue'))]],
         body: data.mechanic_performance.map(r => [
-          ar(r.full_name), ar(r.vehicle_type?.replace('_',' ')), r.total_assigned, r.delivered, r.failed,
+          ar(r.full_name), ar(r.specialty ? r.specialty.replace(/_/g, ' ') : '—'), r.total_assigned, r.delivered, r.failed,
           pct(r.delivered, r.total_assigned), fmtAED(r.revenue)
         ]),
         theme: 'grid',
@@ -604,12 +604,12 @@ export default function Reports() {
               )}
               <div className="rpt-table-card">
                 <table className="od-items-table">
-                  <thead><tr><th>{t('reports.col.mechanic')}</th><th>{t('reports.col.vehicle')}</th><th>{t('reports.col.total')}</th><th>{t('reports.col.delivered')}</th><th>{t('reports.col.failed')}</th><th>{t('reports.col.success_rate')}</th><th>{t('reports.col.revenue')}</th><th>{t('reports.col.rating')}</th></tr></thead>
+                  <thead><tr><th>{t('reports.col.mechanic')}</th><th>{t('reports.col.specialty')}</th><th>{t('reports.col.total')}</th><th>{t('reports.col.delivered')}</th><th>{t('reports.col.failed')}</th><th>{t('reports.col.success_rate')}</th><th>{t('reports.col.revenue')}</th><th>{t('reports.col.rating')}</th></tr></thead>
                   <tbody>
                     {data?.mechanic_performance?.length ? data.mechanic_performance.map((row, i) => (
                       <tr key={i}>
                         <td><strong>{row.full_name}</strong></td>
-                        <td>{row.vehicle_type?.replace('_',' ')}</td>
+                        <td>{row.specialty ? row.specialty.replace(/_/g, ' ') : '—'}</td>
                         <td>{row.total_assigned}</td>
                         <td style={{ color:'#16a34a', fontWeight:600 }}>{row.delivered}</td>
                         <td style={{ color:'#dc2626' }}>{row.failed}</td>

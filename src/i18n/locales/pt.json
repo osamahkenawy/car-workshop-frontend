@@ -1118,7 +1118,7 @@
     "col": {
       "reason": "Motivo",
       "count": "Contagem",
-      "pct_failed": "% de falhados",
+      "pct_failed": "% de falhados e cancelados",
       "success_rate": "Taxa de sucesso",
       "revenue": "Receita",
       "rating": "Avaliação",
@@ -1141,7 +1141,8 @@
       "type": "Tipo",
       "customer": "Customere",
       "status": "Estado",
-      "actions": "Ações"
+      "actions": "Ações",
+      "specialty": "Especialidade"
     },
     "chart": {
       "status_breakdown": "Distribuição por estado",
@@ -1230,7 +1231,8 @@
       "total": "Total",
       "top_customers": "Principais customeres",
       "customer": "Customere",
-      "avg_value": "Valor médio"
+      "avg_value": "Valor médio",
+      "specialty": "Especialidade"
     }
   },
   "invoices": {

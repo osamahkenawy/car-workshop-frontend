@@ -1124,7 +1124,7 @@
       "customer": "Customere",
       "revenue_generated": "Ingresos generados",
       "status": "Estado",
-      "pct_failed": "% Fallidos",
+      "pct_failed": "% de fallidos y cancelados",
       "company": "Empresa",
       "success_rate": "Tasa de éxito",
       "mechanic": "Conductor",
@@ -1141,7 +1141,8 @@
       "type": "Tipo",
       "count": "Cantidad",
       "delivered": "Entregado",
-      "revenue": "Ingresos"
+      "revenue": "Ingresos",
+      "specialty": "Especialidad"
     },
     "pdf": {
       "orders_by_zone": "Pedidos por zona",
@@ -1166,7 +1167,8 @@
       "vehicle": "Vehículo",
       "bay": "Zona",
       "total_orders": "Total de pedidos",
-      "failed": "Fallido"
+      "failed": "Fallido",
+      "specialty": "Especialidad"
     },
     "schedules": {
       "empty_title": "Sin informes programados",

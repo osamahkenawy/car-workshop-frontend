@@ -2425,7 +2425,7 @@
       "failed": "Échouées",
       "method": "Méthode",
       "orders": "Commandes",
-      "pct_failed": "% Échoué",
+      "pct_failed": "% des échoués et annulés",
       "pct_total": "% du Total",
       "rating": "Note",
       "reason": "Raison",
@@ -2438,7 +2438,8 @@
       "total": "Total",
       "type": "Type de rapport",
       "vehicle": "Véhicule",
-      "bay": "ServiceBay"
+      "bay": "ServiceBay",
+      "specialty": "Spécialité"
     },
     "count": "Nombre",
     "create_schedule": "Créer un nouveau planning",
@@ -2521,7 +2522,8 @@
       "total_revenue": "Revenu total",
       "value": "Valeur",
       "vehicle": "Véhicule",
-      "bay": "ServiceBay"
+      "bay": "ServiceBay",
+      "specialty": "Spécialité"
     },
     "pdf_report": "Rapport PDF",
     "performance_report": "Rapport de performance",

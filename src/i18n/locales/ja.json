@@ -2425,7 +2425,7 @@
       "failed": "失敗",
       "method": "方法",
       "orders": "注文",
-      "pct_failed": "失敗率",
+      "pct_failed": "失敗・キャンセルの割合",
       "pct_total": "総計比",
       "rating": "評価",
       "reason": "理由",
@@ -2438,7 +2438,8 @@
       "total": "合計",
       "type": "レポートタイプ",
       "vehicle": "車両",
-      "bay": "ゾーン"
+      "bay": "ゾーン",
+      "specialty": "専門分野"
     },
     "count": "数",
     "create_schedule": "新しいスケジュールを作成",
@@ -2521,7 +2522,8 @@
       "total_revenue": "総収入",
       "value": "値",
       "vehicle": "車両",
-      "bay": "ゾーン"
+      "bay": "ゾーン",
+      "specialty": "専門分野"
     },
     "pdf_report": "PDFレポート",
     "performance_report": "パフォーマンスレポート",

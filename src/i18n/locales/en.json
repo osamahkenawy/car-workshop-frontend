@@ -1124,7 +1124,7 @@
     "col": {
       "reason": "Reason",
       "count": "Count",
-      "pct_failed": "% of Failed",
+      "pct_failed": "% of Failed & Cancelled",
       "success_rate": "Success Rate",
       "revenue": "Revenue",
       "rating": "Rating",
@@ -1147,7 +1147,8 @@
       "type": "Type",
       "customer": "Customer",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "specialty": "Specialty"
     },
     "chart": {
       "status_breakdown": "WorkOrder Status Breakdown",
@@ -1236,7 +1237,8 @@
       "total": "Total",
       "top_customers": "Top Customers",
       "customer": "Customer",
-      "avg_value": "Avg Value"
+      "avg_value": "Avg Value",
+      "specialty": "Specialty"
     }
   },
   "invoices": {

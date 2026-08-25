@@ -1118,7 +1118,7 @@
     "col": {
       "reason": "Dahilan",
       "count": "Bilang",
-      "pct_failed": "% ng Nabigo",
+      "pct_failed": "% ng nabigo at kanselado",
       "success_rate": "Rate ng Tagumpay",
       "revenue": "Revenue",
       "rating": "Rating",
@@ -1141,7 +1141,8 @@
       "type": "Uri",
       "customer": "Kliyente",
       "status": "Katayuan",
-      "actions": "Mga Aksyon"
+      "actions": "Mga Aksyon",
+      "specialty": "Espesyalidad"
     },
     "chart": {
       "status_breakdown": "Breakdown ng Status ng WorkOrder",
@@ -1230,7 +1231,8 @@
       "total": "Kabuuan",
       "top_customers": "Mga Nangungunang Customer",
       "customer": "Kliyente",
-      "avg_value": "Avg na Halaga"
+      "avg_value": "Avg na Halaga",
+      "specialty": "Espesyalidad"
     }
   },
   "invoices": {

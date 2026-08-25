@@ -2425,7 +2425,7 @@
       "failed": "ناکام",
       "method": "طریقہ",
       "orders": "آرڈرز",
-      "pct_failed": "ناکامی %",
+      "pct_failed": "ناکام اور منسوخ کا فیصد",
       "pct_total": "کل %",
       "rating": "درجہ بندی",
       "reason": "وجہ",
@@ -2438,7 +2438,8 @@
       "total": "کل",
       "type": "قسم",
       "vehicle": "گاڑی",
-      "bay": "زون"
+      "bay": "زون",
+      "specialty": "تخصص"
     },
     "count": "تعداد",
     "create_schedule": "نیا شیڈول بنائیں",
@@ -2521,7 +2522,8 @@
       "total_revenue": "کل آمدنی",
       "value": "قیمت",
       "vehicle": "گاڑی",
-      "bay": "زون"
+      "bay": "زون",
+      "specialty": "تخصص"
     },
     "pdf_report": "PDF رپورٹ",
     "performance_report": "کارکردگی رپورٹ",

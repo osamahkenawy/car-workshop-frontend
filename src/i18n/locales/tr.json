@@ -2425,7 +2425,7 @@
       "failed": "Başarısız",
       "method": "Yöntem",
       "orders": "Siparişler",
-      "pct_failed": "Başarısız %",
+      "pct_failed": "Başarısız ve iptal edilenlerin %'si",
       "pct_total": "Toplam %",
       "rating": "Değerlendirme",
       "reason": "Sebep",
@@ -2438,7 +2438,8 @@
       "total": "Toplam",
       "type": "Tür",
       "vehicle": "Araç",
-      "bay": "Bölge"
+      "bay": "Bölge",
+      "specialty": "Uzmanlık"
     },
     "count": "Sayı",
     "create_schedule": "Yeni Plan Oluştur",
@@ -2521,7 +2522,8 @@
       "total_revenue": "Toplam Gelir",
       "value": "Değer",
       "vehicle": "Araç",
-      "bay": "Bölge"
+      "bay": "Bölge",
+      "specialty": "Uzmanlık"
     },
     "pdf_report": "PDF Raporu",
     "performance_report": "Performans Raporu",

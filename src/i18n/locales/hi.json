@@ -1118,7 +1118,7 @@
     "col": {
       "reason": "कारण",
       "count": "गिनती",
-      "pct_failed": "विफल में से %",
+      "pct_failed": "विफल और रद्द का %",
       "success_rate": "सफलता दर",
       "revenue": "राजस्व",
       "rating": "रेटिंग",
@@ -1141,7 +1141,8 @@
       "type": "प्रकार",
       "customer": "क्लाइंट",
       "status": "स्थिति",
-      "actions": "कार्रवाइयाँ"
+      "actions": "कार्रवाइयाँ",
+      "specialty": "विशेषज्ञता"
     },
     "chart": {
       "status_breakdown": "ऑर्डर स्थिति विभाजन",
@@ -1230,7 +1231,8 @@
       "total": "कुल",
       "top_customers": "टॉप क्लाइंट्स",
       "customer": "क्लाइंट",
-      "avg_value": "औसत मूल्य"
+      "avg_value": "औसत मूल्य",
+      "specialty": "विशेषज्ञता"
     }
   },
   "invoices": {

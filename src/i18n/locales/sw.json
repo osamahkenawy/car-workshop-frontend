@@ -2425,7 +2425,7 @@
       "failed": "Imeshindwa",
       "method": "Njia",
       "orders": "Oda",
-      "pct_failed": "% Iliyoshindwa",
+      "pct_failed": "% ya zilizoshindwa na kughairiwa",
       "pct_total": "% ya Jumla",
       "rating": "Ukadiriaji",
       "reason": "Sababu",
@@ -2438,7 +2438,8 @@
       "total": "Jumla",
       "type": "Aina",
       "vehicle": "Gari",
-      "bay": "Eneo"
+      "bay": "Eneo",
+      "specialty": "Utaalamu"
     },
     "count": "Hesabu",
     "create_schedule": "Unda Ratiba Mpya",
@@ -2521,7 +2522,8 @@
       "total_revenue": "Jumla ya Mapato",
       "value": "Thamani",
       "vehicle": "Gari",
-      "bay": "Eneo"
+      "bay": "Eneo",
+      "specialty": "Utaalamu"
     },
     "pdf_report": "Ripoti ya PDF",
     "performance_report": "Ripoti ya Utendaji",

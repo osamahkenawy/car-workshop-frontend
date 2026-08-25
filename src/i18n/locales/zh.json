@@ -2425,7 +2425,7 @@
       "failed": "失败",
       "method": "方式",
       "orders": "订单",
-      "pct_failed": "失败率",
+      "pct_failed": "失败和取消的占比",
       "pct_total": "占比",
       "rating": "评分",
       "reason": "原因",
@@ -2438,7 +2438,8 @@
       "total": "合计",
       "type": "类型",
       "vehicle": "车辆",
-      "bay": "区域"
+      "bay": "区域",
+      "specialty": "专长"
     },
     "count": "数量",
     "create_schedule": "创建新计划",
@@ -2521,7 +2522,8 @@
       "total_revenue": "总收入",
       "value": "值",
       "vehicle": "车辆",
-      "bay": "区域"
+      "bay": "区域",
+      "specialty": "专长"
     },
     "pdf_report": "PDF报告",
     "performance_report": "绩效报告",
