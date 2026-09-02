@@ -725,7 +725,11 @@
     "yes": "はい",
     "yesterday": "昨日",
     "bay": "ゾーン",
-    "service_bays": "ゾーン"
+    "service_bays": "ゾーン",
+    "crm": "CRM",
+    "customer_360": "顧客360",
+    "service_reminders": "点検リマインダー",
+    "crm_tasks": "タスクとフォロー"
   },
   "dashboard": {
     "active_label": "アクティブ",

@@ -725,7 +725,11 @@
     "yes": "Evet",
     "yesterday": "Dün",
     "bay": "Bölge",
-    "service_bays": "Bölgeler"
+    "service_bays": "Bölgeler",
+    "crm": "CRM",
+    "customer_360": "Müşteri 360",
+    "service_reminders": "Servis hatırlatmaları",
+    "crm_tasks": "Görevler ve takipler"
   },
   "dashboard": {
     "active_label": "Aktif",

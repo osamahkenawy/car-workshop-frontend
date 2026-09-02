@@ -7,7 +7,7 @@ import {
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
   RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
-  EmojiSatisfied
+  EmojiSatisfied, ClipboardCheck,
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -41,6 +41,9 @@ const iconMap = {
   'cod':              CreditCard,
   'performance':      Medal,
   'customer_feedback': EmojiSatisfied,
+  'customer-360':     User,
+  'reminders':        Bell,
+  'crm-tasks':        ClipboardCheck,
 };
 
 /*
@@ -78,6 +81,19 @@ const navSections = [
       { path: '/job-assignment',     labelKey: 'job_assignment',  iconKey: 'job-assignment',   moduleKey: 'job-assignment',    roles: ['admin', 'dispatcher'] },
       { path: '/service-tracking',   labelKey: 'tracking',        iconKey: 'service-tracking', moduleKey: 'service-status',    roles: ['admin', 'dispatcher'] },
       { path: '/warranty-claims',    labelKey: 'returns',         iconKey: 'returns',          moduleKey: 'warranty-claims',   roles: ['admin', 'dispatcher'] },
+    ]
+  },
+
+  /* ── CRM ──────────────────────────────────────────────
+     Sits next to Operations because the work flows from Enquiries and
+     Customers, directly above it. Each entry carries a moduleKey so the
+     super-admin module toggles can switch it on per workshop. */
+  {
+    titleKey: 'crm',
+    items: [
+      { path: '/crm/customers',      labelKey: 'customer_360',      iconKey: 'customer-360',  moduleKey: 'crm-customers',  roles: ['admin', 'dispatcher'] },
+      { path: '/crm/reminders',      labelKey: 'service_reminders', iconKey: 'reminders',     moduleKey: 'crm-reminders',  roles: ['admin', 'dispatcher'] },
+      { path: '/crm/tasks',          labelKey: 'crm_tasks',         iconKey: 'crm-tasks',     moduleKey: 'crm-tasks',      roles: ['admin', 'dispatcher'] },
     ]
   },
   /* ── MECHANIC TOOLS ─────────────────────────────────── */

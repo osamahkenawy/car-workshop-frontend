@@ -725,7 +725,11 @@
     "yes": "Oui",
     "yesterday": "Hier",
     "bay": "ServiceBay",
-    "service_bays": "ServiceBays"
+    "service_bays": "ServiceBays",
+    "crm": "CRM",
+    "customer_360": "Client 360",
+    "service_reminders": "Rappels d’entretien",
+    "crm_tasks": "Tâches et relances"
   },
   "dashboard": {
     "active_label": "Actif",

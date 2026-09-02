@@ -725,7 +725,11 @@
     "yes": "Ndiyo",
     "yesterday": "Jana",
     "bay": "Eneo",
-    "service_bays": "Kanda"
+    "service_bays": "Kanda",
+    "crm": "CRM",
+    "customer_360": "Mteja 360",
+    "service_reminders": "Vikumbusho vya huduma",
+    "crm_tasks": "Kazi na ufuatiliaji"
   },
   "dashboard": {
     "active_label": "Hai",

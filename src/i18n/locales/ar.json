@@ -193,7 +193,11 @@
     "save_changes": "Save Changes",
     "area": "Area",
     "track": "Track",
-    "creating": "Creating…"
+    "creating": "Creating…",
+    "crm": "إدارة العلاقات",
+    "customer_360": "ملف العميل الشامل",
+    "service_reminders": "تذكيرات الصيانة",
+    "crm_tasks": "المهام والمتابعات"
   },
   "dashboard": {
     "title": "لوحة التحكم",

@@ -725,7 +725,11 @@
     "yes": "是",
     "yesterday": "昨天",
     "bay": "区域",
-    "service_bays": "区域"
+    "service_bays": "区域",
+    "crm": "客户管理",
+    "customer_360": "客户360",
+    "service_reminders": "保养提醒",
+    "crm_tasks": "任务与跟进"
   },
   "dashboard": {
     "active_label": "活跃",

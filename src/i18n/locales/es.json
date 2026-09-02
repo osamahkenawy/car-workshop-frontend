@@ -190,7 +190,11 @@
     "export_csv": "Exportar CSV",
     "order_num": "Pedido #",
     "day": "día",
-    "days": "días"
+    "days": "días",
+    "crm": "CRM",
+    "customer_360": "Cliente 360",
+    "service_reminders": "Recordatorios de servicio",
+    "crm_tasks": "Tareas y seguimientos"
   },
   "dashboard": {
     "title": "Panel",

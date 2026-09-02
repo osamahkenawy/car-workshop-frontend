@@ -43,6 +43,11 @@ const SignupPage          = lazy(() => import('./pages/SignupPage'));
 const ResetPassword       = lazy(() => import('./pages/ResetPassword'));
 const ServiceStatusPublic = lazy(() => import('./pages/ServiceStatusPublic'));
 
+/* ── CRM phase 1 ─────────────────────────────────────────── */
+const Customer360  = lazy(() => import('./pages/Customer360'));
+const CrmReminders = lazy(() => import('./pages/CrmReminders'));
+const CrmTasks     = lazy(() => import('./pages/CrmTasks'));
+
 /* ── Customer portal ("merchant" area) ────────────────────── */
 const CustomerLayout          = lazy(() => import('./pages/CustomerPortal/CustomerLayout'));
 const CustomerLogin           = lazy(() => import('./pages/CustomerPortal/CustomerLogin'));
@@ -138,6 +143,11 @@ export default function App() {
         <Route path="/job-assignment" element={<Protected><JobAssignment /></Protected>} />
         <Route path="/service-tracking" element={<Protected><ServiceTracking /></Protected>} />
         <Route path="/warranty-claims" element={<Protected><WarrantyClaims /></Protected>} />
+        {/* CRM. /crm/customers with no id shows a search; with an id, the 360 view. */}
+        <Route path="/crm/customers" element={<Protected><Customer360 /></Protected>} />
+        <Route path="/crm/customers/:id" element={<Protected><Customer360 /></Protected>} />
+        <Route path="/crm/reminders" element={<Protected><CrmReminders /></Protected>} />
+        <Route path="/crm/tasks" element={<Protected><CrmTasks /></Protected>} />
         <Route path="/service-bays" element={<Protected><ServiceBays /></Protected>} />
         <Route path="/service-pricing" element={<Protected><ServicePricing /></Protected>} />
         <Route path="/inventory" element={<Protected><Inventory /></Protected>} />

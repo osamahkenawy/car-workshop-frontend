@@ -190,7 +190,11 @@
     "order_num": "Pedido #",
     "day": "dia",
     "days": "dias",
-    "prev": "Anterior"
+    "prev": "Anterior",
+    "crm": "CRM",
+    "customer_360": "Cliente 360",
+    "service_reminders": "Lembretes de serviço",
+    "crm_tasks": "Tarefas e acompanhamentos"
   },
   "dashboard": {
     "title": "Painel",

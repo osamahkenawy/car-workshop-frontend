@@ -725,7 +725,11 @@
     "yes": "ہاں",
     "yesterday": "کل",
     "bay": "زون",
-    "service_bays": "زونز"
+    "service_bays": "زونز",
+    "crm": "سی آر ایم",
+    "customer_360": "کسٹمر 360",
+    "service_reminders": "سروس یاد دہانیاں",
+    "crm_tasks": "کام اور فالو اپ"
   },
   "dashboard": {
     "active_label": "فعال",
