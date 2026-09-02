@@ -75,7 +75,12 @@ export default function CrmReminders() {
       if (list?.success) setRows(list.data || []);
       if (s?.success) setStats(s.data);
     } catch (e) {
-      setBanner({ kind: 'error', text: 'Could not load reminders. Try again.' });
+      setBanner({
+        kind: 'error',
+        text: e?.message
+          ? `Could not load reminders — ${e.message}`
+          : 'Could not load reminders. Try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -140,13 +145,22 @@ export default function CrmReminders() {
 
   const T = stats?.totals || {};
 
+  // Four cards, not five: .stats-grid is auto-fit/minmax(220px), so a fifth
+  // breaks to its own row and looks like a layout bug. Overdue is a severity of
+  // due rather than a separate bucket, so it sits on that card.
   const cards = [
-    { key: 'due_now',  label: 'Due now',       value: T.due_now,  Icon: Bell,      accent: '#B77900' },
-    { key: 'overdue',  label: 'Overdue',       value: T.overdue,  Icon: WarningTriangle, accent: '#B3341F' },
-    { key: 'upcoming', label: 'Upcoming',      value: T.upcoming, Icon: Calendar,  accent: '#4C5C64' },
-    { key: 'sent',     label: 'Awaiting reply', value: T.awaiting_reply, Icon: Send, accent: '#2E5E7E' },
-    { key: 'won',      label: 'Booked',        value: T.won,      Icon: CheckCircle, accent: '#1C6B52',
-      sub: T.sent_total > 0 ? `${T.conversion_rate}% of sent` : null },
+    {
+      key: 'due_now', label: 'Due now', value: T.due_now, Icon: Bell,
+      accent: Number(T.overdue) > 0 ? '#B3341F' : '#B77900',
+      sub: Number(T.overdue) > 0 ? `${Number(T.overdue)} already overdue` : null,
+      subUrgent: true,
+    },
+    { key: 'upcoming', label: 'Upcoming', value: T.upcoming, Icon: Calendar, accent: '#4C5C64' },
+    { key: 'sent', label: 'Awaiting reply', value: T.awaiting_reply, Icon: Send, accent: '#2E5E7E' },
+    {
+      key: 'won', label: 'Booked', value: T.won, Icon: CheckCircle, accent: '#1C6B52',
+      sub: Number(T.sent_total) > 0 ? `${T.conversion_rate}% of those sent` : null,
+    },
   ];
 
   return (
@@ -188,7 +202,11 @@ export default function CrmReminders() {
             <div className="stat-info">
               <h3 style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(c.value ?? 0)}</h3>
               <p>{c.label}</p>
-              {c.sub && <p style={{ fontSize: 11, color: '#8A8A8A', margin: 0 }}>{c.sub}</p>}
+              {c.sub && (
+                <p style={{ fontSize: 11, margin: 0, color: c.subUrgent ? '#B3341F' : '#8A8A8A' }}>
+                  {c.sub}
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -222,7 +240,7 @@ export default function CrmReminders() {
       </div>
 
       <div className="table-responsive">
-        <table>
+        <table className="contacts-table">
           <thead>
             <tr>
               <th>Customer</th>

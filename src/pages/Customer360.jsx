@@ -171,7 +171,7 @@ export default function Customer360() {
 
         {results.length > 0 && (
           <div className="table-responsive">
-            <table>
+            <table className="contacts-table">
               <thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>City</th><th /></tr></thead>
               <tbody>
                 {results.map(c => (
@@ -219,17 +219,26 @@ export default function Customer360() {
 
   const { customer: c, vehicles, stats, feedback, timeline, tasks, reminders } = data;
 
+  // Four cards: a fifth wraps to its own row on .stats-grid. Average job is a
+  // property of lifetime value, so it reads better beneath it than beside it.
   const cards = [
-    { key: 'ltv',    label: 'Lifetime value', value: fmtCurrency(stats.lifetime_value), Icon: Wallet, accent: '#1C6B52' },
-    { key: 'jobs',   label: 'Jobs completed', value: Number(stats.jobs_completed ?? 0), Icon: Package, accent: '#2E5E7E' },
-    { key: 'avg',    label: 'Average job',    value: fmtCurrency(stats.avg_job_value), Icon: Wallet, accent: '#6B5B95' },
+    {
+      key: 'ltv', label: 'Lifetime value', value: fmtCurrency(stats.lifetime_value),
+      Icon: Wallet, accent: '#1C6B52',
+      sub: Number(stats.avg_job_value) > 0 ? `${fmtCurrency(stats.avg_job_value)} average job` : null,
+    },
+    { key: 'jobs', label: 'Jobs completed', value: Number(stats.jobs_completed ?? 0), Icon: Package, accent: '#2E5E7E' },
     {
       key: 'last', label: 'Last visit', Icon: Calendar, accent: '#B77900',
       value: stats.days_since_last_visit === null
         ? 'Never'
         : stats.days_since_last_visit === 0 ? 'Today' : `${stats.days_since_last_visit}d ago`,
     },
-    { key: 'enq',    label: 'Enquiries',      value: Number(stats.enquiries_total ?? 0), Icon: Megaphone, accent: '#B77900' },
+    {
+      key: 'enq', label: 'Enquiries', value: Number(stats.enquiries_total ?? 0),
+      Icon: Megaphone, accent: '#6B5B95',
+      sub: Number(stats.enquiries_converted) > 0 ? `${Number(stats.enquiries_converted)} converted` : null,
+    },
   ];
 
   return (
@@ -278,6 +287,9 @@ export default function Customer360() {
                 <bdi>{x.value}</bdi>
               </h3>
               <p>{x.label}</p>
+              {x.sub && (
+                <p style={{ fontSize: 11, margin: 0, color: '#8A8A8A' }}><bdi>{x.sub}</bdi></p>
+              )}
             </div>
           </div>
         ))}

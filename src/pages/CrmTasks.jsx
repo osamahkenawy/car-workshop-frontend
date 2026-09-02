@@ -93,8 +93,11 @@ export default function CrmTasks() {
       ]);
       if (list?.success) setRows(list.data || []);
       if (s?.success) setStats(s.data);
-    } catch {
-      setBanner({ kind: 'error', text: 'Could not load tasks. Try again.' });
+    } catch (e) {
+      setBanner({
+        kind: 'error',
+        text: e?.message ? `Could not load tasks — ${e.message}` : 'Could not load tasks. Try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -158,12 +161,18 @@ export default function CrmTasks() {
   }
 
   const T = stats?.totals || {};
+  // Four cards for the same reason as the reminders page: a fifth wraps to its
+  // own row. Unassigned belongs on the Open card — it is a property of open
+  // work, not a separate count.
   const cards = [
-    { key: 'overdue',    label: 'Overdue',      value: T.overdue,     Icon: WarningTriangle, accent: '#B3341F' },
-    { key: 'today',      label: 'Due today',    value: T.due_today,   Icon: Calendar,        accent: '#B77900' },
-    { key: 'open',       label: 'Open',         value: T.open_count,  Icon: ClipboardCheck,  accent: '#2E5E7E' },
-    { key: 'unassigned', label: 'Unassigned',   value: T.unassigned,  Icon: User,            accent: '#6B5B95' },
-    { key: 'done',       label: 'Done today',   value: T.done_today,  Icon: CheckCircle,     accent: '#1C6B52' },
+    { key: 'overdue', label: 'Overdue',   value: T.overdue,   Icon: WarningTriangle, accent: '#B3341F' },
+    { key: 'today',   label: 'Due today', value: T.due_today, Icon: Calendar,        accent: '#B77900' },
+    {
+      key: 'open', label: 'Open', value: T.open_count, Icon: ClipboardCheck, accent: '#2E5E7E',
+      sub: Number(T.unassigned) > 0 ? `${Number(T.unassigned)} unassigned` : null,
+      subUrgent: true,
+    },
+    { key: 'done', label: 'Done today', value: T.done_today, Icon: CheckCircle, accent: '#1C6B52' },
   ];
 
   return (
@@ -196,6 +205,11 @@ export default function CrmTasks() {
             <div className="stat-info">
               <h3 style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(c.value ?? 0)}</h3>
               <p>{c.label}</p>
+              {c.sub && (
+                <p style={{ fontSize: 11, margin: 0, color: c.subUrgent ? '#B77900' : '#8A8A8A' }}>
+                  {c.sub}
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -234,7 +248,7 @@ export default function CrmTasks() {
       </div>
 
       <div className="table-responsive">
-        <table>
+        <table className="contacts-table">
           <thead>
             <tr>
               <th>Task</th>
