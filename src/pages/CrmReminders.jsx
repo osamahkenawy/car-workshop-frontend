@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Bell, Calendar, Send, Clock, CheckCircle, WarningTriangle,
-  Refresh, Search, Phone, Mail, ChatBubble, Xmark, Car,
+  Bell, Calendar, Send, Clock, CheckCircle, Refresh, Search, Phone, Mail,
+  ChatBubble, ChatBubbleSolid, Xmark, Car, MoreVert, SortDown,
 } from 'iconoir-react';
 import api from '../lib/api';
 import './CRMPages.css';
+import './CrmSurface.css';
 
 /**
  * Service Reminders — the CRM module with a revenue case rather than a
@@ -17,11 +18,9 @@ import './CRMPages.css';
  * hundred people at 3am.
  */
 
-const NAVY = '#1e3a6b';
-
 const STATUS_META = {
   scheduled: { label: 'Upcoming',  color: '#4C5C64', bg: '#EDEEEA' },
-  due:       { label: 'Due now',   color: '#B77900', bg: '#FDF2D6' },
+  due:       { label: 'Due Now',   color: '#c0392b', bg: '#fdeaea' },
   sent:      { label: 'Sent',      color: '#2E5E7E', bg: '#E6EEF4' },
   snoozed:   { label: 'Snoozed',   color: '#6B5B95', bg: '#EFEAF6' },
   booked:    { label: 'Booked',    color: '#1C6B52', bg: '#E7F0EB' },
@@ -40,7 +39,20 @@ const SERVICE_LABELS = {
   transmission: 'Transmission service',
 };
 
-const CHANNEL_ICON = { whatsapp: ChatBubble, sms: ChatBubble, email: Mail, call: Phone, none: Xmark };
+/**
+ * Channel gets its own icon and label casing — "SMS", not "Sms".
+ *
+ * iconoir carries no brand marks, so WhatsApp is the solid bubble in its own
+ * green against the outline bubble used for SMS. That reads as two different
+ * channels at a glance without pulling in an icon set for a single glyph.
+ */
+const CHANNEL_META = {
+  whatsapp: { Icon: ChatBubbleSolid, label: 'WhatsApp' },
+  sms:      { Icon: ChatBubble,      label: 'SMS' },
+  email:    { Icon: Mail,            label: 'Email' },
+  call:     { Icon: Phone,           label: 'Call' },
+  none:     { Icon: Xmark,           label: 'No channel' },
+};
 
 const VIEWS = [
   { key: 'due',      label: 'Due now' },
@@ -51,23 +63,56 @@ const VIEWS = [
   { key: '',         label: 'All open' },
 ];
 
+/* Row avatars are tinted so a long list is scannable by colour as well as by
+   name. The tint is derived from the name so it is stable across reloads and
+   across views — a customer keeps their colour. */
+const AVATAR_TINTS = [
+  { bg: '#fbe2e2', fg: '#b5372a' },
+  { bg: '#e3ecfd', fg: '#2455c8' },
+  { bg: '#ddf0e6', fg: '#166b4a' },
+  { bg: '#fcf0d9', fg: '#96651a' },
+  { bg: '#ece5fa', fg: '#5b3fa0' },
+  { bg: '#dcedf1', fg: '#0d6273' },
+];
+
+function avatarTint(name) {
+  const s = String(name || '');
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) % 9973;
+  return AVATAR_TINTS[h % AVATAR_TINTS.length];
+}
+
+const initials = name => String(name || '?')
+  .trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+
 export default function CrmReminders() {
   const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [stats, setStats] = useState(null);
   const [view, setView] = useState('due');
   const [search, setSearch] = useState('');
+  const [debounced, setDebounced] = useState('');
+  const [soonestFirst, setSoonestFirst] = useState(true);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [banner, setBanner] = useState(null);
+  const [menuId, setMenuId] = useState(null);
+  const menuRef = useRef(null);
+
+  // The search box used to refetch the list *and* the stats on every
+  // keystroke, so typing a plate fired seven pairs of requests.
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(search.trim()), 280);
+    return () => clearTimeout(id);
+  }, [search]);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const qs = new URLSearchParams({ limit: '100' });
       if (view) qs.set('view', view);
-      if (search.trim()) qs.set('search', search.trim());
+      if (debounced) qs.set('search', debounced);
       const [list, s] = await Promise.all([
         api.get(`/crm/reminders?${qs}`),
         api.get('/crm/reminders/stats'),
@@ -84,9 +129,23 @@ export default function CrmReminders() {
     } finally {
       setLoading(false);
     }
-  }, [view, search]);
+  }, [view, debounced]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Close the row menu on an outside click or Escape, so it cannot be left
+  // hanging open over the row beneath it.
+  useEffect(() => {
+    if (menuId === null) return;
+    const onDown = e => { if (!menuRef.current?.contains(e.target)) setMenuId(null); };
+    const onKey = e => { if (e.key === 'Escape') setMenuId(null); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuId]);
 
   async function generate() {
     setGenerating(true);
@@ -118,10 +177,7 @@ export default function CrmReminders() {
     setBanner(null);
     try {
       const res = await api.post(`/crm/reminders/${row.id}/send`);
-      setBanner({
-        kind: res?.success ? 'ok' : 'error',
-        text: res?.message || 'Sent.',
-      });
+      setBanner({ kind: res?.success ? 'ok' : 'error', text: res?.message || 'Sent.' });
       load();
     } catch (e) {
       setBanner({ kind: 'error', text: e?.message || 'Could not send that reminder.' });
@@ -131,6 +187,7 @@ export default function CrmReminders() {
   }
 
   async function patch(row, body, okText) {
+    setMenuId(null);
     setBusyId(row.id);
     try {
       const res = await api.patch(`/crm/reminders/${row.id}`, body);
@@ -145,102 +202,95 @@ export default function CrmReminders() {
 
   const T = stats?.totals || {};
 
-  // Four cards, not five: .stats-grid is auto-fit/minmax(220px), so a fifth
-  // breaks to its own row and looks like a layout bug. Overdue is a severity of
-  // due rather than a separate bucket, so it sits on that card.
   const cards = [
     {
-      key: 'due_now', label: 'Due now', value: T.due_now, Icon: Bell,
-      accent: Number(T.overdue) > 0 ? '#B3341F' : '#B77900',
+      key: 'due_now', label: 'Due now', value: T.due_now, Icon: Bell, tone: 'rose',
       sub: Number(T.overdue) > 0 ? `${Number(T.overdue)} already overdue` : null,
       subUrgent: true,
     },
-    { key: 'upcoming', label: 'Upcoming', value: T.upcoming, Icon: Calendar, accent: '#4C5C64' },
-    { key: 'sent', label: 'Awaiting reply', value: T.awaiting_reply, Icon: Send, accent: '#2E5E7E' },
+    { key: 'upcoming', label: 'Upcoming', value: T.upcoming, Icon: Calendar, tone: 'blue' },
+    { key: 'sent', label: 'Awaiting reply', value: T.awaiting_reply, Icon: Send, tone: 'amber' },
     {
-      key: 'won', label: 'Booked', value: T.won, Icon: CheckCircle, accent: '#1C6B52',
+      key: 'won', label: 'Booked', value: T.won, Icon: CheckCircle, tone: 'green',
       sub: Number(T.sent_total) > 0 ? `${T.conversion_rate}% of those sent` : null,
     },
   ];
 
+  /* The sort toggle is client-side on purpose: the list is capped at 100 rows,
+     so flipping the order does not need a round trip. */
+  const ordered = useMemo(() => {
+    const copy = [...rows];
+    copy.sort((a, b) => {
+      const x = String(a.due_at || '');
+      const y = String(b.due_at || '');
+      return soonestFirst ? x.localeCompare(y) : y.localeCompare(x);
+    });
+    return copy;
+  }, [rows, soonestFirst]);
+
   return (
-    <div className="page-container">
-      <div className="page-header-row">
+    <div className="page-container cs">
+      <header className="cs-head">
         <div>
-          <h1 className="page-heading">{t('common.service_reminders', 'Service Reminders')}</h1>
-          <p className="page-subheading">
-            Cars due for service, and whether the reminder brought them back
-          </p>
+          <h1 className="cs-title">{t('common.service_reminders', 'Service Reminders')}</h1>
+          <p className="cs-sub">Cars due for service, and whether the reminder brought them back</p>
         </div>
-        <button className="btn-primary-action" onClick={generate} disabled={generating}>
-          <Refresh width={16} height={16} />
+        <button className="cs-generate" onClick={generate} disabled={generating}>
+          <Refresh width={17} height={17} />
           {generating ? 'Working…' : 'Find due services'}
         </button>
-      </div>
+      </header>
 
-      {banner && (
-        <div
-          role="status"
-          style={{
-            margin: '0 0 16px', padding: '10px 14px', borderRadius: 8, fontSize: 14,
-            border: '1px solid',
-            borderColor: banner.kind === 'error' ? '#B3341F' : banner.kind === 'ok' ? '#1C6B52' : '#B77900',
-            background: banner.kind === 'error' ? '#FDECEA' : banner.kind === 'ok' ? '#E7F0EB' : '#FDF2D6',
-            color: banner.kind === 'error' ? '#8C2818' : banner.kind === 'ok' ? '#14503D' : '#7A5200',
-          }}
-        >
-          {banner.text}
-        </div>
-      )}
+      {banner && <div role="status" className={`cs-banner is-${banner.kind}`}>{banner.text}</div>}
 
-      <div className="stats-grid">
+      <div className="cs-kpis">
         {cards.map(c => (
-          <div className="stat-card" key={c.key} style={{ borderTop: `3px solid ${c.accent}` }}>
-            <div className="stat-icon" style={{ background: `${c.accent}18`, color: c.accent }}>
-              <c.Icon width={20} height={20} />
-            </div>
-            <div className="stat-info">
-              <h3 style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(c.value ?? 0)}</h3>
-              <p>{c.label}</p>
-              {c.sub && (
-                <p style={{ fontSize: 11, margin: 0, color: c.subUrgent ? '#B3341F' : '#8A8A8A' }}>
-                  {c.sub}
-                </p>
-              )}
+          <div className={`cs-kpi cs-kpi--${c.tone}`} key={c.key}>
+            <div className="cs-kpi-icon"><c.Icon width={24} height={24} /></div>
+            <div className="cs-kpi-body">
+              <p className="cs-kpi-value">{Number(c.value ?? 0)}</p>
+              <p className="cs-kpi-label">{c.label}</p>
+              {c.sub && <p className={`cs-kpi-sub${c.subUrgent ? ' is-urgent' : ''}`}>{c.sub}</p>}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="filter-bar" style={{ flexWrap: 'wrap', gap: 8 }}>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+      <div className="cs-controls">
+        <div className="cs-views" role="tablist" aria-label="Reminder views">
           {VIEWS.map(v => (
             <button
               key={v.key || 'all'}
+              role="tab"
+              aria-selected={view === v.key}
+              className={`cs-view${view === v.key ? ' is-active' : ''}`}
               onClick={() => setView(v.key)}
-              className={view === v.key ? 'btn-sm-primary' : 'btn-sm-outline'}
             >
               {v.label}
             </button>
           ))}
         </div>
-        <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
-          <Search
-            width={16} height={16}
-            style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9aa0aa' }}
-          />
+        <div className="cs-search">
+          <Search width={17} height={17} />
           <input
-            className="form-control"
-            style={{ paddingInlineStart: 32 }}
             placeholder="Search name, phone or plate…"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            aria-label="Search reminders"
           />
         </div>
+        <button
+          className={`cs-sort${soonestFirst ? '' : ' is-active'}`}
+          onClick={() => setSoonestFirst(v => !v)}
+          title={soonestFirst ? 'Showing soonest first' : 'Showing latest first'}
+          aria-label={soonestFirst ? 'Sort latest first' : 'Sort soonest first'}
+        >
+          <SortDown width={18} height={18} />
+        </button>
       </div>
 
-      <div className="table-responsive">
-        <table className="contacts-table">
+      <div className="cs-tablewrap">
+        <table className="cs-table">
           <thead>
             <tr>
               <th>Customer</th>
@@ -249,34 +299,34 @@ export default function CrmReminders() {
               <th>Due</th>
               <th>Channel</th>
               <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Action</th>
+              <th style={{ textAlign: 'end' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="empty-col">Loading…</td></tr>
-            ) : rows.length === 0 ? (
+              <tr><td colSpan={7} className="cs-empty">Loading…</td></tr>
+            ) : ordered.length === 0 ? (
               <tr>
                 <td colSpan={7}>
-                  <div className="empty-state">
-                    <Bell className="empty-icon" width={40} height={40} />
+                  <div className="cs-empty">
+                    <Bell width={40} height={40} />
                     {/* An empty "Due now" tab while dozens sit under Upcoming reads
                         as a broken feature. Say where they are, and offer the jump. */}
                     {view === 'due' && Number(T.upcoming) > 0 ? (
                       <>
                         <p>Nothing due today — and that is the point of getting ahead of it.</p>
                         <p>
-                          <strong>{Number(T.upcoming)}</strong> reminder{Number(T.upcoming) === 1 ? '' : 's'} scheduled
-                          for later.
+                          <strong>{Number(T.upcoming)}</strong> reminder
+                          {Number(T.upcoming) === 1 ? '' : 's'} scheduled for later.
                         </p>
-                        <button className="btn-sm-primary" onClick={() => setView('upcoming')}>
+                        <button className="cs-empty-cta" onClick={() => setView('upcoming')}>
                           See what is coming
                         </button>
                       </>
                     ) : Number(T.total) === 0 ? (
                       <p>
-                        Nothing yet. Press <strong>Find due services</strong> to work out which cars
-                        are due, from the last job on each vehicle.
+                        Nothing yet. Press <strong>Find due services</strong> to work out which
+                        cars are due, from the last job on each vehicle.
                       </p>
                     ) : (
                       <p>No reminders in this view.</p>
@@ -284,41 +334,51 @@ export default function CrmReminders() {
                   </div>
                 </td>
               </tr>
-            ) : rows.map(r => {
+            ) : ordered.map(r => {
               const meta = STATUS_META[r.status] || STATUS_META.scheduled;
-              const ChannelIcon = CHANNEL_ICON[r.send_channel] || ChatBubble;
+              const ch = CHANNEL_META[r.send_channel] || CHANNEL_META.sms;
               const overdue = Number(r.is_overdue) === 1;
               const busy = busyId === r.id;
+              const tint = avatarTint(r.customer_name);
+              const open = ['scheduled', 'due', 'snoozed'].includes(r.status);
+              const closed = ['dismissed', 'expired', 'converted'].includes(r.status);
               return (
                 <tr key={r.id}>
                   <td>
-                    <strong>{r.customer_name || '—'}</strong>
-                    <div style={{ fontSize: 12, color: '#7d8494' }}>{r.customer_phone || r.customer_email || ''}</div>
+                    <div className="cs-who">
+                      <span className="cs-avatar" style={{ background: tint.bg, color: tint.fg }}>
+                        {initials(r.customer_name)}
+                      </span>
+                      <span>
+                        <div className="cs-name">{r.customer_name || '—'}</div>
+                        <div className="cs-meta">{r.customer_phone || r.customer_email || ''}</div>
+                      </span>
+                    </div>
                   </td>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Car width={14} height={14} style={{ color: '#9aa0aa', flex: 'none' }} />
+                    <div className="cs-vehicle">
+                      <Car width={17} height={17} />
                       <span>{[r.make, r.model].filter(Boolean).join(' ') || '—'}</span>
                     </div>
-                    <div style={{ fontSize: 12, color: '#7d8494' }}>
+                    <div className="cs-meta">
                       {r.plate_number || ''}
-                      {r.vehicle_mileage ? ` · ${Number(r.vehicle_mileage).toLocaleString()} km` : ''}
+                      {r.vehicle_mileage
+                        ? `${r.plate_number ? ' • ' : ''}${Number(r.vehicle_mileage).toLocaleString()} km`
+                        : ''}
                     </div>
                   </td>
-                  <td>
+                  <td className="cs-service">
                     {SERVICE_LABELS[r.service_type] || r.service_type?.replace(/_/g, ' ')}
-                    {r.due_mileage && (
-                      <div style={{ fontSize: 12, color: '#7d8494' }}>
-                        or {Number(r.due_mileage).toLocaleString()} km
-                      </div>
-                    )}
+                    {r.due_mileage ? (
+                      <div className="cs-meta">or {Number(r.due_mileage).toLocaleString()} km</div>
+                    ) : null}
                   </td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
-                    <span style={{ color: overdue ? '#B3341F' : 'inherit', fontWeight: overdue ? 600 : 400 }}>
+                  <td>
+                    <div className={`cs-due${overdue ? ' is-late' : ''}`}>
                       {String(r.due_at || '').slice(0, 10)}
-                    </span>
+                    </div>
                     {r.days_until_due !== null && r.days_until_due !== undefined && (
-                      <div style={{ fontSize: 12, color: overdue ? '#B3341F' : '#7d8494' }}>
+                      <div className="cs-meta" style={overdue ? { color: 'var(--cs-rose)' } : undefined}>
                         {Number(r.days_until_due) < 0
                           ? `${Math.abs(r.days_until_due)} days late`
                           : Number(r.days_until_due) === 0 ? 'today' : `in ${r.days_until_due} days`}
@@ -326,42 +386,95 @@ export default function CrmReminders() {
                     )}
                   </td>
                   <td>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13 }}>
-                      <ChannelIcon width={14} height={14} style={{ color: '#7d8494' }} />
-                      {r.send_channel}
+                    <span className={`cs-channel${r.send_channel === 'whatsapp' ? ' is-whatsapp' : ''}`}>
+                      <ch.Icon width={17} height={17} />
+                      {ch.label}
                     </span>
                   </td>
                   <td>
-                    <span className="status-badge" style={{ color: meta.color, background: meta.bg }}>
+                    <span className="cs-pill" style={{ color: meta.color, background: meta.bg }}>
                       {meta.label}
                     </span>
                   </td>
-                  <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    {['scheduled', 'due', 'snoozed'].includes(r.status) && (
-                      <button className="btn-sm-primary" disabled={busy} onClick={() => send(r)}>
-                        <Send width={13} height={13} /> {busy ? '…' : 'Send'}
-                      </button>
-                    )}
-                    {r.status === 'sent' && (
-                      <button className="btn-sm-primary" disabled={busy}
-                        onClick={() => patch(r, { status: 'booked' }, 'Marked as booked.')}>
-                        <CheckCircle width={13} height={13} /> Booked
-                      </button>
-                    )}
-                    {!['dismissed', 'expired', 'converted'].includes(r.status) && (
-                      <>
-                        <button className="btn-sm-outline" disabled={busy}
-                          onClick={() => patch(r, { snooze_days: 30 }, 'Snoozed for 30 days.')}
-                          title="Snooze 30 days">
-                          <Clock width={13} height={13} />
+                  <td>
+                    <div className="cs-actions">
+                      {/* A closed reminder has nothing left to do, but a wholly
+                          blank cell under an "Action" header reads as a
+                          rendering gap rather than as "finished". */}
+                      {closed && <span className="cs-done">No action needed</span>}
+                      {open && (
+                        <button className="cs-send" disabled={busy} onClick={() => send(r)}>
+                          <Send width={15} height={15} />
+                          {busy ? '…' : 'Send'}
                         </button>
-                        <button className="btn-sm-danger" disabled={busy}
-                          onClick={() => patch(r, { status: 'dismissed' }, 'Dismissed.')}
-                          title="Dismiss">
-                          <Xmark width={13} height={13} />
+                      )}
+                      {r.status === 'sent' && (
+                        <button
+                          className="cs-send"
+                          disabled={busy}
+                          onClick={() => patch(r, { status: 'booked' }, 'Marked as booked.')}
+                        >
+                          <CheckCircle width={15} height={15} />
+                          Booked
                         </button>
-                      </>
-                    )}
+                      )}
+                      {!closed && (
+                        <>
+                          <button
+                            className="cs-icon-btn"
+                            disabled={busy}
+                            onClick={() => patch(r, { snooze_days: 30 }, 'Snoozed for 30 days.')}
+                            title="Snooze 30 days"
+                            aria-label="Snooze 30 days"
+                          >
+                            <Clock width={17} height={17} />
+                          </button>
+                          <span className="cs-menu-wrap" ref={menuId === r.id ? menuRef : undefined}>
+                            <button
+                              className="cs-icon-btn"
+                              disabled={busy}
+                              onClick={() => setMenuId(menuId === r.id ? null : r.id)}
+                              aria-label="More actions"
+                              aria-expanded={menuId === r.id}
+                            >
+                              <MoreVert width={17} height={17} />
+                            </button>
+                            {menuId === r.id && (
+                              <div className="cs-menu" role="menu">
+                                <button
+                                  role="menuitem"
+                                  onClick={() => patch(r, { snooze_days: 7 }, 'Snoozed for a week.')}
+                                >
+                                  <Clock width={15} height={15} /> Snooze a week
+                                </button>
+                                <button
+                                  role="menuitem"
+                                  onClick={() => patch(r, { snooze_days: 90 }, 'Snoozed for 90 days.')}
+                                >
+                                  <Clock width={15} height={15} /> Snooze 90 days
+                                </button>
+                                {r.status !== 'booked' && (
+                                  <button
+                                    role="menuitem"
+                                    onClick={() => patch(r, { status: 'booked' }, 'Marked as booked.')}
+                                  >
+                                    <CheckCircle width={15} height={15} /> Mark as booked
+                                  </button>
+                                )}
+                                <div className="cs-menu-rule" />
+                                <button
+                                  role="menuitem"
+                                  className="is-danger"
+                                  onClick={() => patch(r, { status: 'dismissed' }, 'Dismissed.')}
+                                >
+                                  <Xmark width={15} height={15} /> Dismiss reminder
+                                </button>
+                              </div>
+                            )}
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
@@ -371,21 +484,18 @@ export default function CrmReminders() {
       </div>
 
       {stats?.by_type?.length > 0 && (
-        <div style={{ marginTop: 20 }}>
-          <h3 style={{ fontSize: 13, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7d8494' }}>
-            By service
-          </h3>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+        <section className="cs-bytype">
+          <h2>By service</h2>
+          <div className="cs-bytype-list">
             {stats.by_type.map(x => (
-              <span key={x.service_type} className="status-badge"
-                style={{ background: '#F4F6FA', color: NAVY, fontWeight: 500 }}>
+              <span key={x.service_type} className="cs-chip">
                 {SERVICE_LABELS[x.service_type] || x.service_type}
-                {' · '}{x.total}
-                {Number(x.due_now) > 0 && <strong style={{ color: '#B77900' }}> · {x.due_now} due</strong>}
+                {' · '}<strong>{x.total}</strong>
+                {Number(x.due_now) > 0 && <em>{x.due_now} due</em>}
               </span>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

@@ -11,9 +11,9 @@
  */
 
 .c360 {
-  --c360-ink:        #16233b;
-  --c360-ink-soft:   #5b6678;
-  --c360-ink-faint:  #8b93a3;
+  --c360-ink:        #000000;
+  --c360-ink-soft:   #4a4a4a;
+  --c360-ink-faint:  #6f6f6f;
   --c360-rule:       #e6eaf1;
   --c360-rule-soft:  #f1f4f8;
   --c360-surface:    #ffffff;

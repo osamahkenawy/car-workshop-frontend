@@ -603,6 +603,7 @@
 }
 
 .form-control {
+  box-sizing: border-box;
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--gray-200);

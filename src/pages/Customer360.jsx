@@ -101,6 +101,7 @@ export default function Customer360() {
   const [term, setTerm] = useState('');
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
+  const [searched, setSearched] = useState(false);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -119,9 +120,25 @@ export default function Customer360() {
 
   useEffect(() => { load(); }, [load]);
 
+  // With no customer chosen the page used to be a bare search box, which makes
+  // the operator type before they can do anything. Show the customers most
+  // recently active instead, so the common case — "the person I just spoke to"
+  // — is one click away.
+  useEffect(() => {
+    if (id) return;
+    let alive = true;
+    setSearching(true);
+    api.get('/customers?limit=12&sort=recent')
+      .then(r => { if (alive && r?.success) setResults(r.data || []); })
+      .catch(() => {})
+      .finally(() => { if (alive) setSearching(false); });
+    return () => { alive = false; };
+  }, [id]);
+
   async function search(e) {
     e?.preventDefault();
     if (!term.trim()) return;
+    setSearched(true);
     setSearching(true);
     try {
       const res = await api.get(`/customers?search=${encodeURIComponent(term.trim())}&limit=20`);
@@ -211,16 +228,39 @@ export default function Customer360() {
         </form>
 
         {results.length > 0 && (
+          <>
+            <p className="c360-prefs-label" style={{ margin: '18px 0 8px' }}>
+              {searched ? `Matches for “${term}”` : 'Recently active customers'}
+            </p>
           <div className="table-responsive">
             <table className="contacts-table">
-              <thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>City</th><th /></tr></thead>
+              <thead>
+                <tr>
+                  <th>Customer</th><th>Phone</th><th>City</th>
+                  <th>Jobs</th><th>Lifetime value</th><th>Last visit</th><th />
+                </tr>
+              </thead>
               <tbody>
                 {results.map(c => (
                   <tr key={c.id}>
-                    <td><strong>{c.full_name}</strong>{c.company_name ? ` · ${c.company_name}` : ''}</td>
+                    <td>
+                      <strong>{c.full_name}</strong>
+                      {c.company_name ? <div style={{ fontSize: 12, color: '#7d8494' }}>{c.company_name}</div> : null}
+                    </td>
                     <td>{c.phone || '—'}</td>
-                    <td>{c.email || '—'}</td>
                     <td>{c.city || '—'}</td>
+                    <td style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {Number(c.total_work_orders ?? 0)}
+                    </td>
+                    <td style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {/* A column of "AED 0.00" reads as a broken figure rather
+                          than as "no completed job yet", so use the same dash
+                          the other columns use for nothing-to-show. */}
+                      {Number(c.lifetime_value) > 0
+                        ? <bdi>{fmtCurrency(c.lifetime_value)}</bdi>
+                        : <span style={{ color: '#9aa1ad' }}>—</span>}
+                    </td>
+                    <td>{c.last_visit_at ? fmtDay(c.last_visit_at) : 'Never'}</td>
                     <td style={{ textAlign: 'right' }}>
                       <button className="btn-sm-primary" onClick={() => navigate(`/crm/customers/${c.id}`)}>
                         Open
@@ -231,8 +271,9 @@ export default function Customer360() {
               </tbody>
             </table>
           </div>
+          </>
         )}
-        {results.length === 0 && term && !searching && (
+        {results.length === 0 && searched && !searching && (
           <div className="empty-state">
             <User className="empty-icon" width={40} height={40} />
             <p>Nobody matched “{term}”.</p>
