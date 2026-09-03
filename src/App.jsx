@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 /* ── Staff app (lazy) ─────────────────────────────────────── */
 const WorkOrders        = lazy(() => import('./pages/WorkOrders'));
 const WorkOrderDetail   = lazy(() => import('./pages/WorkOrderDetail'));
+const VehicleInspection = lazy(() => import('./pages/VehicleInspection'));
 const Customers         = lazy(() => import('./pages/Customers'));
 const Enquiries         = lazy(() => import('./pages/Enquiries'));
 const CustomerFeedback  = lazy(() => import('./pages/CustomerFeedback'));
@@ -134,6 +135,7 @@ export default function App() {
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
         <Route path="/work-orders" element={<Protected><WorkOrders /></Protected>} />
         <Route path="/work-orders/:id" element={<Protected><WorkOrderDetail /></Protected>} />
+        <Route path="/work-orders/:id/inspection" element={<Protected><VehicleInspection /></Protected>} />
         <Route path="/enquiries" element={<Protected><Enquiries /></Protected>} />
         <Route path="/customer-feedback" element={<Protected><CustomerFeedback /></Protected>} />
         <Route path="/customers" element={<Protected><Customers /></Protected>} />

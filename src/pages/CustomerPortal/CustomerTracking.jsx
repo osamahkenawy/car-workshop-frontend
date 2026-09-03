@@ -16,7 +16,6 @@ const STATUS_LABELS = {
   in_progress:      'In Progress',
   ready_for_pickup: 'Ready for Pickup',
   completed:        'Completed',
-  failed:           'Failed',
   cancelled:        'Cancelled',
 };
 
@@ -97,7 +96,7 @@ export default function CustomerTracking() {
           </div>
 
           {/* Progress Steps */}
-          {!['cancelled', 'failed'].includes(result.status) && (
+          {!['cancelled'].includes(result.status) && (
             <div className="cp-card" style={{ marginTop: 16 }}>
               <h4 className="cp-card-title">Service Progress</h4>
               <div className="cp-progress-track">

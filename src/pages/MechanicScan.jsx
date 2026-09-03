@@ -16,10 +16,9 @@ const VALID_NEXT = {
   confirmed:        ['assigned', 'cancelled'],
   assigned:         ['accepted', 'in_progress', 'cancelled'],
   accepted:         ['in_progress', 'cancelled'],
-  in_progress:      ['ready_for_pickup', 'failed'],
-  ready_for_pickup: ['completed', 'failed'],
+  in_progress:      ['ready_for_pickup', 'cancelled'],
+  ready_for_pickup: ['completed', 'cancelled'],
   completed:        [],
-  failed:           ['confirmed'],
   cancelled:        [],
 };
 
@@ -31,7 +30,6 @@ const STATUS_META = {
   in_progress:      { color: '#0e7490', labelKey: 'in_progress' },
   ready_for_pickup: { color: '#c2410c', labelKey: 'ready_for_pickup' },
   completed:        { color: '#16a34a', labelKey: 'completed' },
-  failed:           { color: '#dc2626', labelKey: 'failed' },
   cancelled:        { color: '#94a3b8', labelKey: 'cancelled' },
 };
 
@@ -41,7 +39,6 @@ const STATUS_FLOW = {
   in_progress:      { actionKey: 'in_progress',      scan_type: 'pickup_scan',    bg: '#0e7490' },
   ready_for_pickup: { actionKey: 'ready_for_pickup',  scan_type: 'checkin_scan',   bg: '#c2410c' },
   completed:        { actionKey: 'completed',         scan_type: 'completion_scan', bg: '#16a34a' },
-  failed:           { actionKey: 'failed',            scan_type: 'checkin_scan',   bg: '#dc2626' },
   cancelled:        { actionKey: 'cancelled',         scan_type: 'checkin_scan',   bg: '#94a3b8' },
 };
 

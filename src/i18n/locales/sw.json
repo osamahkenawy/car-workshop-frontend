@@ -3121,12 +3121,16 @@
     "assigned": "Imegawiwa",
     "accepted": "Imekubaliwa",
     "cancelled": "Imeghairiwa",
+    "completed": "Imekamilika",
     "confirmed": "Imethibitishwa",
     "delivered": "Imewasilishwa",
     "failed": "Imeshindwa",
+    "in_progress": "Inaendelea",
     "in_transit": "Njiani",
+    "inspection": "Ukaguzi",
     "pending": "Inasubiri",
     "picked_up": "Imechukuliwa",
+    "ready_for_pickup": "Tayari Kuchukuliwa",
     "returned": "Imerudishwa"
   },
   "subscription": {

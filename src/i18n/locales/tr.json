@@ -3121,12 +3121,16 @@
     "assigned": "Atandı",
     "accepted": "Kabul Edildi",
     "cancelled": "İptal Edildi",
+    "completed": "Tamamlandı",
     "confirmed": "Onaylandı",
     "delivered": "Teslim Edildi",
     "failed": "Başarısız",
+    "in_progress": "Devam Ediyor",
     "in_transit": "Yolda",
+    "inspection": "Muayene",
     "pending": "Beklemede",
     "picked_up": "Alındı",
+    "ready_for_pickup": "Teslim Almaya Hazır",
     "returned": "İade Edildi"
   },
   "subscription": {

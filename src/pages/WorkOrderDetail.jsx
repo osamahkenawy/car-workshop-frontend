@@ -34,25 +34,35 @@ const STATUS_META = {
   assigned:         { label: 'Assigned',         bg: '#ede9fe', color: '#7c3aed', icon: User },
   accepted:         { label: 'Accepted',         bg: '#e0e7ff', color: '#1565C0', icon: Check },
   in_progress:      { label: 'In Progress',      bg: '#cffafe', color: '#0e7490', icon: Wrench },
+  inspection:       { label: 'Inspection',       bg: '#ede9fe', color: '#7c3aed', icon: Eye },
   ready_for_pickup: { label: 'Ready for Pickup', bg: '#ffedd5', color: '#c2410c', icon: Package },
   completed:        { label: 'Completed',        bg: '#dcfce7', color: '#16a34a', icon: Check },
-  failed:           { label: 'Failed',           bg: '#fee2e2', color: '#dc2626', icon: Xmark },
   cancelled:        { label: 'Cancelled',        bg: '#f1f5f9', color: '#64748b', icon: Prohibition },
 };
 
-const STATUS_FLOW = ['pending', 'confirmed', 'assigned', 'accepted', 'in_progress', 'ready_for_pickup', 'completed'];
+const STATUS_FLOW = ['pending', 'confirmed', 'assigned', 'accepted', 'in_progress', 'inspection', 'ready_for_pickup', 'completed'];
 
 const NEXT_STATUSES = {
   pending:          ['confirmed', 'cancelled'],
   confirmed:        ['assigned', 'in_progress', 'cancelled'],
   assigned:         ['accepted', 'in_progress', 'cancelled', 'confirmed'],
   accepted:         ['in_progress', 'cancelled', 'assigned'],
-  in_progress:      ['ready_for_pickup', 'failed'],
-  ready_for_pickup: ['completed', 'failed'],
+  in_progress:      ['inspection', 'ready_for_pickup', 'cancelled'],
+  inspection:       ['ready_for_pickup', 'in_progress', 'cancelled'],
+  ready_for_pickup: ['completed', 'cancelled'],
   completed:        [],
-  failed:           ['confirmed'],
   cancelled:        ['pending'],
 };
+
+/* ── Customer-journey checkpoints (layered on top of `status`) ──────── */
+const JOURNEY_STAGES = [
+  { key: 'intake_inspection', column: 'intake_inspection_at', label: 'Intake Inspection',   step: 3 },
+  { key: 'job_card_signed',   column: 'job_card_signed_at',   label: 'Job Card Signed',      step: 4 },
+  { key: 'diagnosed',         column: 'diagnosed_at',         label: 'Test Drive & Diagnose', step: 5 },
+  { key: 'estimate_approved', column: 'estimate_approved_at', label: 'Estimate Approved',    step: 6 },
+  { key: 'joint_inspection',  column: 'joint_inspection_at',  label: 'Joint Inspection',     step: 9 },
+  { key: 'invoiced',          column: 'invoiced_at',          label: 'Invoiced',             step: 10 },
+];
 
 const PKG_STATUS = {
   created:          { label: 'Created',          bg: '#f1f5f9', color: '#64748b' },
@@ -107,7 +117,7 @@ const StatusBadge = ({ status, size = 'md' }) => {
 /* ── StatusProgress ─────────────────────────────────────────── */
 const StatusProgress = ({ status }) => {
   const { t } = useTranslation();
-  const isTerminal = ['completed','failed','cancelled'].includes(status);
+  const isTerminal = ['completed','cancelled'].includes(status);
   const currentIdx = isTerminal ? -1 : STATUS_FLOW.indexOf(status);
   return (
     <div className="od-progress-wrap">
@@ -201,7 +211,11 @@ export default function WorkOrderDetail() {
   const autoStopsTriggered = useRef(false);
   const [failModal, setFailModal] = useState({ open: false, onConfirm: null, title: '', subtitle: '' });
 
-  useEffect(() => { fetchOrder(); fetchMechanics(); fetchStops(); fetchPackages(); fetchServiceBays(); }, [id]);
+  /* ── Customer journey + follow-up call state ── */
+  const [followUp, setFollowUp] = useState(null);
+  const [journeySaving, setJourneySaving] = useState('');
+
+  useEffect(() => { fetchOrder(); fetchMechanics(); fetchStops(); fetchPackages(); fetchServiceBays(); fetchFollowUp(); }, [id]);
 
   // Re-check stops auto-generation when packages load and stops are empty
   useEffect(() => {
@@ -213,6 +227,19 @@ export default function WorkOrderDetail() {
   const fetchServiceBays = async () => { try { const r = await api.get('/service-bays'); if (r.success) setServiceBays(r.data || []); } catch {} };
   const fetchOrder = async () => { setLoading(true); const r = await api.get(`/work-orders/${id}`); if (r.success) setOrder(r.data); setLoading(false); };
   const fetchMechanics = async () => { const r = await api.get('/mechanics?limit=500'); if (r.success) setMechanics((r.data || []).filter(d => d.is_active)); };
+
+  const fetchFollowUp = async () => {
+    try { const r = await api.get(`/customer-feedback?work_order_id=${id}`); if (r.success) setFollowUp(r.data?.[0] || null); } catch {}
+  };
+  const logJourneyStage = async (stage) => {
+    setJourneySaving(stage);
+    try { const r = await api.patch(`/work-orders/${id}/journey`, { stage }); if (r.success) setOrder(r.data); } catch {}
+    setJourneySaving('');
+  };
+  const updateFollowUp = async (status) => {
+    if (!followUp) return;
+    try { const r = await api.patch(`/customer-feedback/${followUp.id}`, { status }); if (r.success) setFollowUp(r.data); } catch {}
+  };
 
   const fetchPackages = async () => {
     setPkgLoading(true);
@@ -401,6 +428,75 @@ export default function WorkOrderDetail() {
           {order.started_at && <span><Wrench width={13} height={13} /> {t('orderDetail.started')} {fmtDatetime(order.started_at)}</span>}
           {order.completed_at && <span><Check width={13} height={13} /> {t('orderDetail.completed')} {fmtDatetime(order.completed_at)}</span>}
         </div>
+      </div>
+
+      {/* ════════════════ CUSTOMER JOURNEY ════════════════ */}
+      <div className="od-progress-card">
+        <div style={{ fontWeight: 700, fontSize: 13, color: '#1e3a6b', marginBottom: 10 }}>Customer Journey</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {JOURNEY_STAGES.map(stage => {
+            const doneAt = order[stage.column];
+            // The two inspection steps open the walk-around form instead of
+            // just stamping a timestamp — completing that form stamps them.
+            const inspectionType = stage.key === 'intake_inspection' ? 'intake'
+                                 : stage.key === 'joint_inspection' ? 'joint' : null;
+            if (inspectionType) {
+              return (
+                <button
+                  key={stage.key}
+                  onClick={() => navigate(`/work-orders/${id}/inspection?type=${inspectionType}`)}
+                  title={doneAt ? `${fmtDatetime(doneAt)} — open inspection form` : `Open the ${stage.label} form`}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 20,
+                    fontSize: 12, fontWeight: 600, border: '1px solid', cursor: 'pointer',
+                    background: doneAt ? '#dcfce7' : '#eff6ff',
+                    color: doneAt ? '#16a34a' : '#1d4ed8',
+                    borderColor: doneAt ? '#bbf7d0' : '#bfdbfe',
+                  }}
+                >
+                  {doneAt ? <Check width={13} height={13} /> : <Eye width={13} height={13} />}
+                  {stage.label}{doneAt ? ` · ${fmtDatetime(doneAt)}` : ''}
+                </button>
+              );
+            }
+            return (
+              <button
+                key={stage.key}
+                disabled={!!doneAt || journeySaving === stage.key}
+                onClick={() => logJourneyStage(stage.key)}
+                title={doneAt ? fmtDatetime(doneAt) : `Mark "${stage.label}" done`}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 20,
+                  fontSize: 12, fontWeight: 600, border: '1px solid', cursor: doneAt ? 'default' : 'pointer',
+                  background: doneAt ? '#dcfce7' : '#f8fafc',
+                  color: doneAt ? '#16a34a' : '#64748b',
+                  borderColor: doneAt ? '#bbf7d0' : '#e2e8f0',
+                }}
+              >
+                {doneAt ? <Check width={13} height={13} /> : <span style={{ width: 13, height: 13, borderRadius: '50%', border: '1.5px solid #cbd5e1', display: 'inline-block' }} />}
+                {stage.label}{doneAt ? ` · ${fmtDatetime(doneAt)}` : ''}
+              </button>
+            );
+          })}
+        </div>
+        {followUp && (
+          <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#1e3a6b' }}>Follow-up call</span>
+            <span style={{ fontSize: 12, color: '#64748b' }}>
+              {followUp.status === 'scheduled' && `Scheduled for ${fmtDatetime(followUp.scheduled_at)}`}
+              {followUp.status === 'attempted' && 'Attempted, no answer yet'}
+              {followUp.status === 'completed' && `Done ${fmtDatetime(followUp.completed_at)}`}
+              {followUp.status === 'skipped' && 'Skipped'}
+            </span>
+            {['scheduled', 'attempted'].includes(followUp.status) && (
+              <>
+                <button onClick={() => updateFollowUp('attempted')} style={{ fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 14, border: '1px solid #e2e8f0', background: '#fff', color: '#64748b', cursor: 'pointer' }}>Mark Attempted</button>
+                <button onClick={() => updateFollowUp('completed')} style={{ fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 14, border: '1px solid #bbf7d0', background: '#dcfce7', color: '#16a34a', cursor: 'pointer' }}>Mark Done</button>
+                <button onClick={() => updateFollowUp('skipped')} style={{ fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 14, border: '1px solid #e2e8f0', background: '#fff', color: '#94a3b8', cursor: 'pointer' }}>Skip</button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ════════════════ TABS ════════════════ */}

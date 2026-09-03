@@ -3121,12 +3121,16 @@
     "assigned": "Assigné",
     "accepted": "Accepté",
     "cancelled": "Annulé",
+    "completed": "Terminé",
     "confirmed": "Confirmé",
     "delivered": "Livré",
     "failed": "Échoué",
+    "in_progress": "En cours",
     "in_transit": "En transit",
+    "inspection": "Inspection",
     "pending": "En attente",
     "picked_up": "Récupéré",
+    "ready_for_pickup": "Prêt pour retrait",
     "returned": "Retourné"
   },
   "subscription": {

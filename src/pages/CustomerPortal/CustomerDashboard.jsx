@@ -79,8 +79,8 @@ export default function CustomerDashboard() {
         <div className="cp-kpi-card cp-kpi-red">
           <div className="cp-kpi-icon"><WarningTriangle width={26} height={26} /></div>
           <div className="cp-kpi-data">
-            <span className="cp-kpi-value">{s.failed || 0}</span>
-            <span className="cp-kpi-label">Failed</span>
+            <span className="cp-kpi-value">{s.cancelled || 0}</span>
+            <span className="cp-kpi-label">Cancelled</span>
           </div>
         </div>
       </div>
@@ -108,10 +108,6 @@ export default function CustomerDashboard() {
             <div className="cp-stat-item">
               <span className="cp-stat-num">{s.ready_for_pickup || 0}</span>
               <span className="cp-stat-lbl">Ready for Pickup</span>
-            </div>
-            <div className="cp-stat-item">
-              <span className="cp-stat-num">{s.failed || 0}</span>
-              <span className="cp-stat-lbl">Failed</span>
             </div>
             <div className="cp-stat-item">
               <span className="cp-stat-num">{s.cancelled || 0}</span>

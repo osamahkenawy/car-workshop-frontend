@@ -43,9 +43,9 @@ const STATUS_META = {
   assigned:         { label:'Assigned',         bg:'#ede9fe', color:'#7c3aed', icon: User },
   accepted:         { label:'Accepted',         bg:'#e0e7ff', color:'#1565C0', icon: Check },
   in_progress:      { label:'In Progress',      bg:'#cffafe', color:'#0e7490', icon: Wrench },
+  inspection:       { label:'Inspection',       bg:'#ede9fe', color:'#7c3aed', icon: Eye },
   ready_for_pickup: { label:'Ready for Pickup', bg:'#ffedd5', color:'#c2410c', icon: Package },
   completed:        { label:'Completed',        bg:'#dcfce7', color:'#16a34a', icon: CheckCircle },
-  failed:           { label:'Failed',           bg:'#fee2e2', color:'#dc2626', icon: Xmark },
   cancelled:        { label:'Cancelled',        bg:'#f1f5f9', color:'#64748b', icon: Prohibition },
 };
 const ORDER_TYPES   = ['standard','express','same_day','scheduled','return'];
@@ -55,10 +55,10 @@ const VALID_TRANSITIONS_FRONTEND = {
   confirmed:        ['assigned', 'in_progress', 'cancelled'],
   assigned:         ['accepted', 'in_progress', 'cancelled', 'confirmed'],
   accepted:         ['in_progress', 'cancelled', 'assigned'],
-  in_progress:      ['ready_for_pickup', 'failed'],
-  ready_for_pickup: ['completed', 'failed'],
+  in_progress:      ['inspection', 'ready_for_pickup', 'cancelled'],
+  inspection:       ['ready_for_pickup', 'in_progress', 'cancelled'],
+  ready_for_pickup: ['completed', 'cancelled'],
   completed:        [],
-  failed:           ['confirmed'],
   cancelled:        ['pending'],
 };
 // EMIRATES removed — now using getRegions(workshop.country) from lib/regions.js
@@ -550,7 +550,19 @@ export default function WorkOrders() {
   const [stats,      setStats]      = useState({});
   const [page,       setPage]       = useState(1);
   const [total,      setTotal]      = useState(0);
-  const [filters,    setFilters]    = useState({ status:'', search:'', date_from:'', date_to:'', work_order_type:'', customer_id:'' });
+  /* Seeded from ?status=&date_from=&date_to= so a deep link (the Dashboard's
+     status-breakdown chart drills through with one) opens already filtered.
+     This has to be the INITIAL state rather than an effect: the list schedules
+     a debounced fetch on mount, and a filter applied afterwards would be
+     overwritten when that stale request lands. */
+  const [filters,    setFilters]    = useState(() => ({
+    status:          searchParams.get('status')    || '',
+    search:          '',
+    date_from:       searchParams.get('date_from') || '',
+    date_to:         searchParams.get('date_to')   || '',
+    work_order_type: '',
+    customer_id:     '',
+  }));
   const [sortBy,     setSortBy]     = useState('');     // '' | 'date' | 'cod' | 'bay' | 'status' | 'recipient' | 'work_order_number' | 'completed_at'
   const [sortDir,    setSortDir]    = useState('desc'); // 'asc' | 'desc'
   const [showForm,   setShowForm]   = useState(false);
@@ -1339,13 +1351,12 @@ export default function WorkOrders() {
                     {[
                       { label: t('orders.table.order_num'), key: 'work_order_number' },
                       { label: t('orders.table.status'), key: 'status' },
-                      { label: t('orders.table.customer_sender'), key: '' },
-                      { label: t('orders.table.recipient'), key: 'recipient' },
-                      { label: t('orders.table.packages','Packages'), key: '' },
+                      { label: t('orders.table.customer'), key: '' },
+                      { label: t('orders.table.vehicle', 'Vehicle'), key: '' },
                       { label: t('orders.table.bay'), key: 'bay' },
                       { label: t('orders.table.type'), key: '' },
                       { label: t('orders.table.date'), key: 'date' },
-                      { label: t('orders.table.completed_at','Delivered At'), key: 'completed_at' },
+                      { label: t('orders.table.completed_at', 'Completed At'), key: 'completed_at' },
                       { label: '', key: '' },
                     ].map((h, i) => (
                       <th key={i}
@@ -1383,10 +1394,10 @@ export default function WorkOrders() {
                       <td style={{ padding:'13px 16px' }}><StatusPill status={o.status} /></td>
                       <td style={{ padding:'13px 16px' }}>
                         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                          <Avatar name={o.customer_name || o.sender_name || t('orders.walk_in')} size={34} />
+                          <Avatar name={o.customer_name || t('orders.walk_in')} size={34} />
                           <div>
                             <div style={{ fontWeight:600, color:'#1e293b', fontSize:13 }}>
-                              {o.customer_name || o.sender_name || t('orders.walk_in')}
+                              {o.customer_name || t('orders.walk_in')}
                             </div>
                             {o.customer_name && (
                               <div style={{ fontSize:11, color:'#94a3b8' }}>
@@ -1398,25 +1409,18 @@ export default function WorkOrders() {
                         </div>
                       </td>
                       <td style={{ padding:'13px 16px' }}>
-                        <div style={{ fontWeight:600, color:'#1e293b', fontSize:13 }}>{o.recipient_name}</div>
-                        <div style={{ fontSize:11, color:'#94a3b8', display:'flex', alignItems:'center', gap:3 }}>
-                          <Phone width={10} height={10} /> {o.customer_phone || o.recipient_phone}
-                        </div>
-                      </td>
-                      {/* Packages column */}
-                      <td style={{ padding:'13px 16px' }}>
-                        {(o.total_packages > 0) ? (
-                          <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <span style={{ display:'inline-flex', alignItems:'center', gap:4,
-                              padding:'3px 10px', borderRadius:20, fontSize:12, fontWeight:700,
-                              background: o.delivered_packages >= o.total_packages ? '#dcfce7'
-                                : o.delivered_packages > 0 ? '#fef3c7' : '#f1f5f9',
-                              color: o.delivered_packages >= o.total_packages ? '#16a34a'
-                                : o.delivered_packages > 0 ? '#d97706' : '#64748b' }}>
-                              <Package width={12} height={12} />
-                              {o.delivered_packages || 0}/{o.total_packages}
-                            </span>
-                          </div>
+                        {/* Vehicle — replaces the old delivery "Recipient" and
+                            "Packages" columns, whose fields no longer exist on
+                            a work order (they rendered a bare phone and a dash) */}
+                        {(o.vehicle_make || o.vehicle_model || o.vehicle_plate_number) ? (
+                          <>
+                            <div style={{ fontWeight:600, color:'#1e293b', fontSize:13 }}>
+                              {[o.vehicle_make, o.vehicle_model].filter(Boolean).join(' ')}
+                            </div>
+                            {o.vehicle_plate_number && (
+                              <div style={{ fontSize:11, color:'#94a3b8' }}>{o.vehicle_plate_number}</div>
+                            )}
+                          </>
                         ) : (
                           <span style={{ fontSize:12, color:'#cbd5e1' }}>—</span>
                         )}
@@ -1424,7 +1428,7 @@ export default function WorkOrders() {
                       <td style={{ padding:'13px 16px' }}>
                         <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:13, color:'#475569' }}>
                           <MapPin width={13} height={13} color="#94a3b8" />
-                          {o.zone_name || o.recipient_emirate || '\u2014'}
+                          {o.service_bay_name || '\u2014'}
                         </div>
                       </td>
                       <td style={{ padding:'13px 16px' }}>
@@ -1454,7 +1458,7 @@ export default function WorkOrders() {
                               color:'#ea580c', cursor:'pointer', display:'flex', alignItems:'center' }}>
                             <Printer width={13} height={13} />
                           </button>
-                          {!['completed','failed','cancelled'].includes(o.status) && (
+                          {!['completed','cancelled'].includes(o.status) && (
                             <button onClick={() => openEdit(o)} title="Edit"
                               style={{ padding:'6px 11px', borderRadius:8, border:'1px solid #e2e8f0', background:'#fff',
                                 cursor:'pointer', fontSize:13, fontWeight:600, color:'#374151', display:'flex', alignItems:'center', gap:5 }}>
@@ -1464,21 +1468,21 @@ export default function WorkOrders() {
                           {o.customer_phone || o.recipient_phone && (
                             <WhatsAppButton phone={o.customer_phone || o.recipient_phone} order={o} size="small" currency={cur} />
                           )}
-                          {o.service_status_token && !['completed','failed','cancelled'].includes(o.status) && (
+                          {o.service_status_token && !['completed','cancelled'].includes(o.status) && (
                             <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/track/${o.service_status_token}`); showToast(t('orders.toast.tracking_copied')); }} title="Copy public tracking link"
                               style={{ padding:'6px 8px', borderRadius:8, border:'1px solid #bbf7d0', background:'#f0fdf4',
                                 color:'#16a34a', cursor:'pointer', display:'flex', alignItems:'center' }}>
                               <ShareAndroid width={13} height={13} />
                             </button>
                           )}
-                          {o.service_status_token && !['completed','failed','cancelled'].includes(o.status) && (
+                          {o.service_status_token && !['completed','cancelled'].includes(o.status) && (
                             <button onClick={() => window.open(`/track/${o.service_status_token}`, '_blank')} title="Live track"
                               style={{ padding:'6px 8px', borderRadius:8, border:'1px solid #bfdbfe', background:'#eff6ff',
                                 color:'#2563eb', cursor:'pointer', display:'flex', alignItems:'center' }}>
                               <OpenNewWindow width={13} height={13} />
                             </button>
                           )}
-                          {!['completed','failed','cancelled'].includes(o.status) && (
+                          {!['completed','cancelled'].includes(o.status) && (
                             <button onClick={() => setCancelConfirm(o)} title="Cancel"
                               style={{ padding:'6px 10px', borderRadius:8, border:'1px solid #fecaca',
                                 background:'#fff5f5', color:'#dc2626', cursor:'pointer', display:'flex', alignItems:'center' }}>
@@ -1621,11 +1625,11 @@ export default function WorkOrders() {
               {/* Action buttons + WhatsApp - single icon row */}
               <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
                 {[
-                  ...(!['completed','failed','cancelled'].includes(drawer.status) ? [{ label: t('orders.actions.edit'), icon: EditPencil, bg:'#3b82f6', onClick:() => { setDrawer(null); setDrawerFull(null); setDrawerStops([]); setDrawerPackages([]); openEdit(drawerFull || drawer); }}] : []),
+                  ...(!['completed','cancelled'].includes(drawer.status) ? [{ label: t('orders.actions.edit'), icon: EditPencil, bg:'#3b82f6', onClick:() => { setDrawer(null); setDrawerFull(null); setDrawerStops([]); setDrawerPackages([]); openEdit(drawerFull || drawer); }}] : []),
                   { label: drawerPackages.length > 1 ? t('orders.drawer.labels_count', { count: drawerPackages.length }) : t('orders.drawer.label'), icon: Printer, bg:'#8b5cf6', onClick:() => printSingleLabel(drawer.id) },
-                  ...(drawer.service_status_token && !['completed','failed','cancelled'].includes(drawer.status) ? [{ label: t('orders.drawer.track'), icon: OpenNewWindow, bg:'#0369a1', onClick:() => window.open(`/track/${drawer.service_status_token}`, '_blank') }] : []),
+                  ...(drawer.service_status_token && !['completed','cancelled'].includes(drawer.status) ? [{ label: t('orders.drawer.track'), icon: OpenNewWindow, bg:'#0369a1', onClick:() => window.open(`/track/${drawer.service_status_token}`, '_blank') }] : []),
                   ...(drawerFull ? [{ label: t('orders.drawer.details'), icon: ArrowRight, bg:'#1e3a6b', onClick:() => { setDrawer(null); setDrawerFull(null); setDrawerStops([]); setDrawerPackages([]); navigate(`/work-orders/${drawerFull.id}`); }}] : []),
-                  ...(!['completed','failed','cancelled'].includes(drawer.status) ? [{ label: t('orders.actions.cancel_order'), icon: Prohibition, bg:'transparent', border:true, onClick:() => { setDrawer(null); setCancelConfirm(drawer); }}] : []),
+                  ...(!['completed','cancelled'].includes(drawer.status) ? [{ label: t('orders.actions.cancel_order'), icon: Prohibition, bg:'transparent', border:true, onClick:() => { setDrawer(null); setCancelConfirm(drawer); }}] : []),
                   // WhatsApp buttons inline
                   ...(() => {
                     const o = drawerFull || drawer;

@@ -72,7 +72,6 @@ const STATUS_STYLE = {
   in_progress:      { background: '#cffafe', color: '#0e7490', border: '#22d3ee' },
   ready_for_pickup: { background: '#ffedd5', color: '#c2410c', border: '#f97316' },
   completed:        { background: '#dcfce7', color: '#16a34a', border: '#22c55e' },
-  failed:           { background: '#fee2e2', color: '#dc2626', border: '#ef4444' },
   cancelled:        { background: '#f1f5f9', color: '#64748b', border: '#94a3b8' },
 };
 
@@ -1262,7 +1261,7 @@ export default function JobAssignment() {
       ...(board.active_deliveries || []).map(o => ({ ...o, _section: 'In Progress' })),
       ...(board.completed_today || []).map(o => ({ ...o, _section: 'Completed' })),
     ];
-    const statusColor = { pending: '#f59e0b', confirmed: '#f59e0b', assigned: '#3b82f6', accepted: '#3b82f6', picked_up: '#8b5cf6', in_transit: '#8b5cf6', delivered: '#16a34a', completed: '#16a34a', failed: '#dc2626', cancelled: '#9333ea', returned: '#f59e0b' };
+    const statusColor = { pending: '#f59e0b', confirmed: '#f59e0b', assigned: '#3b82f6', accepted: '#3b82f6', picked_up: '#8b5cf6', in_transit: '#8b5cf6', delivered: '#16a34a', completed: '#16a34a', cancelled: '#9333ea', returned: '#f59e0b' };
     const grouped = {};
     allWorkOrders.forEach(o => {
       if (!grouped[o._section]) grouped[o._section] = [];
@@ -2945,11 +2944,9 @@ export default function JobAssignment() {
               {(() => {
                 const ct = board.completed_today;
                 const completed = ct.filter(o => o.status === 'completed').length;
-                const failed = ct.filter(o => o.status === 'failed').length;
                 const cancelled = ct.filter(o => o.status === 'cancelled').length;
                 const parts = [];
                 if (completed) parts.push(`${completed} completed`);
-                if (failed) parts.push(`${failed} failed`);
                 if (cancelled) parts.push(`${cancelled} cancelled`);
                 return parts.join(' · ');
               })()}
@@ -2965,10 +2962,9 @@ export default function JobAssignment() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 10 }}>
                 {board.completed_today.map(o => {
                   const isCompleted = o.status === 'completed';
-                  const isFailed = o.status === 'failed';
                   const isCancelled = o.status === 'cancelled';
-                  const statusColor = isCompleted ? '#16a34a' : isFailed ? '#dc2626' : isCancelled ? '#9333ea' : '#f59e0b';
-                  const statusBg = isCompleted ? '#dcfce7' : isFailed ? '#fef2f2' : isCancelled ? '#faf5ff' : '#fef3c7';
+                  const statusColor = isCompleted ? '#16a34a' : isCancelled ? '#9333ea' : '#f59e0b';
+                  const statusBg = isCompleted ? '#dcfce7' : isCancelled ? '#faf5ff' : '#fef3c7';
                   const completedAt = o.updated_at ? new Date(o.updated_at) : null;
                   return (
                     <div key={o.id} style={{
@@ -2982,7 +2978,6 @@ export default function JobAssignment() {
                         background: statusBg, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
                         {isCompleted ? <Check width={16} height={16} color={statusColor} /> :
-                         isFailed ? <Xmark width={16} height={16} color={statusColor} /> :
                          <Prohibition width={16} height={16} color={statusColor} />}
                       </div>
                       {/* Info */}

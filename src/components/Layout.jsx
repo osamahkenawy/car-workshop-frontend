@@ -76,11 +76,8 @@ const navSections = [
       { path: '/work-orders',        labelKey: 'orders',          iconKey: 'orders',           moduleKey: 'work-orders',       roles: ['admin', 'dispatcher'] },
       { path: '/customers',          labelKey: 'customers',       iconKey: 'customers',        moduleKey: 'customers',         roles: ['admin', 'dispatcher'] },
       { path: '/vehicles',           labelKey: 'vehicles',        iconKey: 'vehicles',         moduleKey: 'vehicles',          roles: ['admin', 'dispatcher'] },
-      { path: '/parts',              labelKey: 'parts',           iconKey: 'parts',            moduleKey: 'parts',             roles: ['admin', 'dispatcher'] },
       { path: '/mechanics',          labelKey: 'mechanics',       iconKey: 'mechanics',        moduleKey: 'mechanics',         roles: ['admin', 'dispatcher'] },
       { path: '/job-assignment',     labelKey: 'job_assignment',  iconKey: 'job-assignment',   moduleKey: 'job-assignment',    roles: ['admin', 'dispatcher'] },
-      { path: '/service-tracking',   labelKey: 'tracking',        iconKey: 'service-tracking', moduleKey: 'service-status',    roles: ['admin', 'dispatcher'] },
-      { path: '/warranty-claims',    labelKey: 'returns',         iconKey: 'returns',          moduleKey: 'warranty-claims',   roles: ['admin', 'dispatcher'] },
     ]
   },
 
@@ -91,7 +88,6 @@ const navSections = [
   {
     titleKey: 'crm',
     items: [
-      { path: '/crm/customers',      labelKey: 'customer_360',      iconKey: 'customer-360',  moduleKey: 'crm-customers',  roles: ['admin', 'dispatcher'] },
       { path: '/crm/reminders',      labelKey: 'service_reminders', iconKey: 'reminders',     moduleKey: 'crm-reminders',  roles: ['admin', 'dispatcher'] },
       { path: '/crm/tasks',          labelKey: 'crm_tasks',         iconKey: 'crm-tasks',     moduleKey: 'crm-tasks',      roles: ['admin', 'dispatcher'] },
     ]
@@ -117,10 +113,7 @@ const navSections = [
   {
     titleKey: 'finance',
     items: [
-      { path: '/mechanic-earnings',    labelKey: 'mechanic_earnings', iconKey: 'wallet',           moduleKey: 'wallet',            roles: ['admin'] },
-      { path: '/wallet',             labelKey: 'wallet',          iconKey: 'wallet',           moduleKey: 'wallet',            roles: ['admin', 'dispatcher'] },
       { path: '/invoices',           labelKey: 'invoices',        iconKey: 'invoices',         moduleKey: 'invoices',          roles: ['admin', 'dispatcher'] },
-      { path: '/cash-payments',                labelKey: 'cash_payments', iconKey: 'cod',            moduleKey: 'cash-payment',               roles: ['admin', 'dispatcher'] },
     ]
   },
   /* ── ANALYTICS ────────────────────────────────────── */

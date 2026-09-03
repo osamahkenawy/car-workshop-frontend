@@ -1,7 +1,7 @@
     import { useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Package, DeliveryTruck, Check, Xmark, MapPin, User,
+  Package, DeliveryTruck, Check, MapPin, User,
   CheckCircle, WarningTriangle, DollarCircle, Refresh,
   NavArrowRight, Calendar, Clock, QrCode, Phone,
 } from 'iconoir-react';
@@ -19,7 +19,6 @@ const STATUS_META = {
   in_progress:      { label: 'In Progress',      color: '#0e7490', bg: '#cffafe' },
   ready_for_pickup: { label: 'Ready for Pickup', color: '#c2410c', bg: '#ffedd5' },
   completed:        { label: 'Completed',        color: '#16a34a', bg: '#dcfce7' },
-  failed:           { label: 'Failed',           color: '#dc2626', bg: '#fee2e2' },
   cancelled:        { label: 'Cancelled',        color: '#64748b', bg: '#f1f5f9' },
 };
 
@@ -129,7 +128,6 @@ export default function MechanicHome() {
           {[
             { label: t('mechanicDashboard.stat_active'),    value: stats.active    || 0, icon: <Package      width={18} height={18} color="#f97316" />, bg: 'rgba(249,115,22,0.12)' },
             { label: t('mechanicDashboard.stat_delivered'), value: stats.delivered || 0, icon: <CheckCircle  width={18} height={18} color="#16a34a" />, bg: 'rgba(34,197,94,0.12)'  },
-            { label: t('mechanicDashboard.stat_failed'),    value: stats.failed    || 0, icon: <Xmark        width={18} height={18} color="#dc2626" />, bg: 'rgba(239,68,68,0.12)'  },
             { label: t('mechanicDashboard.stat_revenue'),   value: `${cur} ${fmtAEDVal(stats.revenue)}`, icon: <DollarCircle width={18} height={18} color="#0ea5e9" />, bg: 'rgba(14,165,233,0.12)' },
           ].map(s => (
             <div key={s.label} className="dp-today-card" style={{ background: s.bg }}>
@@ -183,7 +181,6 @@ export default function MechanicHome() {
             {[
               { label: t('mechanicDashboard.total_orders'),    value: allTimeStats.total_orders,    color: '#3b82f6', bg: '#eff6ff' },
               { label: t('mechanicDashboard.stat_delivered'),  value: allTimeStats.total_delivered, color: '#16a34a', bg: '#f0fdf4' },
-              { label: t('mechanicDashboard.stat_failed'),     value: allTimeStats.total_failed,    color: '#dc2626', bg: '#fef2f2' },
               { label: t('mechanicDashboard.earned'),          value: `${cur} ${fmtAEDVal(allTimeStats.total_revenue)}`, color: '#0369a1', bg: '#f0f9ff' },
             ].map(s => (
               <div key={s.label} className="dp-alltime-stat" style={{ background: s.bg }}>

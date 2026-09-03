@@ -22,7 +22,6 @@ const STATUS_META = {
   in_progress:      { label: 'In Progress',      bg: '#cffafe', color: '#0e7490', icon: Wrench,      gradient: 'linear-gradient(135deg, #22d3ee, #0e7490)' },
   ready_for_pickup: { label: 'Ready for Pickup', bg: '#ffedd5', color: '#c2410c', icon: Package,     gradient: 'linear-gradient(135deg, #fb923c, #c2410c)' },
   completed:        { label: 'Completed',        bg: '#dcfce7', color: '#16a34a', icon: Check,       gradient: 'linear-gradient(135deg, #22c55e, #16a34a)' },
-  failed:           { label: 'Failed',           bg: '#fee2e2', color: '#dc2626', icon: Xmark,       gradient: 'linear-gradient(135deg, #ef4444, #dc2626)' },
   cancelled:        { label: 'Cancelled',        bg: '#f1f5f9', color: '#64748b', icon: Prohibition, gradient: 'linear-gradient(135deg, #94a3b8, #64748b)' },
 };
 
@@ -100,7 +99,7 @@ export default function MechanicDashboard() {
 
   const fetchWorkOrders = useCallback(async () => {
     try {
-      const statusParam = tab === 'active' ? '' : tab === 'completed' ? 'completed' : 'failed';
+      const statusParam = tab === 'active' ? '' : 'completed';
       const res = await api.get(`/service-status/my-orders${statusParam ? `?status=${statusParam}` : ''}`);
       if (res.success) { setData(res.data); setNoProfile(false); }
       else if (res.message?.includes('No mechanic profile')) { setNoProfile(true); }
@@ -282,7 +281,7 @@ export default function MechanicDashboard() {
         const gps = await getGPS();
         try {
           const res = await api.patch(`/service-status/${order.service_status_token}/status`, {
-            status: 'failed', lat: gps?.lat, lng: gps?.lng, note: reason || t('mechanicDashboard.delivery_failed_note'),
+            status: 'cancelled', lat: gps?.lat, lng: gps?.lng, note: reason || t('mechanicDashboard.delivery_failed_note'),
           });
           if (res.success) {
             showToast(t('mechanicDashboard.marked_as_failed', { orderNumber: order.work_order_number }), 'error');
@@ -395,7 +394,6 @@ export default function MechanicDashboard() {
           {[
             { label: t('mechanicDashboard.stat_active'),    value: stats.active || 0,   icon: <Package width={18} height={18} color="#f97316" />, bg: 'rgba(249,115,22,0.12)' },
             { label: t('mechanicDashboard.stat_delivered'), value: stats.completed || 0, icon: <CheckCircle width={18} height={18} color="#16a34a" />, bg: 'rgba(34,197,94,0.12)' },
-            { label: t('mechanicDashboard.stat_failed'),    value: stats.failed || 0,   icon: <Xmark width={18} height={18} color="#dc2626" />, bg: 'rgba(239,68,68,0.12)' },
             { label: t('mechanicDashboard.stat_revenue'),   value: fmtAED(stats.revenue), icon: <DollarCircle width={18} height={18} color="#0ea5e9" />, bg: 'rgba(14,165,233,0.12)' },
           ].map(s => (
             <div key={s.label} className="dp-today-card" style={{ background: s.bg }}>
@@ -420,7 +418,6 @@ export default function MechanicDashboard() {
             {[
               { label: t('mechanicDashboard.total_orders'), value: allTimeStats.total_orders, color: '#3b82f6', bg: '#eff6ff' },
               { label: t('mechanicDashboard.stat_delivered'), value: allTimeStats.total_completed, color: '#16a34a', bg: '#f0fdf4' },
-              { label: t('mechanicDashboard.stat_failed'), value: allTimeStats.total_failed, color: '#dc2626', bg: '#fef2f2' },
               { label: t('mechanicDashboard.earned'), value: fmtAED(allTimeStats.total_revenue), color: '#0369a1', bg: '#f0f9ff' },
             ].map(s => (
               <div key={s.label} className="dp-alltime-stat" style={{ background: s.bg }}>
@@ -458,7 +455,6 @@ export default function MechanicDashboard() {
         {[
           { key: 'active',    label: t('mechanicDashboard.tab_active'),    count: tabCounts.active,    color: '#f97316' },
           { key: 'completed', label: t('mechanicDashboard.tab_delivered'), count: tabCounts.completed, color: '#16a34a' },
-          { key: 'failed',    label: t('mechanicDashboard.tab_failed'),    count: tabCounts.failed,    color: '#dc2626' },
         ].map(tabItem => (
           <button key={tabItem.key} onClick={() => setTab(tabItem.key)}
             className={`dp-tab ${tab === tabItem.key ? 'active' : ''}`}
@@ -482,7 +478,7 @@ export default function MechanicDashboard() {
           <div className="dp-empty-icon">
             <Package width={40} height={40} style={{ color: '#cbd5e1' }} />
           </div>
-          <h3>{tab === 'active' ? t('mechanicDashboard.no_active_deliveries') : tab === 'completed' ? t('mechanicDashboard.no_delivered_orders') : t('mechanicDashboard.no_failed_orders')}</h3>
+          <h3>{tab === 'active' ? t('mechanicDashboard.no_active_deliveries') : t('mechanicDashboard.no_delivered_orders')}</h3>
           <p>{tab === 'active' ? t('mechanicDashboard.empty_active_hint') : t('mechanicDashboard.empty_history_hint')}</p>
         </div>
       ) : (
@@ -490,7 +486,7 @@ export default function MechanicDashboard() {
           {orders.map(order => {
             const m = STATUS_META[order.status] || STATUS_META.assigned;
             const isUpdating = updating === order.id;
-            const isTerminal = ['completed', 'failed', 'cancelled'].includes(order.status);
+            const isTerminal = ['completed', 'cancelled'].includes(order.status);
             const next = NEXT_STATUS[order.status];
             const parts = order.parts || [];
             const isCashCollection = next === 'completed' && order.payment_method === 'cash';
@@ -631,7 +627,7 @@ export default function MechanicDashboard() {
                   </div>
                 )}
 
-                {/* ═══ TERMINAL STATE (completed/failed/cancelled) ═══ */}
+                {/* ═══ TERMINAL STATE (completed/cancelled) ═══ */}
                 {isTerminal && (
                   <div style={{ margin: '0 16px 12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>

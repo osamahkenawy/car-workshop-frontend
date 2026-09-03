@@ -3121,12 +3121,16 @@
     "assigned": "已分配",
     "accepted": "已接受",
     "cancelled": "已取消",
+    "completed": "已完成",
     "confirmed": "已确认",
     "delivered": "已送达",
     "failed": "失败",
+    "in_progress": "进行中",
     "in_transit": "运输中",
+    "inspection": "检查中",
     "pending": "待处理",
     "picked_up": "已取件",
+    "ready_for_pickup": "待取车",
     "returned": "已退回"
   },
   "subscription": {

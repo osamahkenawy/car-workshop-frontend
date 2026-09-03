@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { useTranslation } from 'react-i18next';
 import {
-  Clock, Check, User, Package, DeliveryTruck, CheckCircle, Xmark,
+  Clock, Check, User, Package, DeliveryTruck, CheckCircle,
   MapPin, Phone, Refresh, Map, NavArrowRight, Prohibition,
   WarningTriangle, Calendar, Timer, Wrench,
 } from 'iconoir-react';
@@ -38,15 +38,15 @@ const STATUS_STEPS = ['pending', 'confirmed', 'assigned', 'accepted', 'in_progre
 const STATUS_LABELS = {
   pending: 'Work Order Placed', confirmed: 'Confirmed', assigned: 'Mechanic Assigned',
   accepted: 'Accepted', in_progress: 'In Progress', ready_for_pickup: 'Ready for Pickup', completed: 'Completed',
-  failed: 'Failed', cancelled: 'Cancelled',
+  cancelled: 'Cancelled',
 };
 const STATUS_ICONS = {
   pending: Clock, confirmed: CheckCircle, assigned: User, accepted: Check,
-  in_progress: Wrench, ready_for_pickup: Package, completed: Check, failed: Xmark, cancelled: Prohibition,
+  in_progress: Wrench, ready_for_pickup: Package, completed: Check, cancelled: Prohibition,
 };
 const STATUS_COLORS = {
   pending: '#f59e0b', confirmed: '#3b82f6', assigned: '#8b5cf6', accepted: '#1565C0',
-  in_progress: '#0e7490', ready_for_pickup: '#c2410c', completed: '#16a34a', failed: '#dc2626', cancelled: '#64748b',
+  in_progress: '#0e7490', ready_for_pickup: '#c2410c', completed: '#16a34a', cancelled: '#64748b',
 };
 const LIVE_STATUSES = new Set(['in_progress']);
 
@@ -206,7 +206,7 @@ export default function ServiceStatusPublic() {
   }, [order?.mechanic_location?.lat, order?.mechanic_location?.lng]);
 
   const currentStep = order ? STATUS_STEPS.indexOf(order.status) : -1;
-  const isFinal = order && ['completed', 'failed', 'cancelled'].includes(order.status);
+  const isFinal = order && ['completed', 'cancelled'].includes(order.status);
   const isLive = order && LIVE_STATUSES.has(order.status);
 
   const StatusIcon = ({ status, size = 20, color }) => {

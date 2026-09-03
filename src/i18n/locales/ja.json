@@ -3121,12 +3121,16 @@
     "assigned": "割り当て済み",
     "accepted": "承認済み",
     "cancelled": "キャンセル済み",
+    "completed": "完了",
     "confirmed": "確認済み",
     "delivered": "配達済み",
     "failed": "失敗",
+    "in_progress": "作業中",
     "in_transit": "配送中",
+    "inspection": "検査中",
     "pending": "保留中",
     "picked_up": "集荷済み",
+    "ready_for_pickup": "引き取り準備完了",
     "returned": "返品済み"
   },
   "subscription": {

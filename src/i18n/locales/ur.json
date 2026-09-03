@@ -3121,12 +3121,16 @@
     "assigned": "تفویض شدہ",
     "accepted": "قبول شدہ",
     "cancelled": "منسوخ",
+    "completed": "مکمل",
     "confirmed": "تصدیق شدہ",
     "delivered": "ڈیلیور ہو گیا",
     "failed": "ناکام",
+    "in_progress": "جاری ہے",
     "in_transit": "راستے میں",
+    "inspection": "معائنہ",
     "pending": "زیر التوا",
     "picked_up": "اٹھایا گیا",
+    "ready_for_pickup": "وصولی کے لیے تیار",
     "returned": "واپس"
   },
   "subscription": {

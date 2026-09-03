@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Loader, { DashboardSkeleton } from '../components/Loader';
 import {
@@ -11,7 +11,7 @@ import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import { 
   Package, DeliveryTruck, Check, WarningTriangle, DollarCircle,
   Clock, MapPin, StatUp, StatDown, ArrowRight, Plus, Activity,
-  Timer, Wallet, Refresh, CreditCard, Settings, Wrench
+  Timer, Wallet, Refresh, Settings, Wrench
 } from 'iconoir-react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../lib/api';
@@ -25,7 +25,6 @@ const AUTO_REFRESH_MS = 30000; // 30 seconds
 
 const WIDGET_DEFS = [
   { key: 'metrics',      label: 'dashboard.widgets.metrics' },
-  { key: 'cod',          label: 'dashboard.widgets.cod' },
   { key: 'charts',       label: 'dashboard.widgets.charts' },
   { key: 'hourly',       label: 'dashboard.widgets.hourly' },
   { key: 'mechanics_util', label: 'dashboard.widgets.mechanics_util' },
@@ -39,6 +38,7 @@ const loadWidgets = () => { try { return JSON.parse(localStorage.getItem(STORAGE
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({});
   const [chart, setChart] = useState([]);
   const [topServiceBays, setTopServiceBays] = useState([]);
@@ -47,6 +47,14 @@ export default function Dashboard() {
   const [mechanicUtil, setMechanicUtil] = useState([]);
   const [mechanicWorkload, setMechanicWorkload] = useState([]);
   const [ordersByHour, setWorkOrdersByHour] = useState([]);
+  const [ordersByStatus, setOrdersByStatus] = useState([]);
+  /* Week vs month view. A workshop that hasn't booked anything since this
+     morning still wants to see how the period is going, so the dashboard is
+     period-based rather than day-based. Remembered per browser. */
+  const [period, setPeriod] = useState(() => {
+    try { return localStorage.getItem('dashboard_period') === 'week' ? 'week' : 'month'; } catch { return 'month'; }
+  });
+  const [periodRange, setPeriodRange] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -67,7 +75,7 @@ export default function Dashboard() {
   const fetchStats = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const res = await api.get('/stats');
+      const res = await api.get(`/stats?period=${period}`);
       if (res.success) {
         setStats(res.data?.kpis || {});
         setChart(res.data?.daily_chart || []);
@@ -77,6 +85,8 @@ export default function Dashboard() {
         setMechanicUtil(res.data?.mechanic_utilization || []);
         setMechanicWorkload(res.data?.mechanic_workload || []);
         setWorkOrdersByHour(res.data?.orders_by_hour || []);
+        setOrdersByStatus(res.data?.orders_by_status || []);
+        setPeriodRange(res.data?.period || null);
         setLastRefreshed(new Date());
       }
     } catch (e) {
@@ -88,7 +98,20 @@ export default function Dashboard() {
         setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       }
     }
-  }, []);
+  }, [period]);
+
+  const periodLabel = period === 'week'
+    ? t('dashboard.this_week', 'This Week')
+    : t('dashboard.this_month', 'This Month');
+  // Deltas compare against the previous period, not yesterday
+  const vsLabel = period === 'week'
+    ? t('dashboard.vs_last_week', 'vs last week')
+    : t('dashboard.vs_last_month', 'vs last month');
+
+  const changePeriod = (next) => {
+    setPeriod(next);
+    try { localStorage.setItem('dashboard_period', next); } catch { /* ignore */ }
+  };
 
   useEffect(() => {
     fetchStats();
@@ -132,13 +155,16 @@ export default function Dashboard() {
     return (
       <span className={`delta-badge ${isUp ? 'up' : 'down'}`}>
         {isUp ? <StatUp width={11} height={11} /> : <StatDown width={11} height={11} />}
-        {Math.abs(delta)}% {t('dashboard.vs_yesterday')}
+        {Math.abs(delta)}% {vsLabel}
       </span>
     );
   };
 
   const lineData = {
-    labels: chart.map(d => new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })),
+    // A month's worth of points can't be labelled by weekday (they'd repeat),
+    // so switch to day-of-month once the range is longer than a week.
+    labels: chart.map(d => new Date(d.date).toLocaleDateString(undefined,
+      chart.length > 7 ? { day: 'numeric', month: 'short' } : { weekday: 'short' })),
     datasets: [
       {
         label: t('dashboard.chart_orders'),
@@ -168,23 +194,86 @@ export default function Dashboard() {
     }
   };
 
+  const statusLabel = (s) => t(`statuses.${s}`, s);
+  const statusColor = (s) => {
+    const map = { completed: '#22c55e', cancelled: '#94a3b8', in_progress: '#3b82f6', inspection: '#7c3aed', assigned: '#8b5cf6', accepted: '#1565C0', ready_for_pickup: '#f97316', pending: '#d97706', confirmed: '#0ea5e9' };
+    return map[s] || '#64748b';
+  };
+
+  /* Status breakdown — one slice per actual status, in lifecycle order, so a
+     slice maps 1:1 onto a work-order status and can drill through to the list
+     filtered by exactly that status. Empty statuses are dropped. */
+  const STATUS_ORDER = ['pending','confirmed','assigned','accepted','in_progress','inspection','ready_for_pickup','completed','cancelled'];
+  const statusSlices = STATUS_ORDER
+    .map(s => ({ status: s, count: Number(ordersByStatus.find(r => r.status === s)?.count || 0) }))
+    .filter(s => s.count > 0);
+  const statusTotal = statusSlices.reduce((sum, s) => sum + s.count, 0);
+
   const statusData = {
-    labels: [t('statuses.delivered'), t('statuses.in_transit'), t('statuses.pending'), t('statuses.failed')],
+    labels: statusSlices.map(s => statusLabel(s.status)),
     datasets: [{
-      data: [stats.delivered_today || 0, stats.active_orders || 0, stats.pending_orders || 0, stats.failed_today || 0],
-      backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444'],
+      data: statusSlices.map(s => s.count),
+      backgroundColor: statusSlices.map(s => statusColor(s.status)),
       borderWidth: 0,
     }]
   };
-  const doughnutOptions = {
-    responsive: true, maintainAspectRatio: false, cutout: '70%',
-    plugins: { legend: { position: 'right', labels: { usePointStyle: true, padding: 12 } } }
+
+  // Carry the dashboard's period into the list, so the row count the user
+  // lands on matches the slice they clicked.
+  const goToStatus = (status) => {
+    const range = periodRange
+      ? `&date_from=${periodRange.start_date}&date_to=${periodRange.end_date}`
+      : '';
+    navigate(`/work-orders?status=${status}${range}`);
   };
 
-  const statusLabel = (s) => t(`statuses.${s}`, s);
-  const statusColor = (s) => {
-    const map = { delivered: '#22c55e', failed: '#ef4444', returned: '#f97316', in_transit: '#3b82f6', assigned: '#8b5cf6', pending: '#d97706', picked_up: '#0ea5e9' };
-    return map[s] || '#64748b';
+  const doughnutOptions = {
+    responsive: true, maintainAspectRatio: false, cutout: '70%',
+    // Click a slice (or its legend entry) to open the work-order list already
+    // filtered to that status.
+    onClick: (_evt, elements) => {
+      const slice = statusSlices[elements?.[0]?.index];
+      if (slice) goToStatus(slice.status);
+    },
+    onHover: (evt, elements) => {
+      if (evt?.native?.target) evt.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+    },
+    plugins: {
+      legend: {
+        position: 'right',
+        onClick: (_e, item) => {
+          const slice = statusSlices[item?.index];
+          if (slice) goToStatus(slice.status);
+        },
+        labels: {
+          usePointStyle: true,
+          padding: 12,
+          // Show the count next to each status so the breakdown is readable
+          // without hovering
+          generateLabels: (chart) => {
+            const ds = chart.data.datasets[0] || { data: [], backgroundColor: [] };
+            return (chart.data.labels || []).map((label, i) => ({
+              text: `${label} — ${ds.data[i]}`,
+              fillStyle: ds.backgroundColor[i],
+              strokeStyle: ds.backgroundColor[i],
+              pointStyle: 'circle',
+              hidden: false,
+              index: i,
+            }));
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1e3a6b', cornerRadius: 8, padding: 12,
+        callbacks: {
+          label: (ctx) => {
+            const pct = statusTotal ? Math.round((ctx.parsed / statusTotal) * 100) : 0;
+            return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+          },
+          footer: () => 'Click to view these work orders',
+        },
+      },
+    },
   };
 
   if (loading) {
@@ -204,6 +293,30 @@ export default function Dashboard() {
           </div>
           <h1>{getGreeting()}, {user?.full_name || user?.username}</h1>
           <p className="welcome-subtitle">{t('dashboard.subtitle')}</p>
+          {/* Period switcher — drives the KPI tiles, the trend chart and the
+              status breakdown below. */}
+          <div style={{ display: 'inline-flex', gap: 4, padding: 3, borderRadius: 999, background: 'rgba(255,255,255,0.14)', marginTop: 10 }}>
+            {[{ k: 'week', label: t('dashboard.this_week', 'This Week') },
+              { k: 'month', label: t('dashboard.this_month', 'This Month') }].map(opt => (
+              <button
+                key={opt.k}
+                onClick={() => changePeriod(opt.k)}
+                style={{
+                  padding: '5px 16px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                  fontSize: 12.5, fontWeight: 700,
+                  background: period === opt.k ? '#fff' : 'transparent',
+                  color: period === opt.k ? '#1e3a6b' : 'rgba(255,255,255,0.85)',
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {periodRange && (
+            <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.7)', marginTop: 6 }}>
+              {periodRange.start_date} → {periodRange.end_date}
+            </div>
+          )}
         </div>
         <div className="header-actions">
           <button
@@ -252,10 +365,10 @@ export default function Dashboard() {
             <Package width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{stats.orders_today || 0}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.orders_today')}</span>
+            <span className="metric-value">{stats.orders_period || 0}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.orders_period', 'Work Orders')} · {periodLabel}</span>
           </div>
-          <DeltaBadge delta={stats.delta_orders} />
+          <DeltaBadge delta={stats.delta_orders_period} />
           <div className="metric-trend positive">
             <StatUp width={14} height={14} />
             <span>{t('dashboard.active_label')}: {stats.active_orders || 0}</span>
@@ -267,13 +380,13 @@ export default function Dashboard() {
             <Check width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{stats.delivered_today || 0}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.completed_orders')}</span>
+            <span className="metric-value">{stats.completed_period || 0}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.completed_orders')} · {periodLabel}</span>
           </div>
-          <DeltaBadge delta={stats.delta_delivered} />
+          <DeltaBadge delta={stats.delta_completed_period} />
           <div className="metric-trend positive">
             <StatUp width={14} height={14} />
-            <span>{t('dashboard.rate_label')}: {stats.success_rate || 0}%</span>
+            <span>{t('dashboard.rate_label')}: {stats.success_rate_period || 0}%</span>
           </div>
         </div>
 
@@ -296,12 +409,12 @@ export default function Dashboard() {
             <Timer width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{fmtMins(stats.avg_delivery_minutes)}</span>
+            <span className="metric-value">{fmtMins(stats.avg_minutes_period)}</span>
             <span className="metric-label">{t('dashboard.kpiCards.delivery_time')}</span>
           </div>
           <div className="metric-trend">
             <Clock width={14} height={14} />
-            <span>{t('dashboard.todays_avg')}</span>
+            <span>{periodLabel}</span>
           </div>
         </div>
 
@@ -310,53 +423,28 @@ export default function Dashboard() {
             <DollarCircle width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value" style={{ fontSize: 17 }}>{fmtAED(stats.revenue_today)}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.revenue_today')}</span>
+            <span className="metric-value" style={{ fontSize: 17 }}>{fmtAED(stats.revenue_period)}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.revenue', 'Revenue')} · {periodLabel}</span>
           </div>
-          <DeltaBadge delta={stats.delta_revenue} />
+          <DeltaBadge delta={stats.delta_revenue_period} />
         </div>
 
+        {/* The fixed "Revenue This Month" tile was removed — the revenue tile
+            above already follows the period switcher, so on the month view the
+            two showed the identical figure. */}
         <div className="metric-card accent">
           <div className="metric-icon" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>
             <Wallet width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value" style={{ fontSize: 17 }}>{fmtAED(stats.revenue_month)}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.revenue_month')}</span>
-          </div>
-          <div className="metric-trend">
-            <StatUp width={14} height={14} />
-            <span>{t('dashboard.failed_count')}: {stats.failed_today || 0}</span>
+            <span className="metric-value">{stats.cancelled_period || 0}</span>
+            <span className="metric-label">{t('statuses.cancelled')} · {periodLabel}</span>
           </div>
         </div>
       </div>}
 
-      {/* COD Widget (#47) */}
-      {widgetVis.cod && <div className="cod-widget-row">
-        <div className="cod-widget">
-          <div className="cod-widget-header">
-            <CreditCard width={18} height={18} />
-            <h3>{t('dashboard.widgets.cod')}</h3>
-            <Link to="/cash-payments" className="view-all">{t('dashboard.reconcile')} <ArrowRight width={14} height={14} /></Link>
-          </div>
-          <div className="cod-widget-body">
-            <div className="cod-stat">
-              <span className="cod-stat-val outstanding">{fmtAED(stats.cod_outstanding)}</span>
-              <span className="cod-stat-lbl">{t('dashboard.cod_outstanding')} ({stats.cod_outstanding_count || 0})</span>
-            </div>
-            <div className="cod-divider" />
-            <div className="cod-stat">
-              <span className="cod-stat-val settled">{fmtAED(stats.cod_settled_today)}</span>
-              <span className="cod-stat-lbl">{t('dashboard.cod_settled_today')} ({stats.cod_settled_today_count || 0})</span>
-            </div>
-            <div className="cod-divider" />
-            <div className="cod-stat">
-              <span className="cod-stat-val month">{fmtAED(stats.cod_month_total)}</span>
-              <span className="cod-stat-lbl">{t('dashboard.cod_this_month')}</span>
-            </div>
-          </div>
-        </div>
-      </div>}
+      {/* Cash Collection card removed — cash reconciliation lives on its own
+          page (/cash-payments); it was duplicating that here. */}
 
       {/* Mechanic Utilization Widget (#52) */}
       {widgetVis.mechanics_util && <div className="mechanic-util-row">
@@ -416,7 +504,7 @@ export default function Dashboard() {
         <div className="chart-card sales-chart">
           <div className="chart-header">
             <div>
-              <h3>{t('dashboard.orders_last_7_days')}</h3>
+              <h3>{t('dashboard.work_order_volume', 'Work Order Volume')} · {periodLabel}</h3>
               <p>{t('dashboard.daily_volume_trend')}</p>
             </div>
           </div>
@@ -429,14 +517,21 @@ export default function Dashboard() {
           <div className="chart-header">
             <div>
               <h3>{t('dashboard.order_status_breakdown')}</h3>
+              <p>{t('dashboard.click_slice_hint', 'Click a slice to view those work orders')}</p>
             </div>
           </div>
           <div className="chart-body">
-            <Doughnut data={statusData} options={doughnutOptions} />
+            {statusSlices.length > 0
+              ? <Doughnut data={statusData} options={doughnutOptions} />
+              : <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100%', color:'#94a3b8', fontSize:13 }}>
+                  {t('dashboard.no_work_orders', 'No work orders yet')}
+                </div>}
           </div>
+          {/* Total of the breakdown above — not a "today" figure, so the ring
+              and the number underneath always agree. */}
           <div className="pipeline-total">
-            <span className="total-label">{t('dashboard.total_today')}</span>
-            <span className="total-value">{stats.orders_today || 0}</span>
+            <span className="total-label">{t('dashboard.total_work_orders', 'Total Work Orders')}</span>
+            <span className="total-value">{statusTotal}</span>
           </div>
         </div>
       </div>}
