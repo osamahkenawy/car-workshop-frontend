@@ -287,6 +287,7 @@ export default function Customers() {
   const cur = workshop?.currency || 'AED';
   const navigate = useNavigate();
   const [customers,       setCustomers]       = useState([]);
+  const [stats,         setStats]         = useState({ total: 0, active: 0, business: 0, fleet: 0, total_work_orders: 0 });
   const [loading,       setLoading]       = useState(true);
   const [total,         setTotal]         = useState(0);
   const [page,          setPage]          = useState(1);
@@ -340,6 +341,14 @@ export default function Customers() {
   useEffect(() => {
     api.get('/service-bays').then(r => { if (r.success) setServiceBays(r.data || []); });
   }, []);
+
+  // Workshop-wide KPI counts. Refetched after mutations so the tiles stay in
+  // sync with the paginated table below.
+  const fetchStats = useCallback(async () => {
+    const r = await api.get('/customers/stats');
+    if (r.success) setStats(r.data || {});
+  }, []);
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -436,6 +445,7 @@ export default function Customers() {
       showToast(selected ? t('customers.toast.updated') : t('customers.toast.created'));
       setShowForm(false); setSelected(null);
       fetchCustomers();
+      fetchStats();
       if (drawer && drawer.id === selected?.id) setDrawer(res.data);
     } else { setFormError(res.message || t('customers.toast.save_failed')); }
     setSaving(false);
@@ -448,6 +458,7 @@ export default function Customers() {
     if (res.success) {
       showToast(newActive ? t('customers.toast.activated', { name: c.full_name }) : t('customers.toast.deactivated', { name: c.full_name }));
       fetchCustomers();
+      fetchStats();
       if (drawer?.id === c.id) setDrawer(d => ({ ...d, is_active: newActive }));
     } else {
       showToast(t('customers.toast.status_update_failed'), 'error');
@@ -463,6 +474,7 @@ export default function Customers() {
       showToast(t('customers.toast.deactivated', { name }));
       if (drawer?.id === id) setDrawer(null);
       fetchCustomers();
+      fetchStats();
     } else {
       showToast(t('customers.toast.deactivate_failed'), 'error');
     }
@@ -533,10 +545,10 @@ export default function Customers() {
 
       {/* KPI Cards */}
       <div style={{ display:'flex', gap:14, marginBottom:24, flexWrap:'wrap' }}>
-        <KPICard icon={Group}          label={t('customers.kpi.total_customers')} value={customers.length}                                        sub={t('customers.kpi.active_count', { count: activeCount })} color="#f97316" />
-        <KPICard icon={Package}        label={t('customers.kpi.total_orders')}  value={totalWorkOrders}                                          sub={t('customers.kpi.all_time')}                            color="#3b82f6" />
-        <KPICard icon={Building}       label="Corporate / Credit"               value={customers.filter(c=>c.type==='corporate').length}         sub="Credit facility accounts"                               color="#8b5cf6" />
-        <KPICard icon={DeliveryTruck}  label="Insurance / Fleet"               value={customers.filter(c=>c.type==='insurance'||c.type==='fleet').length} sub="Managed accounts"                        color="#10b981" />
+        <KPICard icon={Group}          label={t('customers.kpi.total_customers')} value={stats.total || 0}                                                                sub={t('customers.kpi.active_count', { count: stats.active || 0 })} color="#f97316" />
+        <KPICard icon={Package}        label={t('customers.kpi.total_orders')}    value={stats.total_work_orders || 0}                                                    sub={t('customers.kpi.all_time')}                                    color="#3b82f6" />
+        <KPICard icon={Building}       label="Business"                           value={stats.business || 0}                                                             sub="Company / corporate accounts"                                   color="#8b5cf6" />
+        <KPICard icon={DeliveryTruck}  label="Fleet"                              value={stats.fleet || 0}                                                                sub="Managed fleet accounts"                                         color="#10b981" />
       </div>
 
       {/* Filter Bar */}

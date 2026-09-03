@@ -600,6 +600,9 @@ export default function WorkOrders() {
   const [showNewWO, setShowNewWO] = useState(false);
   const [newWOPresetCustomerId, setNewWOPresetCustomerId] = useState(null);
   const [editWorkOrder, setEditWorkOrder] = useState(null);
+  // Prompt shown right after a job card is created, offering to jump straight
+  // into the intake inspection form (Customer Journey step 3).
+  const [inspectionPrompt, setInspectionPrompt] = useState(null);
 
   /* Auto-open new order if ?customer_id= is in the URL (from Customers drawer) */
   useEffect(() => {
@@ -1465,7 +1468,7 @@ export default function WorkOrders() {
                               <EditPencil width={13} height={13} /> {t('orders.actions.edit')}
                             </button>
                           )}
-                          {o.customer_phone || o.recipient_phone && (
+                          {(o.customer_phone || o.recipient_phone) && (
                             <WhatsAppButton phone={o.customer_phone || o.recipient_phone} order={o} size="small" currency={cur} />
                           )}
                           {o.service_status_token && !['completed','cancelled'].includes(o.status) && (
@@ -3133,6 +3136,7 @@ export default function WorkOrders() {
           fetchStats();
           dispatchPlanUpdate();
           showToast(`Job card created${created?.work_order_number ? ` — ${created.work_order_number}` : ''} ✓`, 'success');
+          if (created?.id) setInspectionPrompt(created);
         }}
         onUpdated={(updated) => {
           setShowNewWO(false);
@@ -3143,6 +3147,60 @@ export default function WorkOrders() {
           showToast(`Job card updated${updated?.work_order_number ? ` — ${updated.work_order_number}` : ''} ✓`, 'success');
         }}
       />
+
+      {/* Post-creation prompt — jump straight into the intake inspection form */}
+      {inspectionPrompt && (
+        <div
+          onClick={() => setInspectionPrompt(null)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
+            backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', zIndex: 1100, padding: 20,
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#fff', borderRadius: 16, padding: '28px 24px',
+              maxWidth: 400, width: '100%', boxShadow: '0 24px 80px rgba(0,0,0,0.18)',
+              textAlign: 'center',
+            }}
+          >
+            <div style={{
+              width: 52, height: 52, borderRadius: 14, background: '#eff6ff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}>
+              <Eye width={24} height={24} color="#1d4ed8" />
+            </div>
+            <h3 style={{ margin: '0 0 6px', fontSize: 17, fontWeight: 700, color: '#1e293b' }}>
+              Start the intake inspection?
+            </h3>
+            <p style={{ margin: '0 0 24px', fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
+              {inspectionPrompt.work_order_number || 'This job card'} was created. Do the walk-around
+              damage check with the customer now, before the vehicle goes to the bay.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setInspectionPrompt(null)} style={{
+                flex: 1, padding: '11px 18px', borderRadius: 10,
+                border: '1px solid #e2e8f0', background: '#fff',
+                color: '#64748b', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              }}>
+                Later
+              </button>
+              <button
+                onClick={() => { const id = inspectionPrompt.id; setInspectionPrompt(null); navigate(`/work-orders/${id}/inspection?type=intake`); }}
+                style={{
+                  flex: 1, padding: '11px 18px', borderRadius: 10, border: 'none',
+                  background: '#1d4ed8', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                Start Inspection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -260,10 +260,12 @@ export default function Performance() {
                   {[
                     { label: t('performance.chart.delivered'), count: kpis.delivered || 0, color: '#16a34a' },
                     { label: t('performance.chart.in_transit'), count: kpis.in_transit || 0, color: '#667eea' },
+                    { label: t('performance.chart.inspection', 'Inspection'), count: kpis.inspection || 0, color: '#0e7490' },
+                    { label: t('performance.chart.ready_for_pickup', 'Ready'), count: kpis.ready_for_pickup || 0, color: '#c2410c' },
                     { label: t('performance.chart.pending'), count: kpis.pending || 0, color: '#d97706' },
                     { label: t('performance.chart.failed'), count: kpis.failed || 0, color: '#ef4444' },
                   ].map(b => {
-                    const max = Math.max(kpis.delivered||0, kpis.in_transit||0, kpis.pending||0, kpis.failed||0, 1);
+                    const max = Math.max(kpis.delivered||0, kpis.in_transit||0, kpis.inspection||0, kpis.ready_for_pickup||0, kpis.pending||0, kpis.failed||0, 1);
                     return (
                       <div key={b.label} style={{ textAlign: 'center', flex: 1 }}>
                         <div style={{

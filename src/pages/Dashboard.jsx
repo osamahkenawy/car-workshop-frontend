@@ -27,7 +27,6 @@ const WIDGET_DEFS = [
   { key: 'metrics',      label: 'dashboard.widgets.metrics' },
   { key: 'charts',       label: 'dashboard.widgets.charts' },
   { key: 'hourly',       label: 'dashboard.widgets.hourly' },
-  { key: 'mechanics_util', label: 'dashboard.widgets.mechanics_util' },
   { key: 'service_bays',        label: 'dashboard.widgets.service_bays' },
   { key: 'mechanics',      label: 'dashboard.widgets.mechanics' },
   { key: 'recent',       label: 'dashboard.widgets.recent' },
@@ -44,8 +43,6 @@ export default function Dashboard() {
   const [topServiceBays, setTopServiceBays] = useState([]);
   const [topMechanics, setTopMechanics] = useState([]);
   const [recentWorkOrders, setRecentWorkOrders] = useState([]);
-  const [mechanicUtil, setMechanicUtil] = useState([]);
-  const [mechanicWorkload, setMechanicWorkload] = useState([]);
   const [ordersByHour, setWorkOrdersByHour] = useState([]);
   const [ordersByStatus, setOrdersByStatus] = useState([]);
   /* Week vs month view. A workshop that hasn't booked anything since this
@@ -82,8 +79,6 @@ export default function Dashboard() {
         setTopServiceBays(res.data?.top_zones || []);
         setTopMechanics(res.data?.top_mechanics || []);
         setRecentWorkOrders(res.data?.recent_orders || []);
-        setMechanicUtil(res.data?.mechanic_utilization || []);
-        setMechanicWorkload(res.data?.mechanic_workload || []);
         setWorkOrdersByHour(res.data?.orders_by_hour || []);
         setOrdersByStatus(res.data?.orders_by_status || []);
         setPeriodRange(res.data?.period || null);
@@ -445,59 +440,6 @@ export default function Dashboard() {
 
       {/* Cash Collection card removed — cash reconciliation lives on its own
           page (/cash-payments); it was duplicating that here. */}
-
-      {/* Mechanic Utilization Widget (#52) */}
-      {widgetVis.mechanics_util && <div className="mechanic-util-row">
-        <div className="util-card">
-          <div className="util-header">
-            <DeliveryTruck width={18} height={18} />
-            <h3>{t('dashboard.mechanic_utilization')}</h3>
-          </div>
-          <div className="util-body">
-            {(() => {
-              const statusMap = {};
-              mechanicUtil.forEach(d => { statusMap[d.status] = d.count; });
-              const total = Object.values(statusMap).reduce((a,b) => a + b, 0) || 1;
-              const items = [
-                { label: t('dashboard.available'), count: statusMap['available'] || 0, color: '#22c55e' },
-                { label: t('dashboard.busy'), count: statusMap['busy'] || statusMap['on_delivery'] || 0, color: '#f97316' },
-                { label: t('dashboard.offline'), count: statusMap['offline'] || statusMap['inactive'] || 0, color: '#94a3b8' },
-              ];
-              return items.map(item => (
-                <div key={item.label} className="util-bar-row">
-                  <span className="util-bar-label">{item.label}</span>
-                  <div className="util-bar-track">
-                    <div className="util-bar-fill" style={{ width: `${(item.count / total) * 100}%`, background: item.color }} />
-                  </div>
-                  <span className="util-bar-count" style={{ color: item.color }}>{item.count}</span>
-                </div>
-              ));
-            })()}
-          </div>
-        </div>
-        <div className="util-card">
-          <div className="util-header">
-            <Activity width={18} height={18} />
-            <h3>{t('dashboard.todays_workload')}</h3>
-          </div>
-          <div className="util-body">
-            {mechanicWorkload.length === 0 ? (
-              <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: 13, padding: 16 }}>{t('dashboard.no_data_yet')}</p>
-            ) : mechanicWorkload.slice(0, 6).map(d => (
-              <div key={d.id} className="util-bar-row">
-                <span className="util-bar-label">{d.full_name?.split(' ')[0]}</span>
-                <div className="util-bar-track">
-                  <div className="util-bar-fill" style={{
-                    width: `${Math.min(100, (d.orders_today / Math.max(...mechanicWorkload.map(w => w.orders_today), 1)) * 100)}%`,
-                    background: d.mechanic_status === 'available' ? '#22c55e' : '#f97316'
-                  }} />
-                </div>
-                <span className="util-bar-count">{d.orders_today}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>}
 
       {/* Charts Row */}
       {widgetVis.charts && <div className="charts-row">

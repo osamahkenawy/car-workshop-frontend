@@ -270,9 +270,6 @@ export default function Vehicles() {
         <VehKPI icon={Wrench} color="#1e3a6b" label={t('vehicles.kpi.services', 'Service Records')}
           value={summary?.total_services ?? 0}
           sub={t('vehicles.kpi.all_time', 'all-time work orders')} />
-        <VehKPI icon={Wallet} color="#10b981" label={t('vehicles.kpi.revenue', 'Service Revenue')}
-          value={fmtCurrency(summary?.total_service_value || 0, workshop?.currency)}
-          sub={t('vehicles.kpi.completed', 'from completed orders')} />
         <VehKPI icon={Group}  color="#8b5cf6" label={t('vehicles.kpi.owners', 'Vehicle Owners')}
           value={summary?.unique_owners ?? 0}
           sub={t('vehicles.kpi.unique', 'unique customers')} />
