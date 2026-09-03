@@ -27,10 +27,11 @@ export default function LoginPage() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   /* ── Login state ──
-     Pre-filled with the seeded demo admin for local testing. Remove these
-     defaults (set both back to '') before any real deployment. */
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('Demo@12345');
+     Deliberately empty. These were pre-filled with the seeded admin username
+     and password for local convenience, which meant every visitor to the
+     deployed login page arrived with working credentials already typed in. */
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPw,   setShowPw]   = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState('');
