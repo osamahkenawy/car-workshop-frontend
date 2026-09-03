@@ -137,21 +137,56 @@ const formatPhoneForWA = (phone) => {
   return digits;
 };
 
-const buildWADeliveryMessage = (order, trackingUrl, currency = 'AED') => {
+/**
+ * The WhatsApp message a customer receives about their job.
+ *
+ * Rewritten from the delivery-platform version, which addressed a parcel
+ * recipient and read order.recipient_name, recipient_address, recipient_area
+ * and recipient_emirate. None of those columns exist on work_orders — they are
+ * customer_name and dropoff_address — so all four lines evaluated to undefined
+ * and were dropped by the filter at the end. Every message went out with no
+ * name and no address on it.
+ *
+ * The vehicle and the total are what a workshop customer wants read back to
+ * them, so they take the place of the parcel fields.
+ */
+const buildWAServiceMessage = (order, trackingUrl, currency = 'AED') => {
+  // The list endpoint aliases these as vehicle_*; the single-order and label
+  // endpoints return the bare column names. Accept both, so the vehicle line
+  // renders wherever the message is built from.
+  const make = order.vehicle_make || order.make;
+  const model = order.vehicle_model || order.model;
+  const plateNo = order.vehicle_plate_number || order.plate_number;
+  const vehicle = [make, model].filter(Boolean).join(' ');
+  const plate = plateNo ? ' · ' + plateNo : '';
+  // total_amount is the figure on the invoice, service_fee the fallback.
+  // 0.00 is not null, so each has to be tested rather than COALESCEd.
+  const total = Number(order.total_amount) || Number(order.service_fee) || 0;
+
   const lines = [
-    `📦 *Delivery Update*`,
-    ``,
-    `WorkOrder: *#${order.work_order_number || order.id}*`,
-    order.recipient_name ? `Recipient: ${order.recipient_name}` : null,
-    order.recipient_address ? `📍 Address: ${order.recipient_address}` : null,
-    (order.recipient_area || order.recipient_emirate) ? `🏙 ${[order.recipient_area, order.recipient_emirate].filter(Boolean).join(', ')}` : null,
-    order.cash_amount > 0 ? `💰 COD: ${currency} ${parseFloat(order.cash_amount).toFixed(2)}` : null,
-    order.service_fee > 0 ? `🚚 Fee: ${currency} ${parseFloat(order.service_fee).toFixed(2)}` : null,
-    order.scheduled_at ? `📅 Scheduled: ${new Date(order.scheduled_at).toLocaleString('en-AE')}` : null,
-    ``,
-    trackingUrl ? `🔗 Track your delivery:\n${trackingUrl}` : null,
-    ``,
-    `Thank you! 🙏`,
+    '🔧 *Service Update*',
+    '',
+    'Job: *#' + (order.work_order_number || order.id) + '*',
+    order.customer_name ? 'Customer: ' + order.customer_name : null,
+    vehicle ? '🚗 Vehicle: ' + vehicle + plate : null,
+    // service_category is a snake_case enum; a customer should not be sent
+    // "engine_repair".
+    order.service_category
+      ? '🛠 Service: ' + String(order.service_category).replace(/_/g, ' ')
+          .replace(/^./, ch => ch.toUpperCase())
+      : null,
+    order.dropoff_address ? '📍 ' + order.dropoff_address : null,
+    total > 0 ? '💰 Total Cost: ' + currency + ' ' + total.toFixed(2) : null,
+    order.cash_amount > 0
+      ? '💵 Cash to collect: ' + currency + ' ' + parseFloat(order.cash_amount).toFixed(2)
+      : null,
+    order.scheduled_at
+      ? '📅 Booked: ' + new Date(order.scheduled_at).toLocaleString('en-AE')
+      : null,
+    '',
+    trackingUrl ? '🔗 Track your service:\n' + trackingUrl : null,
+    '',
+    'Thank you! 🙏',
   ];
   return lines.filter(l => l !== null).join('\n');
 };
@@ -165,7 +200,7 @@ const openWhatsApp = (phone, message) => {
 const WhatsAppButton = ({ phone, order, style = {}, size = 'normal', trackingUrl, currency = 'AED' }) => {
   if (!phone) return null;
   const url = trackingUrl || (order?.service_status_token ? `${window.location.origin}/track/${order.service_status_token}` : '');
-  const msg = buildWADeliveryMessage(order || {}, url, currency);
+  const msg = buildWAServiceMessage(order || {}, url, currency);
   const isSmall = size === 'small';
   return (
     <button
@@ -996,7 +1031,7 @@ export default function WorkOrders() {
       if (!allWorkOrders.length) { setExporting(false); return; }
       const headers = ['WorkOrder #','Status','Customer','Recipient','Phone',getRegionLabel(workshop?.country, 'en'),'ServiceBay','Type','Payment','COD Amount','Delivery Fee','Date'];
       const rows = allWorkOrders.map(o => [
-        o.work_order_number, o.status, o.customer_name||'Walk-in', o.recipient_name, o.recipient_phone,
+        o.work_order_number, o.status, o.customer_name||'Walk-in', o.recipient_name, o.customer_phone || o.recipient_phone,
         o.recipient_emirate, o.zone_name||'', o.work_order_type, o.payment_method,
         o.cash_amount||0, o.service_fee||0, fmtDate(o.created_at)
       ]);
@@ -1259,7 +1294,7 @@ export default function WorkOrders() {
                           <div style={{ fontSize:10, color:'#94a3b8', fontWeight:600, textTransform:'uppercase', marginBottom:2 }}>{t('orders.table.recipient')}</div>
                           <div style={{ fontWeight:600 }}>{o.recipient_name}</div>
                           <div style={{ display:'flex', alignItems:'center', gap:3, fontSize:11, color:'#94a3b8' }}>
-                            <Phone width={10} height={10} /> {o.recipient_phone}
+                            <Phone width={10} height={10} /> {o.customer_phone || o.recipient_phone}
                           </div>
                         </div>
                         <div style={{ flex:1 }}>
@@ -1365,7 +1400,7 @@ export default function WorkOrders() {
                       <td style={{ padding:'13px 16px' }}>
                         <div style={{ fontWeight:600, color:'#1e293b', fontSize:13 }}>{o.recipient_name}</div>
                         <div style={{ fontSize:11, color:'#94a3b8', display:'flex', alignItems:'center', gap:3 }}>
-                          <Phone width={10} height={10} /> {o.recipient_phone}
+                          <Phone width={10} height={10} /> {o.customer_phone || o.recipient_phone}
                         </div>
                       </td>
                       {/* Packages column */}
@@ -1426,8 +1461,8 @@ export default function WorkOrders() {
                               <EditPencil width={13} height={13} /> {t('orders.actions.edit')}
                             </button>
                           )}
-                          {o.recipient_phone && (
-                            <WhatsAppButton phone={o.recipient_phone} order={o} size="small" currency={cur} />
+                          {o.customer_phone || o.recipient_phone && (
+                            <WhatsAppButton phone={o.customer_phone || o.recipient_phone} order={o} size="small" currency={cur} />
                           )}
                           {o.service_status_token && !['completed','failed','cancelled'].includes(o.status) && (
                             <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/track/${o.service_status_token}`); showToast(t('orders.toast.tracking_copied')); }} title="Copy public tracking link"
@@ -1599,7 +1634,7 @@ export default function WorkOrders() {
                     const url = o.service_status_token ? `${window.location.origin}/track/${o.service_status_token}` : '';
                     const recipientMap = {};
                     pkgs.forEach(pkg => {
-                      const key = `${(pkg.recipient_name || '').trim().toLowerCase()}|${(pkg.recipient_phone || '').trim()}|${(pkg.address || '').trim().toLowerCase()}`;
+                      const key = `${(pkg.customer_name || pkg.recipient_name || '').trim().toLowerCase()}|${(pkg.recipient_phone || '').trim()}|${(pkg.address || '').trim().toLowerCase()}`;
                       if (!recipientMap[key]) recipientMap[key] = { ...pkg, pkgCount: 1 };
                       else recipientMap[key].pkgCount++;
                     });
@@ -1608,12 +1643,12 @@ export default function WorkOrders() {
                     if (isMulti) {
                       return uniqueRecipients.filter(pkg => pkg.recipient_phone).map((pkg, i) => {
                         const phone = pkg.recipient_phone;
-                        const stopOrder = { ...o, recipient_name: pkg.recipient_name || `Stop ${i+1}`, recipient_phone: phone, recipient_address: pkg.address || pkg.recipient_address, recipient_area: pkg.area || pkg.recipient_area, recipient_emirate: pkg.emirate || pkg.recipient_emirate, cash_amount: pkg.cash_amount || 0 };
-                        return { label: `WhatsApp: ${pkg.recipient_name || `Stop ${i+1}`}`, icon: null, waIcon: true, bg:'#25D366', onClick:() => openWhatsApp(phone, buildWADeliveryMessage(stopOrder, url, cur)) };
+                        const stopOrder = { ...o, recipient_name: pkg.customer_name || pkg.recipient_name || `Stop ${i+1}`, recipient_phone: phone, recipient_address: pkg.address || pkg.recipient_address, recipient_area: pkg.area || pkg.recipient_area, recipient_emirate: pkg.emirate || pkg.recipient_emirate, cash_amount: pkg.cash_amount || 0 };
+                        return { label: `WhatsApp: ${pkg.customer_name || pkg.recipient_name || `Stop ${i+1}`}`, icon: null, waIcon: true, bg:'#25D366', onClick:() => openWhatsApp(phone, buildWAServiceMessage(stopOrder, url, cur)) };
                       });
                     }
-                    if (o.recipient_phone) {
-                      return [{ label: t('orders.actions.share_whatsapp', 'Share via WhatsApp'), icon: null, waIcon: true, bg:'#25D366', onClick:() => openWhatsApp(o.recipient_phone, buildWADeliveryMessage(o, url, cur)) }];
+                    if (o.customer_phone || o.recipient_phone) {
+                      return [{ label: t('orders.actions.share_whatsapp', 'Share via WhatsApp'), icon: null, waIcon: true, bg:'#25D366', onClick:() => openWhatsApp(o.customer_phone || o.recipient_phone, buildWAServiceMessage(o, url, cur)) }];
                     }
                     return [];
                   })(),
@@ -1721,7 +1756,7 @@ export default function WorkOrders() {
                               <div style={{ flex:1, minWidth:0 }}>
                                 <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
                                   <span style={{ fontWeight:600, fontSize:12, color:'#1e293b' }}>
-                                    {pkg.recipient_name || t('orders.drawer.package_num', { num: pkg.sequence })}
+                                    {pkg.customer_name || pkg.recipient_name || t('orders.drawer.package_num', { num: pkg.sequence })}
                                   </span>
                                   <span style={{ fontSize:9, fontWeight:700, padding:'1px 6px', borderRadius:8,
                                     background:ps.bg, color:ps.color }}>{ps.label}</span>
@@ -1760,11 +1795,11 @@ export default function WorkOrders() {
                     /* Group packages by unique recipient (name+phone+address) → each group = 1 stop */
                     const stopMap = {};
                     drawerPackages.forEach((pkg, i) => {
-                      const key = `${(pkg.recipient_name || '').trim().toLowerCase()}|${(pkg.recipient_phone || '').trim()}|${(pkg.address || '').trim().toLowerCase()}`;
+                      const key = `${(pkg.customer_name || pkg.recipient_name || '').trim().toLowerCase()}|${(pkg.recipient_phone || '').trim()}|${(pkg.address || '').trim().toLowerCase()}`;
                       if (!stopMap[key]) {
                         stopMap[key] = {
                           seq: pkg.sequence || i + 1,
-                          name: pkg.recipient_name || `Package ${pkg.sequence || i + 1}`,
+                          name: pkg.customer_name || pkg.recipient_name || `Package ${pkg.sequence || i + 1}`,
                           phone: pkg.recipient_phone,
                           address: pkg.address,
                           area: pkg.area,

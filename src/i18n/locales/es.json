@@ -298,7 +298,7 @@
     "delivery_address": "Dirección de Entrega",
     "package_details": "Detalles del Paquete",
     "payment_method": "Método de Pago",
-    "service_fee": "Costo de Entrega",
+    "service_fee": "Coste total",
     "cash_amount": "Monto Contra Reembolso",
     "weight": "Peso",
     "dimensions": "Dimensiones",
@@ -358,7 +358,7 @@
       "bay": "Zona",
       "type": "Tipo",
       "payment": "Pago",
-      "fee": "Costo",
+      "fee": "Coste total",
       "date": "Fecha",
       "customer_label": "Customere"
     },
@@ -380,7 +380,7 @@
     "drawer": {
       "loading": "Cargando detalles…",
       "copied": "¡Copiado!",
-      "service_fee": "Costo de Entrega",
+      "service_fee": "Coste total",
       "cash_amount": "Monto Contra Reembolso",
       "weight_label": "Peso",
       "type": "Tipo",
@@ -461,7 +461,7 @@
       "dimensions": "Dimensiones",
       "payment_method": "Método de Pago",
       "cod_aed": "Monto Contra Reembolso (AED)",
-      "fee_aed": "Costo de Entrega (AED)",
+      "fee_aed": "Coste total (AED)",
       "discount_aed": "Descuento (AED)",
       "package_description": "Descripción del Paquete",
       "special_instructions": "Instrucciones Especiales",
@@ -590,7 +590,7 @@
       "packages": "Paquetes",
       "edit": "Editar",
       "total": "Total",
-      "service_fees": "Tarifas de envío"
+      "service_fees": "Coste total"
     },
     "packages": {
       "location_auto": "Ubicación auto-completada desde la zona",
@@ -983,7 +983,7 @@
     "edit_zone": "Editar Zona",
     "zone_details": "Detalles de la Zona",
     "zone_name": "Nombre de la Zona",
-    "base_fee": "Tarifa Base de Entrega",
+    "base_fee": "Tarifa base",
     "coverage_area": "Área de Cobertura",
     "delivery_time": "Tiempo Estimado de Entrega",
     "radius": "Radio",
@@ -1030,7 +1030,7 @@
     "form": {
       "name": "Nombre de la Zona *",
       "emirate": "Emirato *",
-      "base_fee": "Tarifa Base (AED)",
+      "base_fee": "Tarifa base (AED)",
       "per_km": "Por km (AED)",
       "pricing": "Precios"
     },
@@ -1343,7 +1343,7 @@
     "col_description": "Descripción",
     "col_recipient": "Destinatario",
     "col_cash_amount": "Monto COD",
-    "col_service_fee": "Tarifa de Entrega",
+    "col_service_fee": "Coste total",
     "col_mechanic": "Conductor",
     "col_date_short": "Fecha",
     "col_action": "Acción",
@@ -1500,7 +1500,7 @@
     "min_price": "Precio Mínimo (AED)",
     "max_price": "Precio Máximo (AED)",
     "express_surcharge": "Recargo Exprés (AED)",
-    "cod_fee_pct_label": "Tarifa COD (%)",
+    "cod_fee_pct_label": "Recargo en efectivo (%)",
     "rule_active": "Regla Activa",
     "price_calculator": "Calculadora de Precio",
     "distance_km": "Distancia (km)",
@@ -1648,7 +1648,7 @@
     },
     "col": {
       "notes": "Notas",
-      "service_fee": "Tarifa de envío",
+      "service_fee": "Coste total",
       "recipient": "Destinatario",
       "mechanic": "Conductor",
       "date": "Fecha",
