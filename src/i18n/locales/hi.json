@@ -1415,7 +1415,10 @@
       "received": "प्राप्त",
       "refunded": "रिफंड किया गया",
       "rejected": "अस्वीकृत",
-      "cancelled": "रद्द"
+      "cancelled": "रद्द",
+      "in_progress": "प्रगति में",
+      "resolved": "हल हो गया",
+      "closed": "बंद"
     },
     "reasons": {
       "damaged_item": "क्षतिग्रस्त आइटम",
@@ -3455,7 +3458,7 @@
   },
   "roles": {
     "super_admin": "सुपर एडमिन",
-    "admin": "एडमिन",
+    "admin": "प्रबंधक",
     "staff": "स्टाफ",
     "mechanic": "ड्राइवर"
   },

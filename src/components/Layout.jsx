@@ -323,11 +323,25 @@ export default function Layout({ children }) {
             )}
           </div>
 
+          {/* The five original roles keep their own badge and colour. Anything
+              else is a custom role from the `roles` table, and falls back to
+              the role's own name — otherwise a Service Advisor or Part Advisor
+              signs in and the header shows no role at all. */}
           {user?.role === 'superadmin'  && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
           {user?.role === 'super_admin' && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
           {user?.role === 'admin'       && <span className="role-badge admin">{t('roles.admin')}</span>}
           {user?.role === 'dispatcher'  && <span className="role-badge staff">{t('roles.staff')}</span>}
           {user?.role === 'mechanic'      && <span className="role-badge staff" style={{ background: '#f973161a', color: '#f97316', borderColor: '#f97316' }}>{t('roles.mechanic')}</span>}
+          {user?.role
+            && !['superadmin', 'super_admin', 'admin', 'dispatcher', 'mechanic'].includes(user.role)
+            && (
+              <span className="role-badge staff">
+                {/* role_name comes from the roles row and is already the
+                    human label ("Service Advisor"); the slug is only a
+                    fallback if the row went missing. */}
+                {user.role_name || String(user.role).replace(/_/g, ' ')}
+              </span>
+            )}
 
           <div className="user-menu-wrapper">
             <button className="user-avatar-toggle" onClick={() => setShowUserMenu(!showUserMenu)}>

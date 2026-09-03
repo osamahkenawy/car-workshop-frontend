@@ -2689,7 +2689,10 @@
       "received": "Imepokelewa",
       "refunded": "Imerudishwa Pesa",
       "rejected": "Imekataliwa",
-      "requested": "Imeombwa"
+      "requested": "Imeombwa",
+      "in_progress": "Inaendelea",
+      "resolved": "Imetatuliwa",
+      "closed": "Imefungwa"
     },
     "submit": "Wasilisha Urudisho",
     "submitting": "Inatuma…",
@@ -2705,7 +2708,7 @@
     "title": "Marejeo"
   },
   "roles": {
-    "admin": "MSIMAMIZI",
+    "admin": "MENEJA",
     "mechanic": "DEREVA",
     "staff": "WAFANYAKAZI",
     "super_admin": "MSIMAMIZI MKUU"

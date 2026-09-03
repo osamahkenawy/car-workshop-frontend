@@ -2689,7 +2689,10 @@
       "received": "Alındı",
       "refunded": "İade Edildi",
       "rejected": "Reddedildi",
-      "requested": "Talep Edildi"
+      "requested": "Talep Edildi",
+      "in_progress": "Devam ediyor",
+      "resolved": "Çözüldü",
+      "closed": "Kapatıldı"
     },
     "submit": "İadeyi Gönder",
     "submitting": "Gönderiliyor…",

@@ -1464,7 +1464,10 @@
       "rejected": "Rechazado",
       "requested": "Solicitado",
       "refunded": "Reembolsado",
-      "pickup_scheduled": "Recolección programada"
+      "pickup_scheduled": "Recolección programada",
+      "in_progress": "En curso",
+      "resolved": "Resuelto",
+      "closed": "Cerrado"
     },
     "col": {
       "actions": "Acciones",
@@ -3454,7 +3457,7 @@
   },
   "roles": {
     "super_admin": "SUPER ADMIN",
-    "admin": "ADMIN",
+    "admin": "GERENTE",
     "staff": "PERSONAL",
     "mechanic": "CONDUCTOR"
   },

@@ -2689,7 +2689,10 @@
       "received": "受取済み",
       "refunded": "返金済み",
       "rejected": "拒否済み",
-      "requested": "リクエスト済み"
+      "requested": "リクエスト済み",
+      "in_progress": "対応中",
+      "resolved": "解決済み",
+      "closed": "クローズ"
     },
     "submit": "返品を送信",
     "submitting": "送信中…",
@@ -2705,7 +2708,7 @@
     "title": "返品"
   },
   "roles": {
-    "admin": "管理者",
+    "admin": "マネージャー",
     "mechanic": "ドライバー",
     "staff": "スタッフ",
     "super_admin": "スーパー管理者"

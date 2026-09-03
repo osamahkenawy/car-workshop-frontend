@@ -86,15 +86,17 @@ export default function WarrantyClaims() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [returnsRes, deliveredRes, failedRes] = await Promise.all([
-        api.get(`/returns${statusFilter ? `?status=${statusFilter}` : ''}`),
-        api.get('/work-orders?status=delivered&limit=200'),
+      const [claimsRes, completedRes, failedRes] = await Promise.all([
+        api.get(`/warranty-claims${statusFilter ? `?status=${statusFilter}` : ''}`),
+        api.get('/work-orders?status=completed&limit=200'),
         api.get('/work-orders?status=failed&limit=200'),
       ]);
-      setReturns(returnsRes?.returns || returnsRes?.data || []);
-      const delivered = deliveredRes?.data || [];
+      // The API answers under `warrantyClaims`; the other two keys are kept
+      // as fallbacks so an older build of the backend still renders.
+      setReturns(claimsRes?.warrantyClaims || claimsRes?.returns || claimsRes?.data || []);
+      const completed = completedRes?.data || [];
       const failed = (failedRes?.data || []).map(o => ({ ...o, _returnSource: 'failed' }));
-      setWorkOrders([...delivered, ...failed]);
+      setWorkOrders([...completed, ...failed]);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   }, [statusFilter]);
@@ -106,8 +108,8 @@ export default function WarrantyClaims() {
     returns.forEach(r => {
       if (r.status === 'requested') s.requested++;
       else if (r.status === 'approved' || r.status === 'pickup_scheduled') s.approved++;
-      else if (r.status === 'picked_up') s.in_progress++;
-      else if (r.status === 'received' || r.status === 'refunded') s.completed++;
+      else if (r.status === 'in_progress' || r.status === 'picked_up') s.in_progress++;
+      else if (['resolved', 'closed', 'received', 'refunded'].includes(r.status)) s.completed++;
       else if (r.status === 'rejected' || r.status === 'cancelled') s.rejected++;
     });
     return s;
@@ -116,8 +118,8 @@ export default function WarrantyClaims() {
   const filtered = useMemo(() => {
     let list = returns;
     if (activeTab === 'pending') list = list.filter(r => r.status === 'requested');
-    else if (activeTab === 'active') list = list.filter(r => ['approved','pickup_scheduled','picked_up'].includes(r.status));
-    else if (activeTab === 'completed') list = list.filter(r => ['received','refunded'].includes(r.status));
+    else if (activeTab === 'active') list = list.filter(r => ['approved','in_progress','pickup_scheduled','picked_up'].includes(r.status));
+    else if (activeTab === 'completed') list = list.filter(r => ['resolved','closed','received','refunded'].includes(r.status));
     else if (activeTab === 'rejected') list = list.filter(r => ['rejected','cancelled'].includes(r.status));
     if (search) {
       const s = search.toLowerCase();
@@ -321,10 +323,10 @@ export default function WarrantyClaims() {
                     RET-{String(ret.id).padStart(4, '0')}
                   </td>
                   <td style={{ fontFamily: 'monospace', fontWeight: 600, color: '#1e293b' }}>
-                    {ret.work_order_number || `#${ret.work_order_id}`}
+                    {ret.orig_work_order_number || ret.work_order_number || `#${ret.work_order_id}`}
                   </td>
                   <td>
-                    <span style={{ fontWeight: 600, color: '#1e293b' }}>{ret.recipient_name || '—'}</span>
+                    <span style={{ fontWeight: 600, color: '#1e293b' }}>{ret.customer_name || ret.recipient_name || '—'}</span>
                   </td>
                   <td>
                     <span className="ret-reason-tag">{RETURN_REASON_KEYS[ret.reason] ? t('returns.reasons.' + RETURN_REASON_KEYS[ret.reason]) : ret.reason}</span>

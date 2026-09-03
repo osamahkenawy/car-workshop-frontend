@@ -2689,7 +2689,10 @@
       "received": "已收到",
       "refunded": "已退款",
       "rejected": "已拒绝",
-      "requested": "已申请"
+      "requested": "已申请",
+      "in_progress": "处理中",
+      "resolved": "已解决",
+      "closed": "已关闭"
     },
     "submit": "提交退回",
     "submitting": "提交中…",
@@ -2705,7 +2708,7 @@
     "title": "退货"
   },
   "roles": {
-    "admin": "管理员",
+    "admin": "经理",
     "mechanic": "司机",
     "staff": "员工",
     "super_admin": "超级管理员"

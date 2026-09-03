@@ -1415,7 +1415,10 @@
       "received": "Natanggap",
       "refunded": "Na-refund",
       "rejected": "Tinanggihan",
-      "cancelled": "Kinansela"
+      "cancelled": "Kinansela",
+      "in_progress": "Isinasagawa",
+      "resolved": "Naresolba",
+      "closed": "Sarado"
     },
     "reasons": {
       "damaged_item": "Nasirang item",
@@ -3456,7 +3459,7 @@
   },
   "roles": {
     "super_admin": "SUPER ADMIN",
-    "admin": "ADMIN",
+    "admin": "TAGAPAMAHALA",
     "staff": "STAFF",
     "mechanic": "MECHANIC"
   },

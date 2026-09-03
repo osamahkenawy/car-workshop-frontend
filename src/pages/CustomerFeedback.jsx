@@ -36,7 +36,9 @@ import api from '../lib/api';
  */
 const SHOW_KPI_SUBTEXT   = false;
 const SHOW_FILTERS       = false;
-const SHOW_ALL_RESPONSES = false;   // the per-response table at the foot of the page
+const SHOW_ALL_RESPONSES = true;    // per-response table — re-enabled: every
+                                    // submission has to be visible individually,
+                                    // not only inside the aggregate scores
 
 const NAVY   = '#1e3a6b';
 const TEAL   = '#0d6273';

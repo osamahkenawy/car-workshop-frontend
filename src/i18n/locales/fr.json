@@ -2689,7 +2689,10 @@
       "received": "Reçu",
       "refunded": "Remboursé",
       "rejected": "Rejeté",
-      "requested": "Demandé"
+      "requested": "Demandé",
+      "in_progress": "En cours",
+      "resolved": "Résolu",
+      "closed": "Clôturé"
     },
     "submit": "Soumettre le retour",
     "submitting": "Envoi en cours…",
@@ -2705,7 +2708,7 @@
     "title": "Retours"
   },
   "roles": {
-    "admin": "ADMIN",
+    "admin": "RESPONSABLE",
     "mechanic": "CHAUFFEUR",
     "staff": "PERSONNEL",
     "super_admin": "SUPER ADMIN"

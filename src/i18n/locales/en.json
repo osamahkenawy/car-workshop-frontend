@@ -1421,7 +1421,10 @@
       "received": "Received",
       "refunded": "Refunded",
       "rejected": "Rejected",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
     },
     "reasons": {
       "damaged_item": "Damaged item",
@@ -3612,7 +3615,7 @@
   },
   "roles": {
     "super_admin": "SUPER ADMIN",
-    "admin": "ADMIN",
+    "admin": "MANAGER",
     "staff": "STAFF",
     "mechanic": "MECHANIC"
   },

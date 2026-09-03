@@ -1415,7 +1415,10 @@
       "received": "Recebido",
       "refunded": "Reembolsado",
       "rejected": "Rejeitado",
-      "cancelled": "Cancelado"
+      "cancelled": "Cancelado",
+      "in_progress": "Em andamento",
+      "resolved": "Resolvido",
+      "closed": "Fechado"
     },
     "reasons": {
       "damaged_item": "Item danificado",
@@ -3454,7 +3457,7 @@
   },
   "roles": {
     "super_admin": "SUPER ADMIN",
-    "admin": "ADMIN",
+    "admin": "GERENTE",
     "staff": "EQUIPE",
     "mechanic": "MOTORISTA"
   },

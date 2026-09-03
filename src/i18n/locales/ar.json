@@ -1419,7 +1419,10 @@
       "received": "مستلَم",
       "refunded": "تم الاسترداد",
       "rejected": "مرفوض",
-      "cancelled": "ملغي"
+      "cancelled": "ملغي",
+      "in_progress": "قيد المعالجة",
+      "resolved": "تم الحل",
+      "closed": "مغلق"
     },
     "reasons": {
       "damaged_item": "عنصر تالف",

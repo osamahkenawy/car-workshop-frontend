@@ -2689,7 +2689,10 @@
       "received": "موصول",
       "refunded": "واپس ادا شدہ",
       "rejected": "مسترد",
-      "requested": "درخواست شدہ"
+      "requested": "درخواست شدہ",
+      "in_progress": "جاری ہے",
+      "resolved": "حل ہوگیا",
+      "closed": "بند"
     },
     "submit": "واپسی جمع کریں",
     "submitting": "جمع ہو رہا ہے…",
@@ -2705,7 +2708,7 @@
     "title": "واپسیاں"
   },
   "roles": {
-    "admin": "ایڈمن",
+    "admin": "منیجر",
     "mechanic": "ڈرائیور",
     "staff": "اسٹاف",
     "super_admin": "سپر ایڈمن"
