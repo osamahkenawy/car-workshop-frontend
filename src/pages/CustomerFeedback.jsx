@@ -36,6 +36,22 @@ import api from '../lib/api';
  */
 const SHOW_KPI_SUBTEXT   = false;
 const SHOW_FILTERS       = false;
+/*
+ * Hidden at the customer's request, 2026-09-03. All three are fully wired —
+ * flip a flag to true to bring one back, nothing else to change.
+ *   SHOW_BY_BRANCH  / SHOW_BY_SERVICE — the two breakdown tables. The Google
+ *                     Form does not ask for branch or service, so every
+ *                     response has neither and each table showed a single
+ *                     "Unspecified" row carrying no information. Add those
+ *                     questions to the Form and these become worth showing.
+ *   SHOW_TREND      — the 12-month chart. With two months of data it drew 81
+ *                     then -17, which reads as a collapse rather than as a
+ *                     six-response sample.
+ */
+const SHOW_BY_BRANCH     = false;
+const SHOW_BY_SERVICE    = false;
+const SHOW_TREND         = false;
+
 const SHOW_ALL_RESPONSES = true;    // per-response table — re-enabled: every
                                     // submission has to be visible individually,
                                     // not only inside the aggregate scores
@@ -456,7 +472,9 @@ export default function CustomerFeedback() {
           </Card>
 
           {/* ── Branch / service breakdown ───────────────────────────── */}
+          {(SHOW_BY_BRANCH || SHOW_BY_SERVICE) && (
           <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap' }}>
+            {SHOW_BY_BRANCH && (
             <div style={{ flex: '1 1 340px' }}>
               <Card title={t('customerFeedback.by_branch')} subtitle={t('customerFeedback.by_branch_sub')}>
                 {(stats.byBranch || []).length ? (
@@ -483,6 +501,8 @@ export default function CustomerFeedback() {
                 ) : <div style={st.empty}>{t('customerFeedback.no_data')}</div>}
               </Card>
             </div>
+            )}
+            {SHOW_BY_SERVICE && (
             <div style={{ flex: '1 1 340px' }}>
               <Card title={t('customerFeedback.by_service')} subtitle={t('customerFeedback.by_service_sub')}>
                 {(stats.byService || []).length ? (
@@ -509,10 +529,12 @@ export default function CustomerFeedback() {
                 ) : <div style={st.empty}>{t('customerFeedback.no_data')}</div>}
               </Card>
             </div>
+            )}
           </div>
+          )}
 
           {/* ── Trend ───────────────────────────────────────────────── */}
-          {(stats.trend || []).length > 1 && (
+          {SHOW_TREND && (stats.trend || []).length > 1 && (
             <Card title={t('customerFeedback.trend')} subtitle={t('customerFeedback.trend_sub')}>
               <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', overflowX: 'auto', paddingBottom: 4 }}>
                 {stats.trend.map(m => {
