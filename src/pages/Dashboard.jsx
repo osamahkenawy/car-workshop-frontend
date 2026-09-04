@@ -567,38 +567,30 @@ export default function Dashboard() {
         </div>
         )}
 
-        {widgetVis.mechanics && (
+        {widgetVis.mechanics && topMechanics.length > 0 && (
         <div className="recent-card">
           <div className="card-header">
             <h3><DeliveryTruck width={20} height={20} /> {t('dashboard.top_mechanics')}</h3>
             <Link to="/mechanics" className="view-all">{t('dashboard.view_all')} <ArrowRight width={16} height={16} /></Link>
           </div>
           <div className="card-body">
-            {topMechanics.length === 0 ? (
-              <div className="empty-state-mini">
-                <DeliveryTruck width={32} height={32} />
-                <p>{t('dashboard.no_mechanic_data')}</p>
-              </div>
-            ) : (
-              <div className="recent-list">
-                {topMechanics.slice(0, 5).map((mechanic, i) => (
-                  <div key={i} className="recent-item">
-                    <div className="recent-avatar">
-                      {mechanic.full_name?.charAt(0)}
-                    </div>
-                    <div className="recent-info">
-                      <strong>{mechanic.full_name}</strong>
-                      <span>{mechanic.vehicle_type} &bull; {mechanic.vehicle_plate}</span>
-                    </div>
-                    <span className={`status-badge ${mechanic.status === 'available' ? 'active' : ''}`}
-                      style={{ background: mechanic.status === 'available' ? '#f0fdf4' : '#f1f5f9',
-                               color:  mechanic.status === 'available' ? '#16a34a' : '#64748b' }}>
-                      {mechanic.total_deliveries || mechanic.deliveries || 0} delivs
-                    </span>
+            <div className="recent-list">
+              {topMechanics.slice(0, 5).map((mechanic, i) => (
+                <div key={i} className="recent-item">
+                  <div className="recent-avatar">
+                    {mechanic.full_name?.charAt(0)}
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="recent-info">
+                    <strong>{mechanic.full_name}</strong>
+                    <span>{mechanic.specialty ? mechanic.specialty.replace(/_/g, ' ') : t('dashboard.mechanic')}</span>
+                  </div>
+                  <span className="status-badge active"
+                    style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                    {mechanic.jobs_completed || mechanic.total_deliveries || 0} {t('dashboard.jobs_short', 'jobs')}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         )}
@@ -618,20 +610,29 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="recent-list">
-                {recentWorkOrders.slice(0, 5).map((order) => (
-                  <div key={order.id} className="recent-item">
-                    <div className="recent-avatar" style={{ background: statusColor(order.status), fontSize: 10 }}>
-                      {order.work_order_number?.slice(-3) || '#'}
+                {recentWorkOrders.slice(0, 5).map((order) => {
+                  const vehicleLabel = [order.vehicle_make, order.vehicle_model].filter(Boolean).join(' ');
+                  const primary = order.recipient_name || order.customer_name || t('orders.walk_in', 'Walk-in');
+                  const secondaryBits = [];
+                  if (vehicleLabel) secondaryBits.push(vehicleLabel);
+                  if (order.vehicle_plate_number) secondaryBits.push(order.vehicle_plate_number);
+                  if (!secondaryBits.length && order.mechanic_name) secondaryBits.push(order.mechanic_name);
+                  secondaryBits.push(new Date(order.created_at).toLocaleTimeString('en-AE', { hour: '2-digit', minute: '2-digit', hour12: true }));
+                  return (
+                    <div key={order.id} className="recent-item">
+                      <div className="recent-avatar" style={{ background: statusColor(order.status), fontSize: 10 }}>
+                        {order.work_order_number?.slice(-3) || '#'}
+                      </div>
+                      <div className="recent-info">
+                        <strong>{primary}</strong>
+                        <span>{secondaryBits.join(' \u00B7 ')}</span>
+                      </div>
+                      <span className="status-badge" style={{ background: `${statusColor(order.status)}18`, color: statusColor(order.status) }}>
+                        {statusLabel(order.status)}
+                      </span>
                     </div>
-                    <div className="recent-info">
-                      <strong>{order.recipient_name}</strong>
-                      <span>{order.mechanic_name || t('dashboard.unassigned')} &bull; {new Date(order.created_at).toLocaleTimeString('en-AE', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-                    </div>
-                    <span className="status-badge" style={{ background: `${statusColor(order.status)}18`, color: statusColor(order.status) }}>
-                      {statusLabel(order.status)}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

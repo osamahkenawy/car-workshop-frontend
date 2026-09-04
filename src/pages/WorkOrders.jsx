@@ -120,6 +120,37 @@ const fmtDate = (d, language = 'en') => d ? new Date(d).toLocaleDateString(langu
 const fmtTime = (d, language = 'en') => d ? new Date(d).toLocaleTimeString(language === 'ar' ? 'ar-AE' : 'en-AE',{hour:'2-digit',minute:'2-digit'}) : '';
 const fmtType = t => t ? t.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) : '\u2014';
 
+/* Parse a notes column that may hold either freeform text or the JSON payload
+   the Oracle migration stamps on every work order. Internal keys hidden. */
+const NOTES_HIDDEN_KEYS = new Set(['src', 'src_id', 'batch']);
+const NOTES_LABEL_OVERRIDES = {
+  loc:        'Location',
+  job_type:   'Job Type',
+  svc_type:   'Service Type',
+  operator:   'Operator',
+  salesman:   'Salesman',
+  inv:        'Invoice #',
+  party_code: 'Account Code',
+  opening_km: 'Opening KM',
+  kind:       'Kind',
+};
+function parseSrcNotes(raw) {
+  if (raw === null || raw === undefined || raw === '') return { kind: 'empty' };
+  if (typeof raw !== 'string') return { kind: 'text', text: String(raw) };
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return { kind: 'text', text: raw };
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { kind: 'text', text: raw };
+    const entries = Object.entries(parsed)
+      .filter(([k, v]) => !NOTES_HIDDEN_KEYS.has(k) && v !== null && v !== undefined && v !== '')
+      .map(([k, v]) => [NOTES_LABEL_OVERRIDES[k] || k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), typeof v === 'object' ? JSON.stringify(v) : String(v)]);
+    return { kind: 'json', entries, source: parsed.src || null };
+  } catch {
+    return { kind: 'text', text: raw };
+  }
+}
+
 /* ── WhatsApp helpers ── */
 const WhatsAppIcon = ({ size = 14, color = '#25D366' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={{ flexShrink:0 }}>
@@ -1456,6 +1487,11 @@ export default function WorkOrders() {
                       </td>
                       <td style={{ padding:'13px 16px' }} onClick={e => e.stopPropagation()}>
                         <div style={{ display:'flex', gap:6 }}>
+                          <button onClick={() => openDrawer(o)} title={t('orders.actions.details', 'Details')}
+                            style={{ padding:'6px 8px', borderRadius:8, border:'1px solid #dbeafe', background:'#eff6ff',
+                              color:'#2563eb', cursor:'pointer', display:'flex', alignItems:'center' }}>
+                            <Eye width={13} height={13} />
+                          </button>
                           <button onClick={() => printSingleLabel(o.id)} title={o.total_packages > 1 ? `Print ${o.total_packages} Package Labels` : "Print Shipping Label"}
                             style={{ padding:'6px 8px', borderRadius:8, border:'1px solid #fed7aa', background:'#fff7ed',
                               color:'#ea580c', cursor:'pointer', display:'flex', alignItems:'center' }}>
@@ -1705,11 +1741,12 @@ export default function WorkOrders() {
               ) : drawerFull ? (
                 <>
                   {/* ── Quick Stats Grid ── */}
+                  {/* Weight + COD tiles were carry-overs from the delivery UI and
+                      always read "0" / "\u2014" for a workshop job card. Kept just
+                      the service fee + order type. */}
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:18 }}>
                     {[
                       { label:t('orders.drawer.service_fee'), value:fmtAED(drawerFull.service_fee), color:'#16a34a', bg:'#f0fdf4', Icon:DollarCircle },
-                      { label:t('orders.drawer.cash_amount'),   value:fmtAED(drawerFull.cash_amount),   color:'#d97706', bg:'#fffbeb', Icon:Wallet },
-                      { label:t('orders.drawer.weight_label'), value:drawerFull.weight_kg ? `${parseFloat(drawerFull.weight_kg).toFixed(1)} kg` : '\u2014', color:'#0369a1', bg:'#f0f9ff', Icon:Weight },
                       { label:t('orders.drawer.type'),         value:fmtType(drawerFull.work_order_type),  color:'#7c3aed', bg:'#faf5ff', Icon:Package },
                     ].map(s => (
                       <div key={s.label} style={{
@@ -1977,13 +2014,44 @@ export default function WorkOrders() {
                       {[
                         { label:t('orders.drawer.description'), text: drawerFull.description },
                         { label:t('orders.drawer.special_instructions'), text: drawerFull.special_instructions },
-                        { label:t('orders.drawer.internal_notes'), text: drawerFull.notes },
                       ].filter(n=>n.text).map(n => (
                         <div key={n.label} style={{ marginBottom:4 }}>
                           <div style={{ fontSize:9, fontWeight:700, color:'#b45309', textTransform:'uppercase', marginBottom:1 }}>{n.label}</div>
                           <div style={{ fontSize:12, color:'#78350f', whiteSpace:'pre-wrap', lineHeight:'1.4' }}>{n.text}</div>
                         </div>
                       ))}
+                      {(() => {
+                        const parsed = parseSrcNotes(drawerFull.notes);
+                        if (parsed.kind === 'empty') return null;
+                        if (parsed.kind === 'json' && parsed.entries.length > 0) {
+                          return (
+                            <div style={{ marginTop: 6 }}>
+                              <div style={{ fontSize:9, fontWeight:700, color:'#b45309', textTransform:'uppercase', marginBottom:4, display:'flex', alignItems:'center', gap:6 }}>
+                                {t('orders.drawer.internal_notes')}
+                                {parsed.source && (
+                                  <span style={{ fontSize:8, fontWeight:700, color:'#78350f', background:'#fde68a', padding:'1px 5px', borderRadius:4, letterSpacing:'0.03em' }}>
+                                    {parsed.source}
+                                  </span>
+                                )}
+                              </div>
+                              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'4px 12px' }}>
+                                {parsed.entries.map(([label, value]) => (
+                                  <div key={label} style={{ fontSize:11, color:'#78350f' }}>
+                                    <span style={{ fontWeight:700, marginRight:4 }}>{label}:</span>
+                                    <span>{value}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div style={{ marginBottom:4 }}>
+                            <div style={{ fontSize:9, fontWeight:700, color:'#b45309', textTransform:'uppercase', marginBottom:1 }}>{t('orders.drawer.internal_notes')}</div>
+                            <div style={{ fontSize:12, color:'#78350f', whiteSpace:'pre-wrap', lineHeight:'1.4' }}>{parsed.text}</div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
 

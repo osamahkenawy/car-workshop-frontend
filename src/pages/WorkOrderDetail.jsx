@@ -102,6 +102,37 @@ const timeSince = d => {
   return `${Math.floor(sec/86400)}d ago`;
 };
 
+/* Parse a notes column that may hold either freeform text or the JSON payload
+   the Oracle migration stamps on every work order. Internal keys hidden. */
+const NOTES_HIDDEN_KEYS = new Set(['src', 'src_id', 'batch']);
+const NOTES_LABEL_OVERRIDES = {
+  loc:        'Location',
+  job_type:   'Job Type',
+  svc_type:   'Service Type',
+  operator:   'Operator',
+  salesman:   'Salesman',
+  inv:        'Invoice #',
+  party_code: 'Account Code',
+  opening_km: 'Opening KM',
+  kind:       'Kind',
+};
+function parseSrcNotes(raw) {
+  if (raw === null || raw === undefined || raw === '') return { kind: 'empty' };
+  if (typeof raw !== 'string') return { kind: 'text', text: String(raw) };
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return { kind: 'text', text: raw };
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { kind: 'text', text: raw };
+    const entries = Object.entries(parsed)
+      .filter(([k, v]) => !NOTES_HIDDEN_KEYS.has(k) && v !== null && v !== undefined && v !== '')
+      .map(([k, v]) => [NOTES_LABEL_OVERRIDES[k] || k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), typeof v === 'object' ? JSON.stringify(v) : String(v)]);
+    return { kind: 'json', entries, source: parsed.src || null };
+  } catch {
+    return { kind: 'text', text: raw };
+  }
+}
+
 /* ── StatusBadge ────────────────────────────────────────────── */
 const StatusBadge = ({ status, size = 'md' }) => {
   const { t } = useTranslation();
@@ -408,13 +439,12 @@ export default function WorkOrderDetail() {
           </div>
         </div>
 
-        {/* Quick stats */}
+        {/* Quick stats — dropped Cash Amount / Weight / Stops tiles that were
+            carry-overs from the delivery UI (always \u00a3\u00a3 0 / \u2014 for a workshop
+            job card). Kept the workshop-relevant ones. */}
         <div className="od-quick-stats">
-          <QuickStat icon={DollarCircle} label={t('orderDetail.cash_amount')} value={fmtAED(order.cash_amount)} color="#d97706" bg="#fef3c7" />
           <QuickStat icon={DollarCircle} label={t('orderDetail.service_fee')} value={fmtAED(order.service_fee)} color="#16a34a" bg="#dcfce7" />
-          <QuickStat icon={Weight} label={t('orderDetail.weight')} value={order.weight_kg ? `${order.weight_kg} kg` : '—'} color="#0369a1" bg="#e0f2fe" />
-          <QuickStat icon={Package} label={t('orderDetail.tab_packages', 'Packages')} value={`${pkgSummary.delivered}/${pkgSummary.total}`} color="#7c3aed" bg="#ede9fe" />
-          <QuickStat icon={MapPin} label={t('orderDetail.tab_stops', 'Stops')} value={stops.length > 0 ? `${stops.filter(s=>s.status==='completed').length}/${stops.length}` : '—'} color="#ea580c" bg="#fff7ed" />
+          <QuickStat icon={Package} label={t('orderDetail.tab_packages', 'Parts')} value={`${pkgSummary.delivered}/${pkgSummary.total}`} color="#7c3aed" bg="#ede9fe" />
           <QuickStat icon={CreditCard} label={t('orderDetail.payment')} value={t(`orderDetail.payment_labels.${order.payment_method}`, { defaultValue: fmtType(order.payment_method) })} color="#6366f1" bg="#eef2ff" />
         </div>
       </div>
@@ -557,7 +587,6 @@ export default function WorkOrderDetail() {
                   {order.awb_number && <InfoRow icon={Hashtag} label="AWB" value={order.awb_number} mono />}
                   <InfoRow icon={Box3dPoint} label={t('orderDetail.type')} value={fmtType(order.work_order_type)} />
                   <InfoRow icon={CreditCard} label={t('orderDetail.payment')} value={t(`orderDetail.payment_labels.${order.payment_method}`, { defaultValue: order.payment_method })} />
-                  <InfoRow icon={Weight} label={t('orderDetail.weight')} value={order.weight_kg ? `${order.weight_kg} kg` : '—'} />
                   {order.customer_name && <InfoRow icon={User} label={t('orderDetail.customer')} value={order.customer_name} />}
                 </div>
               </div>
@@ -567,7 +596,6 @@ export default function WorkOrderDetail() {
                 <div className="od-card-body">
                   <div className="od-fin-rows">
                     <div className="od-fin-row"><span>{t('orderDetail.fin.subtotal')}</span><span className="od-fin-amount">{fmtAED(order.service_fee)}</span></div>
-                    <div className="od-fin-row"><span>{t('orderDetail.cash_amount')}</span><span className="od-fin-amount cod">{fmtAED(order.cash_amount)}</span></div>
                     {parseFloat(order.discount) > 0 && <div className="od-fin-row discount"><span>{t('orderDetail.fin.discount')}</span><span>- {fmtAED(order.discount)}</span></div>}
                     {parseFloat(order.commission_amount) > 0 && <div className="od-fin-row commission"><span>{t('orderDetail.fin.commission')} ({order.commission_rate}%)</span><span>- {fmtAED(order.commission_amount)}</span></div>}
                     {parseFloat(order.vat_amount) > 0 && <div className="od-fin-row vat"><span>{t('orderDetail.fin.vat')} ({order.vat_rate}%)</span><span>{fmtAED(order.vat_amount)}</span></div>}
@@ -625,7 +653,35 @@ export default function WorkOrderDetail() {
                 <div className="od-card">
                   <div className="od-card-header"><div className="od-card-icon notes"><Notes width={16} height={16} /></div><h4>{t('orderDetail.section.notes')}</h4></div>
                   <div className="od-card-body">
-                    {order.notes && <p className="od-note-text">{order.notes}</p>}
+                    {(() => {
+                      const parsed = parseSrcNotes(order.notes);
+                      if (parsed.kind === 'json' && parsed.entries.length > 0) {
+                        return (
+                          <div style={{ marginBottom: (order.description || order.special_instructions) ? 10 : 0 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                              {t('orderDetail.fin.migration_source', { defaultValue: 'Migration Info' })}
+                              {parsed.source && (
+                                <span style={{ fontSize: 9, fontWeight: 800, color: '#78350f', background: '#fde68a', padding: '1px 6px', borderRadius: 4, letterSpacing: '0.04em' }}>
+                                  {parsed.source}
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', rowGap: 6, columnGap: 16 }}>
+                              {parsed.entries.map(([label, value]) => (
+                                <div key={label} style={{ fontSize: 12, color: '#334155' }}>
+                                  <span style={{ fontWeight: 700, color: '#64748b', marginRight: 4 }}>{label}:</span>
+                                  <span>{value}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      }
+                      if (parsed.kind === 'text' || parsed.kind === 'json') {
+                        return parsed.text ? <p className="od-note-text">{parsed.text}</p> : null;
+                      }
+                      return null;
+                    })()}
                     {order.description && <p className="od-note-text">{order.description}</p>}
                     {order.special_instructions && <div className="od-note-warn"><WarningTriangle width={14} height={14} /> {order.special_instructions}</div>}
                   </div>

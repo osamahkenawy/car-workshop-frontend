@@ -122,6 +122,40 @@ const SkeletonGrid = () => (
   </div>
 );
 
+/* Parse a notes field that may contain either free text or the JSON payload
+   the Oracle migration stamps on every row. Internal-only keys are hidden. */
+const NOTES_HIDDEN_KEYS = new Set(['src', 'src_id', 'batch']);
+const NOTES_LABEL_OVERRIDES = {
+  designation:   'Designation',
+  employee_code: 'Employee Code',
+  user_code:     'User Code',
+  shift:         'Shift',
+  loc:           'Location',
+  job_type:      'Job Type',
+  svc_type:      'Service Type',
+  operator:      'Operator',
+  salesman:      'Salesman',
+  party_code:    'Account Code',
+  opening_km:    'Opening KM',
+  kind:          'Kind',
+};
+function parseSrcNotes(raw) {
+  if (raw === null || raw === undefined || raw === '') return { kind: 'empty' };
+  if (typeof raw !== 'string') return { kind: 'text', text: String(raw) };
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return { kind: 'text', text: raw };
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { kind: 'text', text: raw };
+    const entries = Object.entries(parsed)
+      .filter(([k, v]) => !NOTES_HIDDEN_KEYS.has(k) && v !== null && v !== undefined && v !== '')
+      .map(([k, v]) => [NOTES_LABEL_OVERRIDES[k] || k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), typeof v === 'object' ? JSON.stringify(v) : String(v)]);
+    return { kind: 'json', entries, source: parsed.src || null };
+  } catch {
+    return { kind: 'text', text: raw };
+  }
+}
+
 /* ─── WorkOrder status mini badge ── */
 const miniStatus = {
   delivered:  { bg: '#dcfce7', color: '#16a34a' },
@@ -781,16 +815,21 @@ export default function Mechanics() {
                     </div>
                   </div>
 
-                  {/* Vehicle */}
-                  <div className="ord-view-section">
+                  {/* Vehicle — only render if the mechanic actually has vehicle data
+                      (imported/legacy records don't and would otherwise render as
+                      "License #: <employee code>" / "Type: mechanics.vehicle.undefined"). */}
+                  {(viewMechanic.vehicle_type || viewMechanic.vehicle_plate || viewMechanic.vehicle_model || viewMechanic.license_number) && (
+                    <div className="ord-view-section">
                     <div className="ord-view-section-title">
                       {(() => { const VIcon = VEHICLE_META[viewMechanic.vehicle_type]?.Icon || Car; return <VIcon width={14} height={14} />; })()} {t('mechanics.vehicle_section')}
                     </div>
                     <div className="ord-view-card">
-                      <div className="ord-view-row">
-                        <span className="ord-view-label">{t('mechanics.type')}</span>
-                        <span className="ord-view-value bold">{t(`mechanics.vehicle.${viewMechanic.vehicle_type}`, { defaultValue: VEHICLE_META[viewMechanic.vehicle_type]?.label || viewMechanic.vehicle_type })}</span>
-                      </div>
+                      {viewMechanic.vehicle_type && (
+                        <div className="ord-view-row">
+                          <span className="ord-view-label">{t('mechanics.type')}</span>
+                          <span className="ord-view-value bold">{t(`mechanics.vehicle.${viewMechanic.vehicle_type}`, { defaultValue: VEHICLE_META[viewMechanic.vehicle_type]?.label || viewMechanic.vehicle_type })}</span>
+                        </div>
+                      )}
                       {viewMechanic.vehicle_plate && (
                         <div className="ord-view-row">
                           <span className="ord-view-label">{t('mechanics.plate')}</span>
@@ -816,7 +855,8 @@ export default function Mechanics() {
                         </div>
                       )}
                     </div>
-                  </div>
+                    </div>
+                  )}
 
                   {/* ServiceBay + Last Location */}
                   {(viewMechanic.zone_name || viewDetail?.last_lat) && (
@@ -868,17 +908,44 @@ export default function Mechanics() {
                     </div>
                   )}
 
-                  {/* Notes */}
-                  {viewMechanic.notes && (
-                    <div className="ord-view-section">
-                      <div className="ord-view-card subtle">
-                        <div className="ord-view-row" style={{ alignItems: 'flex-start' }}>
-                          <span className="ord-view-label">{t('common.notes')}</span>
-                          <span className="ord-view-value" style={{ whiteSpace: 'pre-wrap' }}>{viewMechanic.notes}</span>
+                  {/* Notes — plain text for freeform notes, key/value grid when
+                      the notes column holds the JSON payload the migration stamps. */}
+                  {viewMechanic.notes && (() => {
+                    const parsed = parseSrcNotes(viewMechanic.notes);
+                    if (parsed.kind === 'empty') return null;
+                    if (parsed.kind === 'json' && parsed.entries.length > 0) {
+                      return (
+                        <div className="ord-view-section">
+                          <div className="ord-view-section-title">
+                            <InfoCircle width={14} height={14} /> {t('mechanics.employment', { defaultValue: 'Employment' })}
+                            {parsed.source && (
+                              <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, color: '#64748b', background: '#f1f5f9', padding: '1px 6px', borderRadius: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                {parsed.source}
+                              </span>
+                            )}
+                          </div>
+                          <div className="ord-view-card">
+                            {parsed.entries.map(([label, value]) => (
+                              <div key={label} className="ord-view-row">
+                                <span className="ord-view-label">{label}</span>
+                                <span className="ord-view-value">{value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="ord-view-section">
+                        <div className="ord-view-card subtle">
+                          <div className="ord-view-row" style={{ alignItems: 'flex-start' }}>
+                            <span className="ord-view-label">{t('common.notes')}</span>
+                            <span className="ord-view-value" style={{ whiteSpace: 'pre-wrap' }}>{parsed.text}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </>
               ) : (
                 /* ── WorkOrders Tab ── */
