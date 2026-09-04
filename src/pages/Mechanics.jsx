@@ -57,6 +57,7 @@ const EMPTY_FORM = {
 /* ─── Helpers ────────────────────────────────────────────────── */
 const fmtDate  = d => d ? new Date(d).toLocaleDateString('en-AE', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 const fmtPct   = (a, b) => b > 0 ? `${Math.round((a / b) * 100)}%` : '—';
+const fmtSpecialty = s => s ? s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
 const fmtPing  = d => {
   if (!d) return 'Never';
   const mins = Math.floor((Date.now() - new Date(d)) / 60000);
@@ -575,7 +576,8 @@ export default function Mechanics() {
         <div className="drv-grid">
           {visibleMechanics.map(mechanic => {
             const sm  = STATUS_META[mechanic.status]  || STATUS_META.offline;
-            const vm  = VEHICLE_META[mechanic.vehicle_type] || VEHICLE_META.motorcycle;
+            // No motorcycle fallback — a car-workshop mechanic doesn't have a delivery vehicle.
+            const vm  = VEHICLE_META[mechanic.vehicle_type];
             const pct = mechanic.total_orders > 0
               ? Math.round((mechanic.delivered_orders / mechanic.total_orders) * 100)
               : null;
@@ -621,12 +623,20 @@ export default function Mechanics() {
                   </select>
                 </div>
 
-                {/* Vehicle + ServiceBay */}
+                {/* Specialty (car workshop) + ServiceBay. Vehicle badge only
+                    renders for mechanics that actually have a delivery vehicle
+                    recorded — avoids the "Motorcycle" fallback on every card. */}
                 <div className="drv-card-tags">
-                  <span className="drv-tag vehicle" style={{ background: vm.color + '15', color: vm.color }}>
-                    {vm.Icon && <vm.Icon width={13} height={13} />} {t(`mechanics.vehicle.${mechanic.vehicle_type}`, { defaultValue: vm.label })}
-                    {mechanic.vehicle_plate && <> · {mechanic.vehicle_plate}</>}
-                  </span>
+                  {mechanic.specialty ? (
+                    <span className="drv-tag vehicle" style={{ background: '#eef2ff', color: '#4338ca' }}>
+                      {t(`mechanics.specialty.${mechanic.specialty}`, { defaultValue: fmtSpecialty(mechanic.specialty) })}
+                    </span>
+                  ) : vm ? (
+                    <span className="drv-tag vehicle" style={{ background: vm.color + '15', color: vm.color }}>
+                      {vm.Icon && <vm.Icon width={13} height={13} />} {t(`mechanics.vehicle.${mechanic.vehicle_type}`, { defaultValue: vm.label })}
+                      {mechanic.vehicle_plate && <> · {mechanic.vehicle_plate}</>}
+                    </span>
+                  ) : null}
                   {mechanic.zone_name && (
                     <span className="drv-tag bay">
                       <MapPin width={11} height={11} /> {mechanic.zone_name}
