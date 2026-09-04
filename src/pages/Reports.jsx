@@ -50,7 +50,7 @@ export default function Reports() {
   const fmtAED = v => fmtCurrency(v, cur);
   // Headline KPI cards are too narrow for fils; tables keep full precision.
   const fmtAEDShort = v => fmtCurrencyCompact(v, cur);
-  const [period,   setPeriod]   = useState('30');
+  const [period,   setPeriod]   = useState('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo,   setDateTo]   = useState('');
   const [data,     setData]     = useState(null);
@@ -327,6 +327,7 @@ export default function Reports() {
             onChange={e => setDateTo(e.target.value)} />
           <select className="rpt-period-select" value={period}
             onChange={e => { setPeriod(e.target.value); setDateFrom(''); setDateTo(''); }}>
+            <option value="all">{t("reports.all_time", "All time")}</option>
             <option value="7">{t("reports.last_7_days")}</option>
             <option value="30">{t("reports.last_30_days")}</option>
             <option value="90">{t("reports.last_90_days")}</option>
@@ -405,22 +406,9 @@ export default function Reports() {
                       }}
                     />
                   </div>
-                  {data?.by_emirate?.length > 0 && (
-                    <div className="rpt-chart-card">
-                      <div className="rpt-chart-header"><h4>{t('reports.chart.by_emirate')}</h4></div>
-                      <ReactApexChart type="bar" height={280}
-                        series={[{ name: t('reports.chart.orders_series'), data: data.by_emirate.map(d => d.orders || 0) }]}
-                        options={{
-                          chart: CHART_BASE,
-                          colors: [COLORS[0]],
-                          xaxis: { categories: data.by_emirate.map(d => d.emirate || '') },
-                          plotOptions: { bar: { borderRadius: 6, columnWidth: '50%' } },
-                          dataLabels: { enabled: false },
-                          grid: { borderColor: '#f1f5f9' },
-                        }}
-                      />
-                    </div>
-                  )}
+                  {/* WorkOrders by Emirate hidden — leftover from the delivery
+                      platform; a single-city workshop rarely needs an emirate
+                      breakdown, and it displayed as one giant bar. */}
                 </div>
               )}
               {/* Failure Reasons (#54) */}
