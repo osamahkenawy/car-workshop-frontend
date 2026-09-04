@@ -1387,7 +1387,7 @@ export default function WorkOrders() {
                       { label: t('orders.table.status'), key: 'status' },
                       { label: t('orders.table.customer'), key: '' },
                       { label: t('orders.table.vehicle', 'Vehicle'), key: '' },
-                      { label: t('orders.table.bay'), key: 'bay' },
+                      { label: t('orders.table.total_cost', 'Total Cost'), key: 'total_amount' },
                       { label: t('orders.table.type'), key: '' },
                       { label: t('orders.table.date'), key: 'date' },
                       { label: t('orders.table.completed_at', 'Completed At'), key: 'completed_at' },
@@ -1460,10 +1460,16 @@ export default function WorkOrders() {
                         )}
                       </td>
                       <td style={{ padding:'13px 16px' }}>
-                        <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:13, color:'#475569' }}>
-                          <MapPin width={13} height={13} color="#94a3b8" />
-                          {o.service_bay_name || '\u2014'}
-                        </div>
+                        {(() => {
+                          const amt = parseFloat(o.total_amount || o.service_fee || 0);
+                          return amt > 0 ? (
+                            <div style={{ fontWeight:700, color:'#16a34a', fontSize:13, whiteSpace:'nowrap' }}>
+                              {fmtAED(amt)}
+                            </div>
+                          ) : (
+                            <span style={{ fontSize:12, color:'#cbd5e1' }}>{'\u2014'}</span>
+                          );
+                        })()}
                       </td>
                       <td style={{ padding:'13px 16px' }}>
                         <span style={{ padding:'3px 10px', borderRadius:20, fontSize:12, fontWeight:600,
@@ -1979,12 +1985,11 @@ export default function WorkOrders() {
                     </div>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px 16px' }}>
                       {[
-                        { label:t('orders.drawer.bay', 'Service Bay'), value: drawerFull.service_bay_name || drawerFull.zone_name },
                         { label:t('orders.drawer.mechanic', 'Technician'), value: drawerFull.mechanic_name ? `${drawerFull.mechanic_name}${drawerFull.mechanic_specialty ? ` · ${fmtType(drawerFull.mechanic_specialty)}` : ''}` : null, assignable: !drawerFull.mechanic_name },
                         { label:t('orders.drawer.service_category', 'Category'), value: drawerFull.service_category ? fmtType(drawerFull.service_category) : ((() => { const cat = categories.find(c=>c.slug===drawerFull.category); return cat ? (isRTL && cat.name_ar ? cat.name_ar : cat.name) : fmtType(drawerFull.category); })()) },
-                        { label:t('orders.drawer.payment', 'Payment'), value: t(`orders.payment.${drawerFull.payment_method}`) || drawerFull.payment_method },
                         { label:t('orders.drawer.vehicle', 'Vehicle'), value: [drawerFull.vehicle_make, drawerFull.vehicle_model, drawerFull.vehicle_year].filter(Boolean).join(' ') || null },
                         { label:t('orders.drawer.plate', 'Plate'), value: drawerFull.vehicle_plate_number },
+                        { label:t('orders.drawer.bay', 'Service Bay'), value: drawerFull.service_bay_name || drawerFull.zone_name },
                         { label:t('orders.drawer.scheduled', 'Scheduled'), value: drawerFull.scheduled_at ? `${fmtDate(drawerFull.scheduled_at)} ${fmtTime(drawerFull.scheduled_at)}` : null },
                       ].filter(r=>r.value || r.assignable).map(row => (
                         <div key={row.label} style={{ padding:'4px 0' }}>
