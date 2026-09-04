@@ -47,20 +47,20 @@ const iconMap = {
 };
 
 /*
- * ═══════════════════════════════════════════════════════════
+ * â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
  * ROLE-BASED SIDEBAR NAVIGATION
  *
  * Each nav item has a `roles` array defining who can see it.
  * Roles: admin, dispatcher (staff), mechanic
  *
- * Admin        → Full access to everything
- * Service Advisor   → Operations + Finance (no config/system)
- * Mechanic       → Only mechanic-specific pages
- * ═══════════════════════════════════════════════════════════
+ * Admin        â†’ Full access to everything
+ * Service Advisor   â†’ Operations + Finance (no config/system)
+ * Mechanic       â†’ Only mechanic-specific pages
+ * â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
  */
 
 const navSections = [
-  /* ── MAIN ─────────────────────────────────────────── */
+  /* â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   {
     titleKey: 'main',
     items: [
@@ -68,7 +68,7 @@ const navSections = [
       { path: '/mechanic/dashboard',   labelKey: 'mechanic_home',     iconKey: 'mechanic-dashboard', moduleKey: 'mechanic-dashboard',  roles: ['mechanic'] },
     ]
   },
-  /* ── OPERATIONS ───────────────────────────────────── */
+  /* â”€â”€ OPERATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   {
     titleKey: 'operations',
     items: [
@@ -81,7 +81,7 @@ const navSections = [
     ]
   },
 
-  /* ── CRM ──────────────────────────────────────────────
+  /* â”€â”€ CRM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
      Sits next to Operations because the work flows from Enquiries and
      Customers, directly above it. Each entry carries a moduleKey so the
      super-admin module toggles can switch it on per workshop. */
@@ -92,7 +92,7 @@ const navSections = [
       { path: '/crm/tasks',          labelKey: 'crm_tasks',         iconKey: 'crm-tasks',     moduleKey: 'crm-tasks',      roles: ['admin', 'dispatcher'] },
     ]
   },
-  /* ── MECHANIC TOOLS ─────────────────────────────────── */
+  /* â”€â”€ MECHANIC TOOLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   {
     titleKey: 'tools',
     items: [
@@ -100,23 +100,7 @@ const navSections = [
       { path: '/mechanic/scan',        labelKey: 'scan_shipment',   iconKey: 'mechanic-scan',      moduleKey: 'mechanic-scan',       roles: ['mechanic'] },
     ]
   },
-  /* ── CONFIGURATION (admin-only) ───────────────────── */
-  {
-    titleKey: 'config',
-    items: [
-      { path: '/service-bays',              labelKey: 'service_bays',           iconKey: 'service_bays',            moduleKey: 'service-bays',             roles: ['admin'] },
-      { path: '/service-pricing',            labelKey: 'pricing',         iconKey: 'pricing',          moduleKey: 'pricing',           roles: ['admin'] },
-      { path: '/inventory',                  labelKey: 'inventory',       iconKey: 'inventory',        moduleKey: 'inventory',         roles: ['admin'] },
-    ]
-  },
-  /* ── FINANCE ──────────────────────────────────────── */
-  {
-    titleKey: 'finance',
-    items: [
-      { path: '/invoices',           labelKey: 'invoices',        iconKey: 'invoices',         moduleKey: 'invoices',          roles: ['admin', 'dispatcher'] },
-    ]
-  },
-  /* ── ANALYTICS ────────────────────────────────────── */
+  /* â”€â”€ ANALYTICS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   {
     titleKey: 'analytics',
     items: [
@@ -125,7 +109,7 @@ const navSections = [
       { path: '/customer-feedback',  labelKey: 'customer_feedback', iconKey: 'customer_feedback', moduleKey: 'customer-feedback', roles: ['admin', 'dispatcher'] },
     ]
   },
-  /* ── SYSTEM (admin-only) ──────────────────────────── */
+  /* â”€â”€ SYSTEM (admin-only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   {
     titleKey: 'system',
     items: [
@@ -138,8 +122,8 @@ const navSections = [
 
 /**
  * Filter nav sections based on user's permitted modules (dynamic roles).
- * If permittedModules is null/undefined → unrestricted (show all for that legacy role).
- * If permittedModules is an array → show only items whose moduleKey is included.
+ * If permittedModules is null/undefined â†’ unrestricted (show all for that legacy role).
+ * If permittedModules is an array â†’ show only items whose moduleKey is included.
  * Falls back to legacy role-based filtering when no permittedModules.
  */
 function getNavForRole(role, permittedModules) {
@@ -292,16 +276,16 @@ export default function Layout({ children }) {
               <div className="lang-dropdown">
                 {[
                   { code: 'en', label: 'English' },
-                  { code: 'ar', label: 'العربية' },
-                  { code: 'es', label: 'Español' },
-                  { code: 'pt', label: 'Português' },
-                  { code: 'zh', label: '中文' },
-                  { code: 'ja', label: '日本語' },
-                  { code: 'fr', label: 'Français' },
-                  { code: 'ur', label: 'اردو' },
-                  { code: 'hi', label: 'हिन्दी' },
+                  { code: 'ar', label: 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©' },
+                  { code: 'es', label: 'EspaÃ±ol' },
+                  { code: 'pt', label: 'PortuguÃªs' },
+                  { code: 'zh', label: 'ä¸­æ–‡' },
+                  { code: 'ja', label: 'æ—¥æœ¬èªž' },
+                  { code: 'fr', label: 'FranÃ§ais' },
+                  { code: 'ur', label: 'Ø§Ø±Ø¯Ùˆ' },
+                  { code: 'hi', label: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€' },
                   { code: 'tl', label: 'Tagalog' },
-                  { code: 'tr', label: 'Türkçe' },
+                  { code: 'tr', label: 'TÃ¼rkÃ§e' },
                   { code: 'sw', label: 'Kiswahili' },
                 ].map(lang => (
                   <button
@@ -318,7 +302,7 @@ export default function Layout({ children }) {
 
           {/* The five original roles keep their own badge and colour. Anything
               else is a custom role from the `roles` table, and falls back to
-              the role's own name — otherwise a Service Advisor or Part Advisor
+              the role's own name â€” otherwise a Service Advisor or Part Advisor
               signs in and the header shows no role at all. */}
           {user?.role === 'superadmin'  && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
           {user?.role === 'super_admin' && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
@@ -361,15 +345,15 @@ export default function Layout({ children }) {
       </header>
 
       <main className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        {/* D.5 — Trial expiry banner */}
+        {/* D.5 â€” Trial expiry banner */}
         <TrialBanner />
         {children}
       </main>
 
       <footer className={`custom-footer ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
         {i18n.language === 'ar'
-          ? `© ${new Date().getFullYear()} مركز بايونير لخدمة السيارات — جميع الحقوق محفوظة`
-          : `© ${new Date().getFullYear()} Pioneer Car Service Center — All rights reserved`}
+          ? `Â© ${new Date().getFullYear()} Ù…Ø±ÙƒØ² Ø¨Ø§ÙŠÙˆÙ†ÙŠØ± Ù„Ø®Ø¯Ù…Ø© Ø§Ù„Ø³ÙŠØ§Ø±Ø§Øª â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©`
+          : `Â© ${new Date().getFullYear()} Pioneer Car Service Center â€” All rights reserved`}
       </footer>
     </div>
   );
