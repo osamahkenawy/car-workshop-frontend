@@ -3286,25 +3286,10 @@ export default function JobAssignment() {
                     </div>
                   </div>
 
-                  {/* Notes */}
-                  {(drawerFull.description || drawerFull.special_instructions || drawerFull.notes) && (
-                    <div style={{ background:'#fffbeb', borderRadius:12, padding:'12px 14px', border:'1px solid #fef3c7', marginBottom:14 }}>
-                      <div style={{ fontWeight:700, fontSize:10, marginBottom:6, color:'#92400e',
-                        display:'flex', alignItems:'center', gap:5, textTransform:'uppercase', letterSpacing:'0.06em' }}>
-                        <Notes width={12} height={12} color="#d97706" /> {t('orders.drawer.notes_instructions', 'Notes & Instructions')}
-                      </div>
-                      {[
-                        { label: t('orders.drawer.description', 'Description'), text: drawerFull.description },
-                        { label: t('orders.drawer.special_instructions', 'Special Instructions'), text: drawerFull.special_instructions },
-                        { label: t('orders.drawer.internal_notes', 'Internal Notes'), text: drawerFull.notes },
-                      ].filter(n => n.text).map(n => (
-                        <div key={n.label} style={{ marginBottom:4 }}>
-                          <div style={{ fontSize:9, fontWeight:700, color:'#b45309', textTransform:'uppercase', marginBottom:1 }}>{n.label}</div>
-                          <div style={{ fontSize:12, color:'#78350f', whiteSpace:'pre-wrap', lineHeight:'1.4' }}>{n.text}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {/* Notes section removed — imported work orders carry the
+                      migration JSON envelope here, which was just noise. Any
+                      real user-authored description/instructions remain visible
+                      elsewhere on the full detail page. */}
                 </>
               ) : null}
             </div>

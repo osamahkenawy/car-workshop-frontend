@@ -673,7 +673,7 @@ export default function Customers() {
                         </td>
                         <td style={{ padding:'13px 16px' }}>
                           <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:13, color:'#475569' }}>
-                            <MapPin width={13} height={13} color="#94a3b8" /> {[customer.city, customer.area, customer.emirate].filter(Boolean).join(', ') || t('customers.default_location', 'Abu Dhabi')}
+                            <MapPin width={13} height={13} color="#94a3b8" /> {(() => { const parts = [customer.city, customer.area, customer.emirate].filter(Boolean).map(p => p === 'Dubai' ? 'Abu Dhabi' : p); return parts.length ? [...new Set(parts)].join(', ') : t('customers.default_location', 'Abu Dhabi'); })()}
                           </div>
                         </td>
                         <td style={{ padding:'13px 16px' }}>
@@ -858,7 +858,7 @@ export default function Customers() {
                         { label: t('customers.drawer.total_orders'), Icon: Package, value: drawer.total_orders || 0, color: '#3b82f6' },
                         { label: t('customers.drawer.delivered'), Icon: CheckCircle, value: drawer.delivered_orders || 0, color: '#16a34a' },
                         { label: t('customers.drawer.credit_limit'), Icon: Wallet, value: creditVal > 0 ? `${cur} ${creditVal.toFixed(0)}` : t('customers.drawer.no_limit'), color: '#8b5cf6' },
-                        { label: t('customers.profile.location'), Icon: MapPin, value: [drawer.city, drawer.area, drawer.emirate].filter(Boolean).join(', ') || t('customers.default_location', 'Abu Dhabi'), color: '#f97316' },
+                        { label: t('customers.profile.location'), Icon: MapPin, value: (() => { const parts = [drawer.city, drawer.area, drawer.emirate].filter(Boolean).map(p => p === 'Dubai' ? 'Abu Dhabi' : p); return parts.length ? [...new Set(parts)].join(', ') : t('customers.default_location', 'Abu Dhabi'); })(), color: '#f97316' },
                       ];
                       return drawerKpiStats.map(s => (
                         <div key={s.label} style={{ background:'#fff', borderRadius:12, padding:'13px 15px',
