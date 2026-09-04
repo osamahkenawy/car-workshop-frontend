@@ -168,8 +168,6 @@ export default function Enquiries() {
         <KPICard icon={Phone} label="Pending" value={pending} sub="New + Quoted" color="#B77900" />
         <KPICard icon={CheckCircle} label="Converted" value={t.converted ?? 0} sub={`${conversionRate}% conversion`} color="#16a34a" />
         <KPICard icon={Clock} label="In nurture" value={t.nurture ?? 0} sub="Re-offer scheduled" color="#7c3aed" />
-        <KPICard icon={WarningTriangle} label="Lost" value={t.lost ?? 0} color="#dc2626" />
-        <KPICard icon={Calendar} label="Follow-ups due" value={t.follow_ups_due ?? 0} sub="Subset of pending / nurture" color={Number(t.follow_ups_due) > 0 ? '#dc2626' : '#94a3b8'} />
       </div>
 
       {/* Conversion by channel — the reason source is captured at all */}
