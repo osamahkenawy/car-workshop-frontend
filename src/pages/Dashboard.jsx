@@ -354,19 +354,30 @@ export default function Dashboard() {
       </div>
 
       {/* Key Metrics Row — 6 cards now (#42 monthly revenue, #48 avg delivery time) */}
-      {widgetVis.metrics && <div className="metrics-row">
+      {widgetVis.metrics && (() => {
+        // Freshly imported datasets can have every WO dated in the past,
+        // which leaves every "This Month" tile at 0. Fall back to all-time
+        // figures so the dashboard actually shows the workshop's backlog.
+        const usePeriod = (stats.orders_period || 0) > 0;
+        const scopeLabel = usePeriod ? periodLabel : t('dashboard.all_time', 'All time');
+        const ordersVal = usePeriod ? (stats.orders_period || 0) : (stats.total_orders_all_time || 0);
+        const completedVal = usePeriod ? (stats.completed_period || 0) : (stats.completed_orders_all_time || 0);
+        const revenueVal = usePeriod ? (stats.revenue_period || 0) : (stats.revenue_all_time || 0);
+        const cancelledVal = usePeriod ? (stats.cancelled_period || 0) : Math.max(0, (stats.total_orders_all_time || 0) - (stats.completed_orders_all_time || 0) - (stats.active_orders_all_time || 0));
+        return (
+        <div className="metrics-row">
         <div className="metric-card primary">
           <div className="metric-icon" style={{ background: 'rgba(242,66,27,0.1)', color: '#159fd9' }}>
             <Package width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{stats.orders_period || 0}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.orders_period', 'Work Orders')} · {periodLabel}</span>
+            <span className="metric-value">{ordersVal}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.orders_period', 'Work Orders')} · {scopeLabel}</span>
           </div>
-          <DeltaBadge delta={stats.delta_orders_period} />
+          {usePeriod && <DeltaBadge delta={stats.delta_orders_period} />}
           <div className="metric-trend positive">
             <StatUp width={14} height={14} />
-            <span>{t('dashboard.active_label')}: {stats.active_orders || 0}</span>
+            <span>{t('dashboard.active_label')}: {stats.active_orders_all_time || stats.active_orders || 0}</span>
           </div>
         </div>
 
@@ -375,8 +386,8 @@ export default function Dashboard() {
             <Check width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{stats.completed_period || 0}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.completed_orders')} · {periodLabel}</span>
+            <span className="metric-value">{completedVal}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.completed_orders')} · {scopeLabel}</span>
           </div>
           <DeltaBadge delta={stats.delta_completed_period} />
           <div className="metric-trend positive">
@@ -418,10 +429,10 @@ export default function Dashboard() {
             <DollarCircle width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value" style={{ fontSize: 17 }}>{fmtAED(stats.revenue_period)}</span>
-            <span className="metric-label">{t('dashboard.kpiCards.revenue', 'Revenue')} · {periodLabel}</span>
+            <span className="metric-value" style={{ fontSize: 17 }}>{fmtAED(revenueVal)}</span>
+            <span className="metric-label">{t('dashboard.kpiCards.revenue', 'Revenue')} · {scopeLabel}</span>
           </div>
-          <DeltaBadge delta={stats.delta_revenue_period} />
+          {usePeriod && <DeltaBadge delta={stats.delta_revenue_period} />}
         </div>
 
         {/* The fixed "Revenue This Month" tile was removed — the revenue tile
@@ -432,11 +443,13 @@ export default function Dashboard() {
             <Wallet width={24} height={24} />
           </div>
           <div className="metric-content">
-            <span className="metric-value">{stats.cancelled_period || 0}</span>
-            <span className="metric-label">{t('statuses.cancelled')} · {periodLabel}</span>
+            <span className="metric-value">{cancelledVal}</span>
+            <span className="metric-label">{t('statuses.cancelled')} · {scopeLabel}</span>
           </div>
         </div>
-      </div>}
+      </div>
+      );
+      })()}
 
       {/* Cash Collection card removed — cash reconciliation lives on its own
           page (/cash-payments); it was duplicating that here. */}
