@@ -1683,13 +1683,13 @@
     }
   },
   "job-assignment": {
-    "title": "JobAssignment Board",
+    "title": "Job Assignment Board",
     "subtitle": "Assign mechanics to orders in real time",
     "assign_mechanic": "Assign Mechanic",
     "reassign": "Reassign",
     "unassign": "Unassign",
     "bulk_assign": "Bulk Assign",
-    "pending_orders": "Pending WorkOrders",
+    "pending_orders": "Pending Work Orders",
     "available_mechanics": "Available Mechanics",
     "no_pending": "No pending orders",
     "no_mechanics": "No available mechanics",
@@ -1710,7 +1710,7 @@
     },
     "map": {
       "no_locations": "No locations to display",
-      "no_coords": "WorkOrders and mechanics need GPS coordinates to appear on the map"
+      "no_coords": "Work orders and mechanics need GPS coordinates to appear on the map"
     },
     "legend": {
       "unassigned": "Unassigned",
@@ -1718,7 +1718,7 @@
       "mechanics": "Mechanics"
     },
     "popup": {
-      "bay": "ServiceBay:",
+      "bay": "Service Bay:",
       "delivery_address": "Delivery Address",
       "recipient": "Recipient",
       "mechanic": "Mechanic",
@@ -1729,14 +1729,14 @@
       "active_orders_one": "{{count}} active order",
       "active_orders_other": "{{count}} active orders"
     },
-    "orders": "WorkOrders",
+    "orders": "Work Orders",
     "track": "Track",
     "refresh": "Refresh",
     "cancel": "Cancel",
     "select": "Select",
     "selected": "Selected",
     "online": "Online",
-    "order_label": "WorkOrder",
+    "order_label": "Work Order",
     "order_selected_suffix": "selected",
     "confirm_unassign": "Unassign this mechanic?",
     "currency": "AED",
