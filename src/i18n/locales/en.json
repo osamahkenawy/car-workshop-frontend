@@ -657,6 +657,7 @@
       "confirm": "Cancel WorkOrder"
     },
     "payment": {
+      "cash": "Cash",
       "cod": "Cash on Delivery",
       "prepaid": "Prepaid",
       "credit": "Credit",
@@ -2067,8 +2068,8 @@
     "emirate": "Emirate",
     "type": "Type",
     "payment": "Payment",
-    "cash_amount": "COD Amount",
-    "service_fee": "Delivery Fee",
+    "cash_amount": "Cash Amount",
+    "service_fee": "Total Cost",
     "discount": "Discount",
     "customer": "Customer",
     "reassign": "Reassign",
@@ -2114,7 +2115,7 @@
       "wallet": "Wallet"
     },
     "fin": {
-      "subtotal": "Subtotal (Delivery Fee)",
+      "subtotal": "Subtotal",
       "discount": "Discount",
       "commission": "Platform Commission",
       "vat": "VAT",
@@ -2122,7 +2123,7 @@
       "net_payable": "Net Payable to Merchant",
       "total": "Total Amount"
     },
-    "tab_packages": "Packages",
+    "tab_packages": "Parts",
     "tab_stops": "Stops",
     "stops_label": "Stops",
     "multi_stop_deliveries": "Multi-Stop Deliveries",
