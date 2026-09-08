@@ -16,6 +16,7 @@ import './CRMPages.css';
 import './Reports.css';
 import { useTranslation } from 'react-i18next';
 import { downloadCsv, toCsv, csvCell } from '../utils/csv';
+import pioneerLogoPdf from '../assets/pioneer-logo-pdf.png';
 
 /* ── Helpers ──────────────────────────────────────────────────── */
 const pct    = (a, b) => b > 0 ? ((a / b) * 100).toFixed(1) + '%' : '0%';
@@ -216,6 +217,27 @@ export default function Reports() {
       console.warn('Failed to load Arabic font, falling back to default:', e);
     }
 
+    // Logo, top-left regardless of RTL/LTR — the brand mark stays put; only
+    // the body text flows with the language.
+    let logoHeight = 0;
+    try {
+      const logoResp = await fetch(pioneerLogoPdf);
+      if (logoResp.ok) {
+        const logoBuf = await logoResp.arrayBuffer();
+        const bytes = new Uint8Array(logoBuf);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const logoBase64 = 'data:image/png;base64,' + btoa(binary);
+        // Source PNG is 928x166 (aspect 5.59:1) — a fixed width keeps it a
+        // sensible size across every page size jsPDF supports.
+        const logoWidthMm = 44;
+        logoHeight = logoWidthMm * (166 / 928);
+        doc.addImage(logoBase64, 'PNG', 14, 10, logoWidthMm, logoHeight);
+      }
+    } catch (e) {
+      console.warn('Failed to embed the Pioneer logo in the PDF export:', e);
+    }
+
     // Enable RTL if Arabic UI
     if (isRTL) doc.setR2L(true);
 
@@ -229,13 +251,15 @@ export default function Reports() {
     const textX = isRTL ? pageW - margin : margin;
     const textAlign = isRTL ? 'right' : 'left';
 
-    // Header
+    // Header — pushed down below the logo band (logoHeight is 0 if the fetch
+    // above failed, so the layout still holds together without it).
+    const titleY = 10 + logoHeight + 10;
     doc.setFontSize(20);
     doc.setTextColor(36, 64, 102);
-    doc.text(ar(t('reports.pdf.title')), textX, 20, { align: textAlign });
+    doc.text(ar(t('reports.pdf.title')), textX, titleY, { align: textAlign });
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text(ar(t('reports.pdf.generated_period', { date: now, days: period })), textX, 28, { align: textAlign });
+    doc.text(ar(t('reports.pdf.generated_period', { date: now, days: period })), textX, titleY + 8, { align: textAlign });
 
     // Common autoTable styles for Arabic font
     const tableFont = { font: 'Amiri' };
@@ -243,11 +267,12 @@ export default function Reports() {
     const headStyles = { fillColor: [36, 64, 102], ...tableFont, fontStyle: 'bold', halign: isRTL ? 'right' : 'left' };
 
     // KPIs table
+    const kpiHeadingY = titleY + 12;
     doc.setFontSize(13);
     doc.setTextColor(36, 64, 102);
-    doc.text(ar(t('reports.pdf.overview')), textX, 40, { align: textAlign });
+    doc.text(ar(t('reports.pdf.overview')), textX, kpiHeadingY, { align: textAlign });
     autoTable(doc, {
-      startY: 44,
+      startY: kpiHeadingY + 4,
       head: [[ar(t('reports.pdf.metric')), ar(t('reports.pdf.value'))]],
       body: [
         [ar(t('reports.pdf.total_orders')), String(ov.total_orders || 0)],
