@@ -730,7 +730,8 @@
     "customer_360": "کسٹمر 360",
     "service_reminders": "سروس یاد دہانیاں",
     "crm_tasks": "کام اور فالو اپ",
-    "customer_experience": "کسٹمر تجربہ"
+    "customer_experience": "کسٹمر تجربہ",
+    "complaints": "شکایات"
   },
   "dashboard": {
     "active_label": "فعال",
@@ -3717,8 +3718,8 @@
     "saving": "محفوظ ہو رہا ہے…",
     "followup_ok": "فالو اپ کے طور پر نشان زد کر دیا گیا۔",
     "followup_err": "محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
-    "complaints_title": "شکایات — جلد آ رہا ہے",
-    "complaints_note": "شکایات کی تعداد، حل کا وقت اور SLA کی تعمیل ریکارڈ کرنے کے لیے GM Pioneer کی طرف سے منظور شدہ کیٹیگری فہرست درکار ہے — جب تک وہ موجود نہ ہو یہاں کچھ بنانے کو نہیں۔",
+    "complaints_title": "شکایات",
+    "complaints_note": "قسم وار تقسیم کے لیے GM Pioneer کی طرف سے منظور شدہ فہرست درکار ہے — باقی سب کچھ یہاں لائیو ہے۔",
     "band_needs_work": "بہتری درکار ہے",
     "band_good": "اچھا",
     "band_great": "بہت اچھا",
@@ -3729,6 +3730,10 @@
     "today": "آج",
     "yesterday": "کل",
     "days_ago": "{{n}} دن پہلے",
-    "roadmap": "روڈ میپ"
+    "roadmap": "روڈ میپ",
+    "view_complaints": "شکایات دیکھیں",
+    "complaints_still_open": "ابھی تک کھلی",
+    "complaints_ack_sla": "1 دن میں تسلیم شدہ",
+    "complaints_avg_resolution": "اوسط حل کا وقت"
   }
 }

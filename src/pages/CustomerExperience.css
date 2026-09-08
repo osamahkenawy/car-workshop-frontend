@@ -223,15 +223,22 @@
 .cx-footnote { font-size: 11px; color: #94a3b8; margin: 12px 0 0; }
 
 .cx-roadmap-card {
-  flex: 1 1 280px; position: relative; display: flex; flex-direction: column; gap: 6px;
-  border: 1px dashed #f6ecda; background: #fffbf2; border-radius: 14px; padding: 18px;
+  flex: 1 1 280px; position: relative; display: flex; flex-direction: column; gap: 12px;
+  border: 1px solid #e6eaf1; background: #fff; border-radius: 14px; padding: 18px;
 }
-.cx-roadmap-badge {
-  align-self: flex-start; font-size: 10.5px; font-weight: 800; letter-spacing: .05em;
-  text-transform: uppercase; color: #b26a00; background: #fdf2e0; padding: 3px 9px; border-radius: 999px;
-}
+.cx-roadmap-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .cx-roadmap-card strong { font-size: 14px; color: var(--cx-navy); }
 .cx-roadmap-card p { margin: 0; font-size: 12.5px; color: #7d8494; line-height: 1.5; }
+.cx-roadmap-link {
+  display: inline-flex; align-items: center; gap: 5px; border: none; background: none; cursor: pointer;
+  color: var(--cx-cool); font-size: 12px; font-weight: 700; padding: 0; white-space: nowrap;
+}
+.cx-roadmap-link:hover { text-decoration: underline; }
+
+.cx-mini-vitals { display: flex; gap: 18px; }
+.cx-mini-vital { display: flex; flex-direction: column; gap: 2px; }
+.cx-mini-vital-value { font-size: 20px; font-weight: 800; color: var(--cx-navy); }
+.cx-mini-vital-label { font-size: 10.5px; color: #94a3b8; }
 
 @media (max-width: 640px) {
   .cx-hero { flex-direction: column; }

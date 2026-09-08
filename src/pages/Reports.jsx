@@ -68,7 +68,9 @@ export default function Reports() {
   // /reports/financial, a different contract from the explicit from/to these
   // three endpoints expect. Defaults to the trailing 30 days.
   const [kpiRange, setKpiRange] = useState(() => {
-    const iso = d => d.toISOString().slice(0, 10);
+    // Local calendar date, not toISOString()'s UTC one — see the same fix
+    // in CustomerExperience.jsx for why "today" was dropping out early.
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const to = new Date();
     const from = new Date(to.getTime() - 29 * 86400000);
     return { from: iso(from), to: iso(to) };

@@ -198,7 +198,8 @@
     "customer_360": "ملف العميل الشامل",
     "service_reminders": "تذكيرات الصيانة",
     "crm_tasks": "المهام والمتابعات",
-    "customer_experience": "تجربة العميل"
+    "customer_experience": "تجربة العميل",
+    "complaints": "الشكاوى"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -3898,8 +3899,8 @@
     "saving": "جارٍ الحفظ…",
     "followup_ok": "تم وضع علامة المتابعة.",
     "followup_err": "تعذر الحفظ. حاول مرة أخرى.",
-    "complaints_title": "الشكاوى — قريبًا",
-    "complaints_note": "يتطلب حجم الشكاوى ووقت الحل والامتثال لاتفاقية مستوى الخدمة قائمة فئات متفق عليها من الإدارة العامة لبايونير قبل إمكانية تسجيلها — لا يوجد ما يمكن بناؤه هنا حتى يتوفر ذلك.",
+    "complaints_title": "الشكاوى",
+    "complaints_note": "التصنيف حسب الفئة يحتاج إلى قائمة فئات معتمدة من GM Pioneer — كل ما عدا ذلك هنا مباشر وحي.",
     "band_needs_work": "يحتاج إلى تحسين",
     "band_good": "جيد",
     "band_great": "ممتاز",
@@ -3910,6 +3911,10 @@
     "today": "اليوم",
     "yesterday": "أمس",
     "days_ago": "منذ {{n}} يوم",
-    "roadmap": "قيد التطوير"
+    "roadmap": "قيد التطوير",
+    "view_complaints": "عرض الشكاوى",
+    "complaints_still_open": "لا تزال مفتوحة",
+    "complaints_ack_sla": "تم الإقرار خلال يوم واحد",
+    "complaints_avg_resolution": "متوسط وقت الحل"
   }
 }

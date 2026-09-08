@@ -195,7 +195,8 @@
     "customer_360": "Customer 360",
     "service_reminders": "Mga paalala sa serbisyo",
     "crm_tasks": "Mga gawain at follow-up",
-    "customer_experience": "Karanasan ng Kustomer"
+    "customer_experience": "Karanasan ng Kustomer",
+    "complaints": "Mga Reklamo"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -3719,8 +3720,8 @@
     "saving": "Sine-save…",
     "followup_ok": "Namarkahan bilang nasundan.",
     "followup_err": "Hindi na-save. Subukan muli.",
-    "complaints_title": "Mga Reklamo — Paparating Na",
-    "complaints_note": "Kailangan ng bilang ng reklamo, oras ng paglutas, at pagsunod sa SLA ng napagkasunduang listahan ng kategorya mula sa GM Pioneer bago ito maitala — walang maitatayo dito hangga't wala pa iyon.",
+    "complaints_title": "Mga Reklamo",
+    "complaints_note": "Ang paghahati-hati ayon sa kategorya ay nangangailangan ng napagkasunduang listahan ng kategorya mula sa GM Pioneer — live na ang lahat ng iba pa dito.",
     "band_needs_work": "Kailangan ng Pagpapabuti",
     "band_good": "Mabuti",
     "band_great": "Napakahusay",
@@ -3731,6 +3732,10 @@
     "today": "Ngayon",
     "yesterday": "Kahapon",
     "days_ago": "{{n}} araw ang nakalipas",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "view_complaints": "Tingnan ang mga reklamo",
+    "complaints_still_open": "Bukas pa rin",
+    "complaints_ack_sla": "Nakumpirma sa loob ng 1 araw",
+    "complaints_avg_resolution": "Karaniwang paglutas"
   }
 }

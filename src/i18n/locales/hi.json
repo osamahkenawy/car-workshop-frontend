@@ -195,7 +195,8 @@
     "customer_360": "ग्राहक 360",
     "service_reminders": "सर्विस रिमाइंडर",
     "crm_tasks": "कार्य और फ़ॉलो-अप",
-    "customer_experience": "ग्राहक अनुभव"
+    "customer_experience": "ग्राहक अनुभव",
+    "complaints": "शिकायतें"
   },
   "dashboard": {
     "title": "डैशबोर्ड",
@@ -3718,8 +3719,8 @@
     "saving": "सहेजा जा रहा है…",
     "followup_ok": "फॉलो-अप के रूप में चिह्नित किया गया।",
     "followup_err": "सहेजा नहीं जा सका। पुनः प्रयास करें।",
-    "complaints_title": "शिकायतें — जल्द आ रहा है",
-    "complaints_note": "शिकायतों की मात्रा, समाधान समय और SLA अनुपालन दर्ज करने के लिए GM Pioneer से सहमत श्रेणी सूची चाहिए — जब तक वह न हो, यहाँ कुछ भी बनाने को नहीं है।",
+    "complaints_title": "शिकायतें",
+    "complaints_note": "श्रेणीबद्ध विवरण के लिए GM Pioneer से सहमत श्रेणी सूची चाहिए — बाकी सब यहाँ लाइव है।",
     "band_needs_work": "सुधार आवश्यक",
     "band_good": "अच्छा",
     "band_great": "बहुत अच्छा",
@@ -3730,6 +3731,10 @@
     "today": "आज",
     "yesterday": "कल",
     "days_ago": "{{n}} दिन पहले",
-    "roadmap": "रोडमैप"
+    "roadmap": "रोडमैप",
+    "view_complaints": "शिकायतें देखें",
+    "complaints_still_open": "अभी भी खुली",
+    "complaints_ack_sla": "1 दिन में स्वीकृत",
+    "complaints_avg_resolution": "औसत समाधान"
   }
 }

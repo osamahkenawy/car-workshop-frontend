@@ -730,7 +730,8 @@
     "customer_360": "客户360",
     "service_reminders": "保养提醒",
     "crm_tasks": "任务与跟进",
-    "customer_experience": "客户体验"
+    "customer_experience": "客户体验",
+    "complaints": "投诉"
   },
   "dashboard": {
     "active_label": "活跃",
@@ -3717,8 +3718,8 @@
     "saving": "保存中…",
     "followup_ok": "已标记为已跟进。",
     "followup_err": "保存失败，请重试。",
-    "complaints_title": "投诉 —— 即将推出",
-    "complaints_note": "投诉数量、解决时长和SLA达标率需要Pioneer总经理确认的分类清单后才能记录 —— 在此之前这里没有可构建的内容。",
+    "complaints_title": "投诉",
+    "complaints_note": "按类别细分需要GM Pioneer提供的已确认类别列表 —— 此处其余数据均为实时数据。",
     "band_needs_work": "需改进",
     "band_good": "良好",
     "band_great": "优秀",
@@ -3729,6 +3730,10 @@
     "today": "今天",
     "yesterday": "昨天",
     "days_ago": "{{n}} 天前",
-    "roadmap": "路线图"
+    "roadmap": "路线图",
+    "view_complaints": "查看投诉",
+    "complaints_still_open": "仍未处理",
+    "complaints_ack_sla": "1天内已确认",
+    "complaints_avg_resolution": "平均解决时间"
   }
 }

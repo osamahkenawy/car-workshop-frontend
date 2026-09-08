@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Check, User, SendMail, ClipboardCheck,
-  WarningTriangle, Refresh, Phone, ChatBubble, Quote, Calendar,
+  WarningTriangle, Refresh, Phone, ChatBubble, Quote, Calendar, ArrowRight,
 } from 'iconoir-react';
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
@@ -30,10 +31,11 @@ import './CustomerExperience.css';
  * detractor split (npsBreakdown, already returned by /customer-survey/stats
  * but never rendered before) sits under it as the same story in more detail.
  *
- * Complaints (KPI rows 7/8/10/11) are shown as a single roadmap card rather
- * than omitted, so the page states plainly what it does not yet cover
- * instead of leaving a silent gap. They stay blocked on a category taxonomy
- * from GM Pioneer — nothing to build here without that.
+ * Complaints (KPI rows 7/8/10/11) now read real data from /api/disputes/
+ * stats — volume, ack SLA, resolution time — with a link through to the
+ * full Complaints page. The one thing still missing is a categorised
+ * breakdown, blocked on a category taxonomy from GM Pioneer; the note under
+ * the card says so rather than the card pretending nothing is missing.
  */
 
 /** -100..100 → a verdict band, each with its own colour, so the score reads
@@ -112,9 +114,13 @@ const initials = name => String(name || '?').trim().split(/\s+/).slice(0, 2)
 
 export default function CustomerExperience() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [range, setRange] = useState(() => {
-    const iso = d => d.toISOString().slice(0, 10);
+    // Local calendar date, not toISOString()'s UTC one — in UAE (UTC+4)
+    // that string still reads "yesterday" until 4am local, so "today"
+    // silently dropped out of the default range for a third of every day.
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const to = new Date();
     const from = new Date(to.getTime() - 29 * 86400000);
     return { from: iso(from), to: iso(to) };
@@ -124,6 +130,7 @@ export default function CustomerExperience() {
   const [booking, setBooking] = useState(null);
   const [customer, setCustomer] = useState(null);
   const [contacts, setContacts] = useState(null);
+  const [complaints, setComplaints] = useState(null);
   const [attention, setAttention] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actioning, setActioning] = useState(null);
@@ -134,7 +141,7 @@ export default function CustomerExperience() {
     setLoading(true);
     try {
       const qs = `from=${range.from}&to=${range.to}`;
-      const [s, b, c, ct, a] = await Promise.all([
+      const [s, b, c, ct, a, cp] = await Promise.all([
         api.get(`/customer-survey/stats?${qs}`),
         api.get(`/appointments/stats?${qs}`),
         api.get(`/customers/stats?${qs}`),
@@ -142,12 +149,14 @@ export default function CustomerExperience() {
         // Unresolved detractors and partial resolutions, most recent first —
         // the queue a person should actually clear, not every response ever.
         api.get(`/customer-survey?flagged=1&${qs}&limit=8`),
+        api.get(`/disputes/stats?${qs}`),
       ]);
       setSurvey(s.success ? s.data : null);
       setBooking(b.success ? b.data : null);
       setCustomer(c.success ? c.data.period : null);
       setContacts(ct.success ? ct.data : null);
       setAttention(a.success ? a.data : []);
+      setComplaints(cp.success ? cp.data : null);
     } finally {
       setLoading(false);
     }
@@ -381,9 +390,33 @@ export default function CustomerExperience() {
             </div>
 
             <div className="cx-roadmap-card">
-              <div className="cx-roadmap-badge">{t('cx.roadmap')}</div>
-              <strong>{t('cx.complaints_title')}</strong>
-              <p>{t('cx.complaints_note')}</p>
+              <div className="cx-roadmap-card-head">
+                <strong>{t('cx.complaints_title')}</strong>
+                <button className="cx-roadmap-link" onClick={() => navigate('/complaints')}>
+                  {t('cx.view_complaints')} <ArrowRight width={13} height={13} />
+                </button>
+              </div>
+              {complaints?.headline ? (
+                <>
+                  <div className="cx-mini-vitals">
+                    <div className="cx-mini-vital">
+                      <span className="cx-mini-vital-value" style={{ color: complaints.headline.stillOpen > 0 ? '#dc2626' : '#16a34a' }}>
+                        {complaints.headline.stillOpen}
+                      </span>
+                      <span className="cx-mini-vital-label">{t('cx.complaints_still_open')}</span>
+                    </div>
+                    <div className="cx-mini-vital">
+                      <span className="cx-mini-vital-value">{complaints.headline.ackSlaPct != null ? `${complaints.headline.ackSlaPct}%` : '—'}</span>
+                      <span className="cx-mini-vital-label">{t('cx.complaints_ack_sla')}</span>
+                    </div>
+                    <div className="cx-mini-vital">
+                      <span className="cx-mini-vital-value">{complaints.headline.avgResolutionDays != null ? `${complaints.headline.avgResolutionDays}d` : '—'}</span>
+                      <span className="cx-mini-vital-label">{t('cx.complaints_avg_resolution')}</span>
+                    </div>
+                  </div>
+                  <p className="cx-footnote">{t('cx.complaints_note')}</p>
+                </>
+              ) : <p>{t('cx.complaints_note')}</p>}
             </div>
           </div>
         </>

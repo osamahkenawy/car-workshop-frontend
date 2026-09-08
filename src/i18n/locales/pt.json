@@ -195,7 +195,8 @@
     "customer_360": "Cliente 360",
     "service_reminders": "Lembretes de serviço",
     "crm_tasks": "Tarefas e acompanhamentos",
-    "customer_experience": "Experiência do cliente"
+    "customer_experience": "Experiência do cliente",
+    "complaints": "Reclamações"
   },
   "dashboard": {
     "title": "Painel",
@@ -3717,8 +3718,8 @@
     "saving": "Salvando…",
     "followup_ok": "Marcado como acompanhado.",
     "followup_err": "Não foi possível salvar. Tente novamente.",
-    "complaints_title": "Reclamações — em breve",
-    "complaints_note": "Volume de reclamações, tempo de resolução e conformidade com SLA precisam de uma lista de categorias acordada com a Gerência Geral da Pioneer antes de poderem ser registrados — nada a construir aqui até que isso exista.",
+    "complaints_title": "Reclamações",
+    "complaints_note": "A distribuição por categoria precisa de uma lista de categorias aprovada pela GM Pioneer — o resto aqui é em tempo real.",
     "band_needs_work": "Precisa melhorar",
     "band_good": "Bom",
     "band_great": "Ótimo",
@@ -3729,6 +3730,10 @@
     "today": "Hoje",
     "yesterday": "Ontem",
     "days_ago": "Há {{n}} dias",
-    "roadmap": "Roteiro"
+    "roadmap": "Roteiro",
+    "view_complaints": "Ver reclamações",
+    "complaints_still_open": "Ainda abertas",
+    "complaints_ack_sla": "Reconhecidas em 1 dia",
+    "complaints_avg_resolution": "Resolução média"
   }
 }

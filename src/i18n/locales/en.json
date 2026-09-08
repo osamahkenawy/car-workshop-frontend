@@ -201,7 +201,8 @@
     "customer_360": "Customer 360",
     "service_reminders": "Service Reminders",
     "crm_tasks": "Tasks & Follow-ups",
-    "customer_experience": "Customer Experience"
+    "customer_experience": "Customer Experience",
+    "complaints": "Complaints"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -3871,8 +3872,8 @@
     "saving": "Saving…",
     "followup_ok": "Marked as followed up.",
     "followup_err": "Could not save that. Try again.",
-    "complaints_title": "Complaints — Coming Soon",
-    "complaints_note": "Complaint volume, resolution time and SLA compliance need an agreed category list from GM Pioneer before they can be captured — nothing to build here until that exists.",
+    "complaints_title": "Complaints",
+    "complaints_note": "A categorised breakdown needs an agreed category list from GM Pioneer — everything else here is live.",
     "band_needs_work": "Needs work",
     "band_good": "Good",
     "band_great": "Great",
@@ -3883,6 +3884,10 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "days_ago": "{{n}} days ago",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "view_complaints": "View complaints",
+    "complaints_still_open": "Still open",
+    "complaints_ack_sla": "Acknowledged in 1 day",
+    "complaints_avg_resolution": "Avg. resolution"
   }
 }

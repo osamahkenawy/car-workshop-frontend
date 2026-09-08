@@ -7,7 +7,7 @@ import {
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
   RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
-  EmojiSatisfied, ClipboardCheck, StarSolid,
+  EmojiSatisfied, ClipboardCheck, StarSolid, WarningTriangle,
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -45,6 +45,7 @@ const iconMap = {
   'reminders':        Bell,
   'crm-tasks':        ClipboardCheck,
   'customer-experience': StarSolid,
+  'complaints':       WarningTriangle,
 };
 
 /*
@@ -91,6 +92,7 @@ const navSections = [
     items: [
       { path: '/crm/reminders',      labelKey: 'service_reminders', iconKey: 'reminders',     moduleKey: 'crm-reminders',  roles: ['admin', 'dispatcher'] },
       { path: '/crm/tasks',          labelKey: 'crm_tasks',         iconKey: 'crm-tasks',     moduleKey: 'crm-tasks',      roles: ['admin', 'dispatcher'] },
+      { path: '/complaints',         labelKey: 'complaints',        iconKey: 'complaints',    moduleKey: 'complaints',     roles: ['admin', 'dispatcher'] },
     ]
   },
   /* â”€â”€ MECHANIC TOOLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

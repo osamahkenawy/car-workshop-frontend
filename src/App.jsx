@@ -29,6 +29,7 @@ const Invoices          = lazy(() => import('./pages/Invoices'));
 const CashPayments      = lazy(() => import('./pages/CashPayments'));
 const Reports           = lazy(() => import('./pages/Reports'));
 const CustomerExperience = lazy(() => import('./pages/CustomerExperience'));
+const Complaints         = lazy(() => import('./pages/Complaints'));
 const Performance       = lazy(() => import('./pages/Performance'));
 const Notifications     = lazy(() => import('./pages/Notifications'));
 const Settings          = lazy(() => import('./pages/Settings'));
@@ -160,6 +161,7 @@ export default function App() {
         <Route path="/cash-payments" element={<Protected><CashPayments /></Protected>} />
         <Route path="/reports" element={<Protected><Reports /></Protected>} />
         <Route path="/customer-experience" element={<Protected><CustomerExperience /></Protected>} />
+        <Route path="/complaints" element={<Protected><Complaints /></Protected>} />
         <Route path="/performance" element={<Protected><Performance /></Protected>} />
         <Route path="/notifications" element={<Protected><Notifications /></Protected>} />
         <Route path="/settings" element={<Protected><Settings /></Protected>} />
