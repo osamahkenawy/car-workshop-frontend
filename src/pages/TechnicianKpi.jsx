@@ -3,6 +3,7 @@ import { Wrench, DollarCircle, Clock, GraphUp, Search } from 'iconoir-react';
 import api from '../lib/api';
 import './CRMPages.css';
 import './CrmSurface.css';
+import './TechnicianKpi.css';
 
 /**
  * Technician KPI — a periodic attendance/billing report brought in from an
@@ -35,6 +36,8 @@ export default function TechnicianKpi() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [designationFilter, setDesignationFilter] = useState('');
+  const [bandFilter, setBandFilter] = useState('');
   const [sortKey, setSortKey] = useState('efficiency_pct');
   const [banner, setBanner] = useState(null);
 
@@ -65,14 +68,28 @@ export default function TechnicianKpi() {
 
   useEffect(() => { load(); }, [load]);
 
+  const designations = useMemo(
+    () => [...new Set(rows.map(r => r.designation).filter(Boolean))].sort(),
+    [rows]
+  );
+
   const filtered = useMemo(() => {
     let list = rows;
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter(r => r.mechanic_name.toLowerCase().includes(q) || r.designation?.toLowerCase().includes(q));
     }
+    if (designationFilter) list = list.filter(r => r.designation === designationFilter);
+    if (bandFilter) {
+      list = list.filter(r => {
+        const e = Number(r.efficiency_pct);
+        if (bandFilter === 'low') return e < 60;
+        if (bandFilter === 'mid') return e >= 60 && e < 85;
+        return e >= 85;
+      });
+    }
     return [...list].sort((a, b) => Number(b[sortKey] ?? -1) - Number(a[sortKey] ?? -1));
-  }, [rows, search, sortKey]);
+  }, [rows, search, designationFilter, bandFilter, sortKey]);
 
   const cards = summary ? [
     { key: 'count', label: 'Technicians in report', value: summary.technician_count, Icon: Wrench, tone: 'blue' },
@@ -133,13 +150,32 @@ export default function TechnicianKpi() {
               <input placeholder="Search technician or designation…" value={search}
                 onChange={e => setSearch(e.target.value)} aria-label="Search technicians" />
             </div>
-            <select className="form-control" style={{ maxWidth: 200 }} value={sortKey} onChange={e => setSortKey(e.target.value)}>
+            <select className="form-control tk-fixed-select" value={designationFilter}
+              onChange={e => setDesignationFilter(e.target.value)} aria-label="Filter by designation">
+              <option value="">All designations</option>
+              {designations.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <select className="form-control tk-fixed-select" value={bandFilter}
+              onChange={e => setBandFilter(e.target.value)} aria-label="Filter by efficiency band">
+              <option value="">All efficiency</option>
+              <option value="high">High (85%+)</option>
+              <option value="mid">Mid (60–84%)</option>
+              <option value="low">Low (under 60%)</option>
+            </select>
+            <select className="form-control tk-fixed-select" value={sortKey}
+              onChange={e => setSortKey(e.target.value)} aria-label="Sort by">
               <option value="efficiency_pct">Sort: Efficiency</option>
               <option value="utilization_pct">Sort: Utilization</option>
               <option value="productivity_pct">Sort: Productivity</option>
               <option value="billed_value">Sort: Billed value</option>
               <option value="worked_hrs">Sort: Worked hours</option>
             </select>
+            {(designationFilter || bandFilter || search) && (
+              <button className="cs-filter-clear" style={{ flex: 'none' }}
+                onClick={() => { setDesignationFilter(''); setBandFilter(''); setSearch(''); }}>
+                Clear filters
+              </button>
+            )}
           </div>
 
           <div className="cs-tablewrap">
@@ -160,7 +196,7 @@ export default function TechnicianKpi() {
                 {loading ? (
                   <tr><td colSpan={8} className="cs-empty">Loading…</td></tr>
                 ) : filtered.length === 0 ? (
-                  <tr><td colSpan={8} className="cs-empty">No technicians match that search.</td></tr>
+                  <tr><td colSpan={8} className="cs-empty">No technicians match those filters.</td></tr>
                 ) : filtered.map(r => {
                   const u = band(r.utilization_pct), p = band(r.productivity_pct), e = band(r.efficiency_pct);
                   return (
