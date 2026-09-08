@@ -1109,7 +1109,8 @@
       "delivery_time": "Oras ng Delivery",
       "payments": "Mga Pagbabayad",
       "financial": "Pananalapi",
-      "schedules": "Mga Email Schedule"
+      "schedules": "Mga Email Schedule",
+      "kpi_matrix": "Mga KPI ng Negosyo"
     },
     "kpi": {
       "total_orders": "Kabuuang WorkOrder",
@@ -1117,7 +1118,31 @@
       "failed": "Nabigo",
       "revenue": "Revenue",
       "cash_collected": "Nakolektang COD",
-      "success_rate": "Rate ng Tagumpay"
+      "success_rate": "Rate ng Tagumpay",
+      "range_from": "Mula",
+      "range_to": "Hanggang",
+      "no_data": "Wala pang datos para sa saklaw na ito.",
+      "bookings_received": "Mga Natanggap na Booking",
+      "booking_conversion": "Rate ng Pagkumpirma ng Booking",
+      "show_up_rate": "Rate ng Pagdating",
+      "new_customers": "Mga Bagong Kustomer",
+      "repeat_customer_rate": "Rate ng Umuulit na Kustomer",
+      "survey_response_rate": "Rate ng Pagsagot sa Survey",
+      "nps": "NPS",
+      "csat": "CSAT",
+      "confirmed_count": "{{n}} nakumpirma",
+      "of_customers_served": "sa {{n}} na naasikaso",
+      "repeat_count": "{{n}} umuulit na kustomer",
+      "invites_sent_count": "{{n}} paanyaya na naipadala",
+      "by_channel_title": "Mga Booking Ayon sa Channel",
+      "by_customer_type_title": "Mga Booking Ayon sa Uri ng Kustomer",
+      "col_channel": "Channel",
+      "col_customer_type": "Uri ng Kustomer",
+      "col_received": "Natanggap",
+      "col_confirmed": "Nakumpirma",
+      "col_arrived": "Dumating",
+      "col_conversion": "Pagkumpirma",
+      "col_show_up": "Pagdating"
     },
     "col": {
       "reason": "Dahilan",

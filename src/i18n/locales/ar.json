@@ -1113,7 +1113,8 @@
       "delivery_time": "وقت التوصيل",
       "payments": "المدفوعات",
       "financial": "المالية",
-      "schedules": "جداول البريد الإلكتروني"
+      "schedules": "جداول البريد الإلكتروني",
+      "kpi_matrix": "مؤشرات الأداء"
     },
     "kpi": {
       "total_orders": "إجمالي الطلبات",
@@ -1121,7 +1122,31 @@
       "failed": "فشل",
       "revenue": "الإيرادات",
       "cash_collected": "الدفع عند الاستلام المحصَّل",
-      "success_rate": "معدل النجاح"
+      "success_rate": "معدل النجاح",
+      "range_from": "من",
+      "range_to": "إلى",
+      "no_data": "لا توجد بيانات لهذه الفترة بعد.",
+      "bookings_received": "الحجوزات المستلمة",
+      "booking_conversion": "نسبة تأكيد الحجوزات",
+      "show_up_rate": "نسبة الحضور",
+      "new_customers": "عملاء جدد",
+      "repeat_customer_rate": "نسبة العملاء المتكررين",
+      "survey_response_rate": "نسبة الاستجابة للاستبيان",
+      "nps": "مؤشر رضا العملاء (NPS)",
+      "csat": "رضا العملاء (CSAT)",
+      "confirmed_count": "{{n}} مؤكدة",
+      "of_customers_served": "من أصل {{n}} تم خدمتهم",
+      "repeat_count": "{{n}} عميل متكرر",
+      "invites_sent_count": "تم إرسال {{n}} دعوة",
+      "by_channel_title": "الحجوزات حسب القناة",
+      "by_customer_type_title": "الحجوزات حسب نوع العميل",
+      "col_channel": "القناة",
+      "col_customer_type": "نوع العميل",
+      "col_received": "مستلمة",
+      "col_confirmed": "مؤكدة",
+      "col_arrived": "حضروا",
+      "col_conversion": "التحويل",
+      "col_show_up": "الحضور"
     },
     "col": {
       "reason": "السبب",

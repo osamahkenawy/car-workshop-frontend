@@ -4,7 +4,7 @@ import {
   StatsReport, Calendar, MapPin, DeliveryTruck,
   Package, DollarCircle, Check, Xmark, Refresh, Download,
   User, Clock, Timer, Page, Wallet, CreditCard, Bank,
-  Mail, Plus, Trash, SendMail
+  Mail, Plus, Trash, SendMail, ClipboardCheck
 } from 'iconoir-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -60,6 +60,20 @@ export default function Reports() {
   const [scheduleForm, setScheduleForm] = useState({ frequency: 'daily', recipients: '' });
   const [loading,  setLoading]  = useState(true);
   const [activeSection, setActiveSection] = useState('overview');
+
+  // Business KPIs tab (bookings, repeat customers, survey) keeps its own date
+  // range rather than reusing `period`/dateFrom/dateTo above: those drive a
+  // server-resolved period type ('all', 'today', ...) for /reports and
+  // /reports/financial, a different contract from the explicit from/to these
+  // three endpoints expect. Defaults to the trailing 30 days.
+  const [kpiRange, setKpiRange] = useState(() => {
+    const iso = d => d.toISOString().slice(0, 10);
+    const to = new Date();
+    const from = new Date(to.getTime() - 29 * 86400000);
+    return { from: iso(from), to: iso(to) };
+  });
+  const [kpiMatrix, setKpiMatrix] = useState(null);
+  const [kpiLoading, setKpiLoading] = useState(false);
   const tabsRef = useRef(null);
   const [tabsScroll, setTabsScroll] = useState({ start: false, end: true });
 
@@ -87,6 +101,9 @@ export default function Reports() {
   useEffect(() => { fetchAll(); }, [period, dateFrom, dateTo]);
   useEffect(() => { if (activeSection === 'financial') fetchFinancial(); }, [activeSection, period, dateFrom, dateTo]);
   useEffect(() => { if (activeSection === 'schedules') fetchSchedules(); }, [activeSection]);
+  useEffect(() => {
+    if (activeSection === 'kpi_matrix') fetchKpiMatrix();
+  }, [activeSection, kpiRange.from, kpiRange.to]);
 
   const fetchSchedules = async () => {
     const res = await api.get('/reports/schedules');
@@ -118,6 +135,25 @@ export default function Reports() {
   const sendNow = async (id) => {
     const res = await api.post(`/reports/schedules/${id}/send-now`);
     if (res.success) alert(t('reports.schedules.sent_success'));
+  };
+
+  const fetchKpiMatrix = async () => {
+    setKpiLoading(true);
+    try {
+      const qs = `from=${kpiRange.from}&to=${kpiRange.to}`;
+      const [booking, customer, survey] = await Promise.all([
+        api.get(`/appointments/stats?${qs}`),
+        api.get(`/customers/stats?${qs}`),
+        api.get(`/customer-survey/stats?${qs}`),
+      ]);
+      setKpiMatrix({
+        booking: booking.success ? booking.data : null,
+        customer: customer.success ? customer.data.period : null,
+        survey: survey.success ? survey.data : null,
+      });
+    } finally {
+      setKpiLoading(false);
+    }
   };
 
   const fetchFinancial = async () => {
@@ -346,6 +382,7 @@ export default function Reports() {
         <div className="rpt-tabs" ref={tabsRef}>
           {[
             { key: 'overview',      icon: StatsReport,    label: t('reports.tabs.overview') },
+            { key: 'kpi_matrix',    icon: ClipboardCheck, label: t('reports.tabs.kpi_matrix') },
             { key: 'volume',        icon: Calendar,       label: t('reports.tabs.daily_volume') },
             { key: 'service_bays',         icon: MapPin,         label: t('reports.tabs.by_zone') },
             { key: 'mechanics',       icon: DeliveryTruck,  label: t('reports.tabs.mechanic_performance') },
@@ -1081,6 +1118,137 @@ export default function Reports() {
                   <p>{t('reports.schedules.empty_sub')}</p>
                 </div>
               ) : null}
+            </div>
+          )}
+
+          {/* Business KPIs: bookings, repeat customers, survey */}
+          {activeSection === 'kpi_matrix' && (
+            <div className="rpt-section">
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: 20 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, color: '#64748b', marginBottom: 4 }}>
+                    {t('reports.kpi.range_from')}
+                  </label>
+                  <input type="date" className="filter-date" value={kpiRange.from}
+                    onChange={e => setKpiRange(r => ({ ...r, from: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, color: '#64748b', marginBottom: 4 }}>
+                    {t('reports.kpi.range_to')}
+                  </label>
+                  <input type="date" className="filter-date" value={kpiRange.to}
+                    onChange={e => setKpiRange(r => ({ ...r, to: e.target.value }))} />
+                </div>
+                <button className="rpt-btn" onClick={fetchKpiMatrix} disabled={kpiLoading}>
+                  <Refresh width={14} height={14} /> {t('reports.refresh')}
+                </button>
+              </div>
+
+              {kpiLoading && !kpiMatrix ? (
+                <div className="rpt-loading">
+                  {[1, 2, 3, 4].map(i => <div key={i} className="skeleton-pulse" style={{ height: 120, borderRadius: 16 }} />)}
+                </div>
+              ) : !kpiMatrix ? (
+                <div className="rpt-empty">
+                  <div className="rpt-empty-icon"><ClipboardCheck width={36} height={36} /></div>
+                  <h3>{t('reports.kpi.no_data')}</h3>
+                </div>
+              ) : (
+                <>
+                  <div className="rpt-kpi-grid">
+                    <KPI label={t('reports.kpi.bookings_received')}
+                      value={kpiMatrix.booking?.totals?.received ?? '\u2014'}
+                      sub={kpiMatrix.booking ? t('reports.kpi.confirmed_count', { n: kpiMatrix.booking.totals.confirmed }) : ''}
+                      color="#1e3a6b" icon={Calendar} />
+                    <KPI label={t('reports.kpi.booking_conversion')}
+                      value={kpiMatrix.booking?.totals?.conversion_rate_pct != null ? kpiMatrix.booking.totals.conversion_rate_pct + '%' : '\u2014'}
+                      color="#0ea5e9" icon={Check} />
+                    <KPI label={t('reports.kpi.show_up_rate')}
+                      value={kpiMatrix.booking?.totals?.show_up_rate_pct != null ? kpiMatrix.booking.totals.show_up_rate_pct + '%' : '\u2014'}
+                      color="#22c55e" icon={User} />
+                    <KPI label={t('reports.kpi.new_customers')}
+                      value={kpiMatrix.customer?.new_customers ?? '\u2014'}
+                      sub={kpiMatrix.customer ? t('reports.kpi.of_customers_served', { n: kpiMatrix.customer.customers_served }) : ''}
+                      color="#f97316" icon={User} />
+                    <KPI label={t('reports.kpi.repeat_customer_rate')}
+                      value={kpiMatrix.customer?.repeat_rate_pct != null ? kpiMatrix.customer.repeat_rate_pct + '%' : '\u2014'}
+                      sub={kpiMatrix.customer ? t('reports.kpi.repeat_count', { n: kpiMatrix.customer.repeat_customers }) : ''}
+                      color="#8b5cf6" icon={User} />
+                    <KPI label={t('reports.kpi.survey_response_rate')}
+                      value={kpiMatrix.survey?.headline?.responseRate != null ? kpiMatrix.survey.headline.responseRate + '%' : '\u2014'}
+                      sub={kpiMatrix.survey ? t('reports.kpi.invites_sent_count', { n: kpiMatrix.survey.headline.invitesSent }) : ''}
+                      color="#0ea5e9" icon={SendMail} />
+                    <KPI label={t('reports.kpi.nps')}
+                      value={kpiMatrix.survey?.headline?.nps != null ? (kpiMatrix.survey.headline.nps > 0 ? '+' + kpiMatrix.survey.headline.nps : '' + kpiMatrix.survey.headline.nps) : '\u2014'}
+                      color="#22c55e" icon={StatsReport} />
+                    <KPI label={t('reports.kpi.csat')}
+                      value={kpiMatrix.survey?.headline?.csatAvg != null ? kpiMatrix.survey.headline.csatAvg + '/5' : '\u2014'}
+                      color="#f59e0b" icon={Check} />
+                  </div>
+
+                  <div className="rpt-chart-row" style={{ marginTop: 20 }}>
+                    <div className="rpt-table-card">
+                      <div className="rpt-chart-header"><h4>{t('reports.kpi.by_channel_title')}</h4></div>
+                      {kpiMatrix.booking?.by_channel?.length > 0 ? (
+                        <table className="od-items-table">
+                          <thead>
+                            <tr>
+                              <th>{t('reports.kpi.col_channel')}</th>
+                              <th>{t('reports.kpi.col_received')}</th>
+                              <th>{t('reports.kpi.col_confirmed')}</th>
+                              <th>{t('reports.kpi.col_arrived')}</th>
+                              <th>{t('reports.kpi.col_conversion')}</th>
+                              <th>{t('reports.kpi.col_show_up')}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {kpiMatrix.booking.by_channel.map(row => (
+                              <tr key={row.channel}>
+                                <td><strong>{row.channel}</strong></td>
+                                <td>{row.received}</td>
+                                <td>{row.confirmed}</td>
+                                <td>{row.arrived_or_completed}</td>
+                                <td>{row.conversion_rate_pct != null ? row.conversion_rate_pct + '%' : '\u2014'}</td>
+                                <td>{row.show_up_rate_pct != null ? row.show_up_rate_pct + '%' : '\u2014'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
+                    </div>
+
+                    <div className="rpt-table-card">
+                      <div className="rpt-chart-header"><h4>{t('reports.kpi.by_customer_type_title')}</h4></div>
+                      {kpiMatrix.booking?.by_customer_type?.length > 0 ? (
+                        <table className="od-items-table">
+                          <thead>
+                            <tr>
+                              <th>{t('reports.kpi.col_customer_type')}</th>
+                              <th>{t('reports.kpi.col_received')}</th>
+                              <th>{t('reports.kpi.col_confirmed')}</th>
+                              <th>{t('reports.kpi.col_arrived')}</th>
+                              <th>{t('reports.kpi.col_conversion')}</th>
+                              <th>{t('reports.kpi.col_show_up')}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {kpiMatrix.booking.by_customer_type.map(row => (
+                              <tr key={row.customer_type}>
+                                <td><strong>{row.customer_type}</strong></td>
+                                <td>{row.received}</td>
+                                <td>{row.confirmed}</td>
+                                <td>{row.arrived_or_completed}</td>
+                                <td>{row.conversion_rate_pct != null ? row.conversion_rate_pct + '%' : '\u2014'}</td>
+                                <td>{row.show_up_rate_pct != null ? row.show_up_rate_pct + '%' : '\u2014'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </>

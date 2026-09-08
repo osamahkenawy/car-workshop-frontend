@@ -1109,7 +1109,8 @@
       "delivery_time": "Tiempo de Entrega",
       "payments": "Pagos",
       "financial": "Finanzas",
-      "schedules": "Programaciones de Email"
+      "schedules": "Programaciones de Email",
+      "kpi_matrix": "KPI de negocio"
     },
     "kpi": {
       "total_orders": "Total de Pedidos",
@@ -1117,7 +1118,31 @@
       "failed": "Fallidos",
       "revenue": "Ingresos",
       "cash_collected": "Contra Reembolso Cobrado",
-      "success_rate": "Tasa de Éxito"
+      "success_rate": "Tasa de Éxito",
+      "range_from": "Desde",
+      "range_to": "Hasta",
+      "no_data": "Aún no hay datos para este período.",
+      "bookings_received": "Reservas recibidas",
+      "booking_conversion": "Conversión de reservas",
+      "show_up_rate": "Tasa de asistencia",
+      "new_customers": "Clientes nuevos",
+      "repeat_customer_rate": "Tasa de clientes recurrentes",
+      "survey_response_rate": "Tasa de respuesta a la encuesta",
+      "nps": "NPS",
+      "csat": "CSAT",
+      "confirmed_count": "{{n}} confirmadas",
+      "of_customers_served": "de {{n}} atendidos",
+      "repeat_count": "{{n}} clientes recurrentes",
+      "invites_sent_count": "{{n}} invitaciones enviadas",
+      "by_channel_title": "Reservas por canal",
+      "by_customer_type_title": "Reservas por tipo de cliente",
+      "col_channel": "Canal",
+      "col_customer_type": "Tipo de cliente",
+      "col_received": "Recibidas",
+      "col_confirmed": "Confirmadas",
+      "col_arrived": "Llegaron",
+      "col_conversion": "Conversión",
+      "col_show_up": "Asistencia"
     },
     "col": {
       "avg_value": "Valor promedio",

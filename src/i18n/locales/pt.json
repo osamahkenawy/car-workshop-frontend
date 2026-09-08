@@ -1109,7 +1109,8 @@
       "delivery_time": "Tempo de entrega",
       "payments": "Pagamentos",
       "financial": "Financeiro",
-      "schedules": "Agendamentos de email"
+      "schedules": "Agendamentos de email",
+      "kpi_matrix": "KPIs do negócio"
     },
     "kpi": {
       "total_orders": "Total de pedidos",
@@ -1117,7 +1118,31 @@
       "failed": "Falhados",
       "revenue": "Receita",
       "cash_collected": "COD cobrado",
-      "success_rate": "Taxa de sucesso"
+      "success_rate": "Taxa de sucesso",
+      "range_from": "De",
+      "range_to": "Até",
+      "no_data": "Ainda não há dados para este período.",
+      "bookings_received": "Reservas recebidas",
+      "booking_conversion": "Conversão de reservas",
+      "show_up_rate": "Taxa de comparecimento",
+      "new_customers": "Novos clientes",
+      "repeat_customer_rate": "Taxa de clientes recorrentes",
+      "survey_response_rate": "Taxa de resposta da pesquisa",
+      "nps": "NPS",
+      "csat": "CSAT",
+      "confirmed_count": "{{n}} confirmadas",
+      "of_customers_served": "de {{n}} atendidos",
+      "repeat_count": "{{n}} clientes recorrentes",
+      "invites_sent_count": "{{n}} convites enviados",
+      "by_channel_title": "Reservas por canal",
+      "by_customer_type_title": "Reservas por tipo de cliente",
+      "col_channel": "Canal",
+      "col_customer_type": "Tipo de cliente",
+      "col_received": "Recebidas",
+      "col_confirmed": "Confirmadas",
+      "col_arrived": "Compareceram",
+      "col_conversion": "Conversão",
+      "col_show_up": "Comparecimento"
     },
     "col": {
       "reason": "Motivo",

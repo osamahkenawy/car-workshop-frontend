@@ -1109,7 +1109,8 @@
       "delivery_time": "डिलीवरी समय",
       "payments": "भुगतान",
       "financial": "वित्तीय",
-      "schedules": "ईमेल शेड्यूल"
+      "schedules": "ईमेल शेड्यूल",
+      "kpi_matrix": "बिज़नेस KPI"
     },
     "kpi": {
       "total_orders": "कुल ऑर्डर",
@@ -1117,7 +1118,31 @@
       "failed": "विफल",
       "revenue": "राजस्व",
       "cash_collected": "COD एकत्रित",
-      "success_rate": "सफलता दर"
+      "success_rate": "सफलता दर",
+      "range_from": "से",
+      "range_to": "तक",
+      "no_data": "इस अवधि के लिए अभी कोई डेटा नहीं है।",
+      "bookings_received": "प्राप्त बुकिंग",
+      "booking_conversion": "बुकिंग रूपांतरण दर",
+      "show_up_rate": "उपस्थिति दर",
+      "new_customers": "नए ग्राहक",
+      "repeat_customer_rate": "दोहराव ग्राहक दर",
+      "survey_response_rate": "सर्वेक्षण प्रतिक्रिया दर",
+      "nps": "NPS",
+      "csat": "CSAT",
+      "confirmed_count": "{{n}} पुष्ट",
+      "of_customers_served": "{{n}} में से सेवा प्राप्त",
+      "repeat_count": "{{n}} दोहराव ग्राहक",
+      "invites_sent_count": "{{n}} निमंत्रण भेजे गए",
+      "by_channel_title": "चैनल के अनुसार बुकिंग",
+      "by_customer_type_title": "ग्राहक प्रकार के अनुसार बुकिंग",
+      "col_channel": "चैनल",
+      "col_customer_type": "ग्राहक प्रकार",
+      "col_received": "प्राप्त",
+      "col_confirmed": "पुष्ट",
+      "col_arrived": "पहुंचे",
+      "col_conversion": "रूपांतरण",
+      "col_show_up": "उपस्थिति"
     },
     "col": {
       "reason": "कारण",

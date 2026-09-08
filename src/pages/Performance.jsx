@@ -195,8 +195,11 @@ export default function Performance() {
               <Xmark width={22} height={22} />
             </div>
             <div className="perf-stat-body">
-              <span className="perf-stat-val">{(kpis.failed || 0) + (kpis.returned || 0)}</span>
-              <span className="perf-stat-lbl">{t('performance.failed_returned')}</span>
+              {/* Was "Failed & Returned" summing two fields that now both come
+                  from status='cancelled' (returned is no longer a status at
+                  all), which double-counted. One status, one number. */}
+              <span className="perf-stat-val">{kpis.failed || 0}</span>
+              <span className="perf-stat-lbl">{t('statuses.cancelled')}</span>
             </div>
           </div>
         </div>

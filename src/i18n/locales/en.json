@@ -1130,7 +1130,8 @@
       "delivery_time": "Delivery Time",
       "payments": "Payments",
       "financial": "Financial",
-      "schedules": "Email Schedules"
+      "schedules": "Email Schedules",
+      "kpi_matrix": "Business KPIs"
     },
     "kpi": {
       "total_orders": "Total WorkOrders",
@@ -1138,7 +1139,31 @@
       "failed": "Cancelled",
       "revenue": "Revenue",
       "cash_collected": "Cash Collected",
-      "success_rate": "Success Rate"
+      "success_rate": "Success Rate",
+      "range_from": "From",
+      "range_to": "To",
+      "no_data": "No data for this range yet.",
+      "bookings_received": "Bookings Received",
+      "booking_conversion": "Booking Conversion",
+      "show_up_rate": "Show-up Rate",
+      "new_customers": "New Customers",
+      "repeat_customer_rate": "Repeat Customer Rate",
+      "survey_response_rate": "Survey Response Rate",
+      "nps": "NPS",
+      "csat": "CSAT",
+      "confirmed_count": "{{n}} confirmed",
+      "of_customers_served": "of {{n}} served",
+      "repeat_count": "{{n}} repeat customers",
+      "invites_sent_count": "{{n}} invites sent",
+      "by_channel_title": "Bookings by Channel",
+      "by_customer_type_title": "Bookings by Customer Type",
+      "col_channel": "Channel",
+      "col_customer_type": "Customer Type",
+      "col_received": "Received",
+      "col_confirmed": "Confirmed",
+      "col_arrived": "Arrived",
+      "col_conversion": "Conversion",
+      "col_show_up": "Show-up"
     },
     "col": {
       "reason": "Reason",
