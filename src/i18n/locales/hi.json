@@ -196,7 +196,8 @@
     "service_reminders": "सर्विस रिमाइंडर",
     "crm_tasks": "कार्य और फ़ॉलो-अप",
     "customer_experience": "ग्राहक अनुभव",
-    "complaints": "शिकायतें"
+    "complaints": "शिकायतें",
+    "technician_kpi": "तकनीशियन KPI"
   },
   "dashboard": {
     "title": "डैशबोर्ड",

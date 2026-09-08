@@ -731,7 +731,8 @@
     "service_reminders": "Rappels d’entretien",
     "crm_tasks": "Tâches et relances",
     "customer_experience": "Expérience client",
-    "complaints": "Réclamations"
+    "complaints": "Réclamations",
+    "technician_kpi": "KPI des techniciens"
   },
   "dashboard": {
     "active_label": "Actif",

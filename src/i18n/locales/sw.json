@@ -731,7 +731,8 @@
     "service_reminders": "Vikumbusho vya huduma",
     "crm_tasks": "Kazi na ufuatiliaji",
     "customer_experience": "Uzoefu wa Mteja",
-    "complaints": "Malalamiko"
+    "complaints": "Malalamiko",
+    "technician_kpi": "KPI za Mafundi"
   },
   "dashboard": {
     "active_label": "Hai",

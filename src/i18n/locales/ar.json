@@ -199,7 +199,8 @@
     "service_reminders": "تذكيرات الصيانة",
     "crm_tasks": "المهام والمتابعات",
     "customer_experience": "تجربة العميل",
-    "complaints": "الشكاوى"
+    "complaints": "الشكاوى",
+    "technician_kpi": "مؤشرات أداء الفنيين"
   },
   "dashboard": {
     "title": "لوحة التحكم",

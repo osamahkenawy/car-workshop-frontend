@@ -7,7 +7,7 @@ import {
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
   RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
-  EmojiSatisfied, ClipboardCheck, StarSolid, WarningTriangle,
+  EmojiSatisfied, ClipboardCheck, StarSolid, WarningTriangle, GraphUp,
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -46,6 +46,7 @@ const iconMap = {
   'crm-tasks':        ClipboardCheck,
   'customer-experience': StarSolid,
   'complaints':       WarningTriangle,
+  'technician-kpi':   GraphUp,
 };
 
 /*
@@ -109,6 +110,7 @@ const navSections = [
     items: [
       { path: '/reports',            labelKey: 'reports',         iconKey: 'reports',          moduleKey: 'reports',           roles: ['admin', 'dispatcher'] },
       { path: '/performance',        labelKey: 'performance',     iconKey: 'performance',      moduleKey: 'performance',       roles: ['admin', 'dispatcher'] },
+      { path: '/technician-kpi',     labelKey: 'technician_kpi',  iconKey: 'technician-kpi',   moduleKey: 'technician-kpi',    roles: ['admin', 'dispatcher'] },
       { path: '/customer-feedback',  labelKey: 'customer_feedback', iconKey: 'customer_feedback', moduleKey: 'customer-feedback', roles: ['admin', 'dispatcher'] },
       { path: '/customer-experience', labelKey: 'customer_experience', iconKey: 'customer-experience', moduleKey: 'customer-experience', roles: ['admin', 'dispatcher'] },
     ]

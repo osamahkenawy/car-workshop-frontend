@@ -731,7 +731,8 @@
     "service_reminders": "Servis hatırlatmaları",
     "crm_tasks": "Görevler ve takipler",
     "customer_experience": "Müşteri Deneyimi",
-    "complaints": "Şikayetler"
+    "complaints": "Şikayetler",
+    "technician_kpi": "Teknisyen KPI"
   },
   "dashboard": {
     "active_label": "Aktif",

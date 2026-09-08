@@ -731,7 +731,8 @@
     "service_reminders": "点検リマインダー",
     "crm_tasks": "タスクとフォロー",
     "customer_experience": "カスタマーエクスペリエンス",
-    "complaints": "苦情"
+    "complaints": "苦情",
+    "technician_kpi": "技術者KPI"
   },
   "dashboard": {
     "active_label": "アクティブ",

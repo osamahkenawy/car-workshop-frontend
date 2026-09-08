@@ -731,7 +731,8 @@
     "service_reminders": "سروس یاد دہانیاں",
     "crm_tasks": "کام اور فالو اپ",
     "customer_experience": "کسٹمر تجربہ",
-    "complaints": "شکایات"
+    "complaints": "شکایات",
+    "technician_kpi": "ٹیکنیشن KPI"
   },
   "dashboard": {
     "active_label": "فعال",

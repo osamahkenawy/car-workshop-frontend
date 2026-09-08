@@ -731,7 +731,8 @@
     "service_reminders": "保养提醒",
     "crm_tasks": "任务与跟进",
     "customer_experience": "客户体验",
-    "complaints": "投诉"
+    "complaints": "投诉",
+    "technician_kpi": "技工KPI"
   },
   "dashboard": {
     "active_label": "活跃",

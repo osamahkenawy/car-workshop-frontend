@@ -202,7 +202,8 @@
     "service_reminders": "Service Reminders",
     "crm_tasks": "Tasks & Follow-ups",
     "customer_experience": "Customer Experience",
-    "complaints": "Complaints"
+    "complaints": "Complaints",
+    "technician_kpi": "Technician KPI"
   },
   "dashboard": {
     "title": "Dashboard",

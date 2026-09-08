@@ -196,7 +196,8 @@
     "service_reminders": "Mga paalala sa serbisyo",
     "crm_tasks": "Mga gawain at follow-up",
     "customer_experience": "Karanasan ng Kustomer",
-    "complaints": "Mga Reklamo"
+    "complaints": "Mga Reklamo",
+    "technician_kpi": "KPI ng Technician"
   },
   "dashboard": {
     "title": "Dashboard",

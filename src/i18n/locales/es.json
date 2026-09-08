@@ -196,7 +196,8 @@
     "service_reminders": "Recordatorios de servicio",
     "crm_tasks": "Tareas y seguimientos",
     "customer_experience": "Experiencia del cliente",
-    "complaints": "Quejas"
+    "complaints": "Quejas",
+    "technician_kpi": "KPI de técnicos"
   },
   "dashboard": {
     "title": "Panel",

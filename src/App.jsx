@@ -31,6 +31,7 @@ const Reports           = lazy(() => import('./pages/Reports'));
 const CustomerExperience = lazy(() => import('./pages/CustomerExperience'));
 const Complaints         = lazy(() => import('./pages/Complaints'));
 const Performance       = lazy(() => import('./pages/Performance'));
+const TechnicianKpi     = lazy(() => import('./pages/TechnicianKpi'));
 const Notifications     = lazy(() => import('./pages/Notifications'));
 const Settings          = lazy(() => import('./pages/Settings'));
 const Integrations      = lazy(() => import('./pages/Integrations'));
@@ -163,6 +164,7 @@ export default function App() {
         <Route path="/customer-experience" element={<Protected><CustomerExperience /></Protected>} />
         <Route path="/complaints" element={<Protected><Complaints /></Protected>} />
         <Route path="/performance" element={<Protected><Performance /></Protected>} />
+        <Route path="/technician-kpi" element={<Protected><TechnicianKpi /></Protected>} />
         <Route path="/notifications" element={<Protected><Notifications /></Protected>} />
         <Route path="/settings" element={<Protected><Settings /></Protected>} />
         <Route path="/api-keys" element={<Protected><Integrations /></Protected>} />
