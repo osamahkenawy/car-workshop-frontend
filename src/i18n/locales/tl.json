@@ -3720,6 +3720,17 @@
     "followup_ok": "Namarkahan bilang nasundan.",
     "followup_err": "Hindi na-save. Subukan muli.",
     "complaints_title": "Mga Reklamo — Paparating Na",
-    "complaints_note": "Kailangan ng bilang ng reklamo, oras ng paglutas, at pagsunod sa SLA ng napagkasunduang listahan ng kategorya mula sa GM Pioneer bago ito maitala — walang maitatayo dito hangga't wala pa iyon."
+    "complaints_note": "Kailangan ng bilang ng reklamo, oras ng paglutas, at pagsunod sa SLA ng napagkasunduang listahan ng kategorya mula sa GM Pioneer bago ito maitala — walang maitatayo dito hangga't wala pa iyon.",
+    "band_needs_work": "Kailangan ng Pagpapabuti",
+    "band_good": "Mabuti",
+    "band_great": "Napakahusay",
+    "band_excellent": "Natatangi",
+    "promoters": "Mga Promoter",
+    "passives": "Neutral",
+    "detractors": "Detractor",
+    "today": "Ngayon",
+    "yesterday": "Kahapon",
+    "days_ago": "{{n}} araw ang nakalipas",
+    "roadmap": "Roadmap"
   }
 }

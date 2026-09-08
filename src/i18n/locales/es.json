@@ -3718,6 +3718,17 @@
     "followup_ok": "Marcado como seguido.",
     "followup_err": "No se pudo guardar. Inténtalo de nuevo.",
     "complaints_title": "Quejas: próximamente",
-    "complaints_note": "El volumen de quejas, el tiempo de resolución y el cumplimiento del SLA necesitan una lista de categorías acordada con la Gerencia General de Pioneer antes de poder registrarse — no hay nada que construir aquí hasta que eso exista."
+    "complaints_note": "El volumen de quejas, el tiempo de resolución y el cumplimiento del SLA necesitan una lista de categorías acordada con la Gerencia General de Pioneer antes de poder registrarse — no hay nada que construir aquí hasta que eso exista.",
+    "band_needs_work": "Necesita mejorar",
+    "band_good": "Bueno",
+    "band_great": "Excelente",
+    "band_excellent": "Sobresaliente",
+    "promoters": "Promotores",
+    "passives": "Pasivos",
+    "detractors": "Detractores",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "days_ago": "Hace {{n}} días",
+    "roadmap": "Hoja de ruta"
   }
 }

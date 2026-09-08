@@ -3718,6 +3718,17 @@
     "followup_ok": "已标记为已跟进。",
     "followup_err": "保存失败，请重试。",
     "complaints_title": "投诉 —— 即将推出",
-    "complaints_note": "投诉数量、解决时长和SLA达标率需要Pioneer总经理确认的分类清单后才能记录 —— 在此之前这里没有可构建的内容。"
+    "complaints_note": "投诉数量、解决时长和SLA达标率需要Pioneer总经理确认的分类清单后才能记录 —— 在此之前这里没有可构建的内容。",
+    "band_needs_work": "需改进",
+    "band_good": "良好",
+    "band_great": "优秀",
+    "band_excellent": "卓越",
+    "promoters": "推荐者",
+    "passives": "被动者",
+    "detractors": "批评者",
+    "today": "今天",
+    "yesterday": "昨天",
+    "days_ago": "{{n}} 天前",
+    "roadmap": "路线图"
   }
 }

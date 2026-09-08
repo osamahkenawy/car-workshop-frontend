@@ -3872,6 +3872,17 @@
     "followup_ok": "Marked as followed up.",
     "followup_err": "Could not save that. Try again.",
     "complaints_title": "Complaints — Coming Soon",
-    "complaints_note": "Complaint volume, resolution time and SLA compliance need an agreed category list from GM Pioneer before they can be captured — nothing to build here until that exists."
+    "complaints_note": "Complaint volume, resolution time and SLA compliance need an agreed category list from GM Pioneer before they can be captured — nothing to build here until that exists.",
+    "band_needs_work": "Needs work",
+    "band_good": "Good",
+    "band_great": "Great",
+    "band_excellent": "Excellent",
+    "promoters": "Promoters",
+    "passives": "Passives",
+    "detractors": "Detractors",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "days_ago": "{{n}} days ago",
+    "roadmap": "Roadmap"
   }
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  StarSolid, Check, User, SendMail, ClipboardCheck,
-  WarningTriangle, Refresh, Phone, ChatBubble,
+  Check, User, SendMail, ClipboardCheck,
+  WarningTriangle, Refresh, Phone, ChatBubble, Quote, Calendar,
 } from 'iconoir-react';
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
@@ -24,11 +24,91 @@ import './CustomerExperience.css';
  * uses it), but nothing surfaced that queue anywhere a person would act on it
  * in one sitting — this dashboard is where that happens.
  *
- * Complaints (KPI rows 7/8/10/11) are shown as a single "Coming soon" card
- * rather than omitted, so the page states plainly what it does not yet cover
+ * NPS gets a hero gauge instead of a plain stat card: it's the one number
+ * this page exists to answer, and a bounded score reads better against a
+ * "where does this sit" arc than as an isolated digit. The promoter/passive/
+ * detractor split (npsBreakdown, already returned by /customer-survey/stats
+ * but never rendered before) sits under it as the same story in more detail.
+ *
+ * Complaints (KPI rows 7/8/10/11) are shown as a single roadmap card rather
+ * than omitted, so the page states plainly what it does not yet cover
  * instead of leaving a silent gap. They stay blocked on a category taxonomy
  * from GM Pioneer — nothing to build here without that.
  */
+
+/** -100..100 → a verdict band, each with its own colour, so the score reads
+ *  with context rather than in isolation. Bands follow the informal NPS
+ *  convention (below 0 poor, 0-30 good, 30-70 great, 70+ excellent) — not a
+ *  regulatory scale, just a common enough read for a quick glance. */
+function npsBand(v) {
+  if (v == null) return { label: '', color: '#94a3b8', bg: '#f1f5f9' };
+  if (v < 0) return { label: 'cx.band_needs_work', color: '#dc2626', bg: '#fdeeea' };
+  if (v < 30) return { label: 'cx.band_good', color: '#d97706', bg: '#fdf2e0' };
+  if (v < 70) return { label: 'cx.band_great', color: '#16a34a', bg: '#e7f3ec' };
+  return { label: 'cx.band_excellent', color: '#0d9488', bg: '#e0f5f3' };
+}
+
+function polar(cx, cy, r, angleDeg) {
+  const a = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+}
+function arcPath(cx, cy, r, startDeg, endDeg) {
+  const s = polar(cx, cy, r, endDeg);
+  const e = polar(cx, cy, r, startDeg);
+  const large = endDeg - startDeg <= 180 ? '0' : '1';
+  return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;
+}
+
+/** A half-dome gauge for a -100..100 score: a thin zoned reference band
+ *  (the same red/amber/green/teal bands npsBand uses) under a bold value
+ *  arc that stops exactly at the score, with the number in the middle of
+ *  the dome rather than bolted on beside it. */
+function NpsGauge({ value }) {
+  const size = 220, cx = size / 2, cy = size / 2 + 6, r = 86;
+  const zones = [
+    { from: -100, to: 0, color: '#dc2626' },
+    { from: 0, to: 30, color: '#d97706' },
+    { from: 30, to: 70, color: '#16a34a' },
+    { from: 70, to: 100, color: '#0d9488' },
+  ];
+  const toAngle = v => -90 + ((v + 100) / 200) * 180;
+  const band = npsBand(value);
+  const valueAngle = value != null ? toAngle(Math.max(-100, Math.min(100, value))) : -90;
+
+  return (
+    <svg width={size} height={size / 2 + 34} viewBox={`0 0 ${size} ${size / 2 + 34}`} className="cx-gauge-svg">
+      {zones.map(z => (
+        <path key={z.from} d={arcPath(cx, cy, r, toAngle(z.from), toAngle(z.to))}
+          stroke={z.color} strokeWidth={6} strokeLinecap="butt" fill="none" opacity={0.28} />
+      ))}
+      {value != null && (
+        <path d={arcPath(cx, cy, r, -90, valueAngle)}
+          stroke={band.color} strokeWidth={11} strokeLinecap="round" fill="none" className="cx-gauge-value-arc" />
+      )}
+      {value != null && (() => {
+        const tip = polar(cx, cy, r, valueAngle);
+        return <circle cx={tip.x} cy={tip.y} r={7} fill="#fff" stroke={band.color} strokeWidth={4} />;
+      })()}
+      <text x={cx} y={cy - 16} textAnchor="middle" className="cx-gauge-number">
+        {value != null ? (value > 0 ? `+${value}` : value) : '—'}
+      </text>
+      <text x={cx} y={cy + 6} textAnchor="middle" className="cx-gauge-caption">NPS</text>
+      <text x={20} y={cy + 22} textAnchor="start" className="cx-gauge-endlabel">-100</text>
+      <text x={size - 20} y={cy + 22} textAnchor="end" className="cx-gauge-endlabel">+100</text>
+    </svg>
+  );
+}
+
+const fmtDaysAgo = (iso, t) => {
+  if (!iso) return '';
+  const days = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 86400000));
+  if (days === 0) return t('cx.today');
+  if (days === 1) return t('cx.yesterday');
+  return t('cx.days_ago', { n: days });
+};
+
+const initials = name => String(name || '?').trim().split(/\s+/).slice(0, 2)
+  .map(w => w[0]).join('').toUpperCase() || '?';
 
 export default function CustomerExperience() {
   const { t } = useTranslation();
@@ -47,6 +127,7 @@ export default function CustomerExperience() {
   const [attention, setAttention] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actioning, setActioning] = useState(null);
+  const [resolving, setResolving] = useState(() => new Set());
   const [banner, setBanner] = useState(null);
 
   const load = useCallback(async () => {
@@ -80,7 +161,13 @@ export default function CustomerExperience() {
       const res = await api.patch(`/customer-survey/${id}/follow-up`, {});
       if (res?.success) {
         setBanner({ kind: 'ok', text: t('cx.followup_ok') });
-        setAttention(prev => (prev || []).filter(r => r.id !== id));
+        // Sit in a "resolved" state briefly before leaving the list — an
+        // instant disappearance reads as the row breaking, not as done.
+        setResolving(prev => new Set(prev).add(id));
+        setTimeout(() => {
+          setAttention(prev => (prev || []).filter(r => r.id !== id));
+          setResolving(prev => { const n = new Set(prev); n.delete(id); return n; });
+        }, 650);
         // The headline card would otherwise sit one stale until the next
         // full reload — decrement it in step with the list it summarises.
         setSurvey(prev => prev && {
@@ -97,15 +184,13 @@ export default function CustomerExperience() {
     }
   }
 
-  const nps = survey?.headline?.nps;
-  const csat = survey?.headline?.csatAvg;
-  const ces = survey?.headline?.cesAvg;
-  const responseRate = survey?.headline?.responseRate;
+  const h = survey?.headline || {};
+  const npsBreakdown = survey?.npsBreakdown;
+  const band = npsBand(h.nps);
   const resolvedPct = survey?.resolution?.resolvedPercent;
-  const needsFollowUp = survey?.headline?.needsFollowUp;
 
   return (
-    <div className="page-container">
+    <div className="page-container cx">
       <div className="page-header-row">
         <div>
           <h1 className="page-heading">{t('cx.title')}</h1>
@@ -113,27 +198,30 @@ export default function CustomerExperience() {
         </div>
       </div>
 
-      {banner && (
-        <div role="status" className={`cx-banner is-${banner.kind}`}>{banner.text}</div>
-      )}
+      {banner && <div role="status" className={`cx-banner is-${banner.kind}`}>{banner.text}</div>}
 
-      <div className="rpt-controls-row" style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: 20 }}>
-        <div>
-          <label style={{ display: 'block', fontSize: 12, color: '#64748b', marginBottom: 4 }}>
-            {t('reports.kpi.range_from')}
-          </label>
-          <input type="date" className="filter-date" value={range.from}
-            onChange={e => setRange(r => ({ ...r, from: e.target.value }))} />
+      <div className="cx-controls">
+        <div className="cx-daterange">
+          <div className="cx-date-field">
+            <Calendar width={15} height={15} className="cx-date-icon" />
+            <div>
+              <span className="cx-date-field-label">{t('reports.kpi.range_from')}</span>
+              <input type="date" className="cx-date-input" value={range.from}
+                onChange={e => setRange(r => ({ ...r, from: e.target.value }))} />
+            </div>
+          </div>
+          <span className="cx-daterange-arrow">→</span>
+          <div className="cx-date-field">
+            <Calendar width={15} height={15} className="cx-date-icon" />
+            <div>
+              <span className="cx-date-field-label">{t('reports.kpi.range_to')}</span>
+              <input type="date" className="cx-date-input" value={range.to}
+                onChange={e => setRange(r => ({ ...r, to: e.target.value }))} />
+            </div>
+          </div>
         </div>
-        <div>
-          <label style={{ display: 'block', fontSize: 12, color: '#64748b', marginBottom: 4 }}>
-            {t('reports.kpi.range_to')}
-          </label>
-          <input type="date" className="filter-date" value={range.to}
-            onChange={e => setRange(r => ({ ...r, to: e.target.value }))} />
-        </div>
-        <button className="rpt-btn" onClick={load} disabled={loading}>
-          <Refresh width={14} height={14} /> {t('reports.refresh')}
+        <button className="cx-refresh-btn" onClick={load} disabled={loading}>
+          <Refresh width={14} height={14} className={loading ? 'cx-spin' : ''} /> {t('reports.refresh')}
         </button>
       </div>
 
@@ -143,120 +231,157 @@ export default function CustomerExperience() {
         </div>
       ) : (
         <>
-          {/* ── Survey experience: rows 6, 36, 37 ─────────────────────── */}
-          <h2 className="cx-section-title">{t('cx.section_survey')}</h2>
-          <div className="rpt-kpi-grid" style={{ marginBottom: 24 }}>
-            <KPI label={t('reports.kpi.nps')} value={nps != null ? (nps > 0 ? `+${nps}` : `${nps}`) : '—'}
-              color="#22c55e" icon={StarSolid} />
-            <KPI label={t('reports.kpi.csat')} value={csat != null ? `${csat}/5` : '—'}
-              color="#f59e0b" icon={Check} />
-            <KPI label={t('cx.ces')} value={ces != null ? `${ces}/5` : '—'}
-              color="#0ea5e9" icon={Check} />
-            <KPI label={t('reports.kpi.survey_response_rate')}
-              value={responseRate != null ? `${responseRate}%` : '—'}
-              sub={survey ? t('reports.kpi.invites_sent_count', { n: survey.headline.invitesSent }) : ''}
-              color="#8b5cf6" icon={SendMail} />
-            <KPI label={t('cx.resolved_pct')} value={resolvedPct != null ? `${resolvedPct}%` : '—'}
-              color="#1e3a6b" icon={ClipboardCheck} />
-            <KPI label={t('cx.needs_followup')} value={needsFollowUp ?? '—'}
-              color={Number(needsFollowUp) > 0 ? '#ef4444' : '#22c55e'} icon={WarningTriangle} />
-          </div>
-
-          {/* ── Booking experience + loyalty: rows 1-3, 4-5 ───────────── */}
-          <h2 className="cx-section-title">{t('cx.section_booking_loyalty')}</h2>
-          <div className="rpt-kpi-grid" style={{ marginBottom: 24 }}>
-            <KPI label={t('reports.kpi.booking_conversion')}
-              value={booking?.totals?.conversion_rate_pct != null ? `${booking.totals.conversion_rate_pct}%` : '—'}
-              sub={booking ? t('reports.kpi.confirmed_count', { n: booking.totals.confirmed }) : ''}
-              color="#0ea5e9" icon={Check} />
-            <KPI label={t('reports.kpi.show_up_rate')}
-              value={booking?.totals?.show_up_rate_pct != null ? `${booking.totals.show_up_rate_pct}%` : '—'}
-              color="#22c55e" icon={User} />
-            <KPI label={t('reports.kpi.new_customers')} value={customer?.new_customers ?? '—'}
-              sub={customer ? t('reports.kpi.of_customers_served', { n: customer.customers_served }) : ''}
-              color="#f97316" icon={User} />
-            <KPI label={t('reports.kpi.repeat_customer_rate')}
-              value={customer?.repeat_rate_pct != null ? `${customer.repeat_rate_pct}%` : '—'}
-              sub={customer ? t('reports.kpi.repeat_count', { n: customer.repeat_customers }) : ''}
-              color="#8b5cf6" icon={User} />
-          </div>
-
-          <div className="rpt-chart-row" style={{ marginBottom: 24 }}>
-            {/* ── Needs attention: the actual detractor follow-up queue ── */}
-            <div className="rpt-table-card" style={{ flex: '1 1 380px' }}>
-              <div className="rpt-chart-header"><h4>{t('cx.needs_attention_title')}</h4></div>
-              {attention === null ? (
-                <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('cx.loading')}</p>
-              ) : attention.length === 0 ? (
-                <div className="rpt-empty">
-                  <p>{t('cx.needs_attention_empty')}</p>
+          {/* ── Hero: NPS gauge + promoter/passive/detractor split + vitals ── */}
+          <div className="cx-hero">
+            <div className="cx-hero-gauge" style={{ '--band-bg': band.bg, '--band-color': band.color }}>
+              <NpsGauge value={h.nps} />
+              {h.nps != null && (
+                <div className="cx-band-pill" style={{ color: band.color, background: band.bg }}>
+                  {t(band.label)}
                 </div>
-              ) : (
-                <div className="cx-attention-list">
-                  {attention.map(r => (
-                    <div className="cx-attention-row" key={r.id}>
-                      <div className="cx-attention-main">
-                        <div className="cx-attention-name">
-                          {r.contact_name || t('cx.anonymous')}
-                          {r.nps_score != null && (
-                            <span className={`cx-nps-chip cx-nps-${r.nps_category}`}>
-                              {t('cx.nps_score_label')} {r.nps_score}
-                            </span>
-                          )}
-                        </div>
-                        {r.nps_reason && <div className="cx-attention-reason">"{r.nps_reason}"</div>}
-                        <div className="cx-attention-meta">
-                          {r.contact_phone && <span><Phone width={12} height={12} /> {r.contact_phone}</span>}
-                          {r.resolution && r.resolution !== 'yes' && (
-                            <span className="cx-unresolved-chip">
-                              {r.resolution === 'no' ? t('cx.not_resolved') : t('cx.partially_resolved')}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <button className="rpt-btn cx-followup-btn" disabled={actioning === r.id}
-                        onClick={() => markFollowedUp(r.id)}>
-                        <Check width={13} height={13} />
-                        {actioning === r.id ? t('cx.saving') : t('cx.mark_followed_up')}
-                      </button>
-                    </div>
-                  ))}
+              )}
+              {npsBreakdown && (
+                <div className="cx-nps-split">
+                  <div className="cx-nps-split-bar">
+                    <span style={{ width: `${npsBreakdown.promoterPct}%`, background: '#16a34a' }} title="Promoters" />
+                    <span style={{ width: `${npsBreakdown.passivePct}%`, background: '#d97706' }} title="Passives" />
+                    <span style={{ width: `${npsBreakdown.detractorPct}%`, background: '#dc2626' }} title="Detractors" />
+                  </div>
+                  <div className="cx-nps-split-legend">
+                    <span><i style={{ background: '#16a34a' }} />{t('cx.promoters')} {npsBreakdown.promoterPct}%</span>
+                    <span><i style={{ background: '#d97706' }} />{t('cx.passives')} {npsBreakdown.passivePct}%</span>
+                    <span><i style={{ background: '#dc2626' }} />{t('cx.detractors')} {npsBreakdown.detractorPct}%</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* ── Contact channels: row 9 ──────────────────────────────── */}
-            <div className="rpt-table-card" style={{ flex: '1 1 260px' }}>
-              <div className="rpt-chart-header"><h4>{t('reports.kpi.by_contact_channel_title')}</h4></div>
-              {contacts?.by_channel?.length > 0 ? (
-                <table className="od-items-table">
-                  <thead>
-                    <tr>
-                      <th>{t('reports.kpi.col_channel')}</th>
-                      <th>{t('reports.kpi.col_contacts')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {contacts.by_channel.map(row => (
-                      <tr key={row.channel}>
-                        <td><ChatBubble width={13} height={13} style={{ marginRight: 6, color: '#94a3b8' }} />
-                          {t(`reports.kpi.channel_${row.channel}`)}</td>
-                        <td>{row.count}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
-              <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 10, marginBottom: 0 }}>
-                {t('reports.kpi.contact_channel_note')}
-              </p>
+            <div className="cx-hero-vitals">
+              <VitalCard icon={Check} color="#f59e0b" label={t('reports.kpi.csat')}
+                value={h.csatAvg != null ? `${h.csatAvg}` : '—'} unit="/5" />
+              <VitalCard icon={Check} color="#0ea5e9" label={t('cx.ces')}
+                value={h.cesAvg != null ? `${h.cesAvg}` : '—'} unit="/5" />
+              <VitalCard icon={SendMail} color="#8b5cf6" label={t('reports.kpi.survey_response_rate')}
+                value={h.responseRate != null ? `${h.responseRate}` : '—'} unit="%"
+                sub={survey ? t('reports.kpi.invites_sent_count', { n: h.invitesSent }) : ''} />
+              <VitalCard icon={ClipboardCheck} color="#1e3a6b" label={t('cx.resolved_pct')}
+                value={resolvedPct != null ? `${resolvedPct}` : '—'} unit="%" />
+              <VitalCard icon={WarningTriangle} color={Number(h.needsFollowUp) > 0 ? '#dc2626' : '#16a34a'}
+                label={t('cx.needs_followup')} value={h.needsFollowUp ?? '—'} unit=""
+                pulse={Number(h.needsFollowUp) > 0} />
             </div>
           </div>
 
-          {/* ── Complaints: rows 7/8/10/11, explicitly not built yet ──── */}
-          <div className="cx-coming-soon">
-            <WarningTriangle width={20} height={20} style={{ color: '#b26a00', flex: 'none' }} />
-            <div>
+          {/* ── Needs attention: the actual follow-up queue ───────────────── */}
+          <div className="cx-section-head cx-section-head--warm">
+            <span className="cx-section-dot" />
+            <h2>{t('cx.needs_attention_title')}</h2>
+            {attention?.length > 0 && <span className="cx-section-count">{attention.length}</span>}
+          </div>
+          {attention === null ? (
+            <p style={{ color: '#94a3b8', fontSize: 13 }}>{t('cx.loading')}</p>
+          ) : attention.length === 0 ? (
+            <div className="cx-all-clear">
+              <div className="cx-all-clear-icon"><Check width={26} height={26} /></div>
+              <p>{t('cx.needs_attention_empty')}</p>
+            </div>
+          ) : (
+            <div className="cx-attention-grid">
+              {attention.map(r => {
+                const sev = r.nps_category === 'detractor' ? 'red' : r.nps_category === 'passive' ? 'amber' : 'green';
+                return (
+                  <div key={r.id} className={`cx-ticket cx-ticket--${sev}${resolving.has(r.id) ? ' is-resolving' : ''}`}>
+                    <div className="cx-ticket-top">
+                      <div className="cx-avatar" style={{ background: `var(--cx-${sev}-tint)`, color: `var(--cx-${sev})` }}>
+                        {initials(r.contact_name)}
+                      </div>
+                      <div className="cx-ticket-who">
+                        <div className="cx-ticket-name">{r.contact_name || t('cx.anonymous')}</div>
+                        <div className="cx-ticket-meta">
+                          {r.contact_phone && <span><Phone width={11} height={11} /> {r.contact_phone}</span>}
+                          <span><Calendar width={11} height={11} /> {fmtDaysAgo(r.submitted_at, t)}</span>
+                        </div>
+                      </div>
+                      {r.nps_score != null && (
+                        <div className="cx-score-badge" style={{ borderColor: `var(--cx-${sev})`, color: `var(--cx-${sev})` }}>
+                          {r.nps_score}
+                        </div>
+                      )}
+                    </div>
+
+                    {r.nps_reason && (
+                      <div className="cx-ticket-quote">
+                        <Quote width={16} height={16} className="cx-quote-mark" />
+                        <p>{r.nps_reason}</p>
+                      </div>
+                    )}
+
+                    <div className="cx-ticket-bottom">
+                      {r.resolution && r.resolution !== 'yes' && (
+                        <span className="cx-resolution-chip">
+                          {r.resolution === 'no' ? t('cx.not_resolved') : t('cx.partially_resolved')}
+                        </span>
+                      )}
+                      <button className="cx-resolve-btn" disabled={actioning === r.id || resolving.has(r.id)}
+                        onClick={() => markFollowedUp(r.id)}>
+                        <Check width={13} height={13} />
+                        {resolving.has(r.id) ? t('cx.followup_ok') : actioning === r.id ? t('cx.saving') : t('cx.mark_followed_up')}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── Booking experience + loyalty: rows 1-3, 4-5 ─────────────── */}
+          <div className="cx-section-head cx-section-head--cool">
+            <span className="cx-section-dot" />
+            <h2>{t('cx.section_booking_loyalty')}</h2>
+          </div>
+          <div className="cx-cool-panel">
+            <div className="cx-vitals-row">
+              <VitalCard icon={Check} color="#0ea5e9" label={t('reports.kpi.booking_conversion')}
+                value={booking?.totals?.conversion_rate_pct != null ? `${booking.totals.conversion_rate_pct}` : '—'} unit="%"
+                sub={booking ? t('reports.kpi.confirmed_count', { n: booking.totals.confirmed }) : ''} />
+              <VitalCard icon={User} color="#22c55e" label={t('reports.kpi.show_up_rate')}
+                value={booking?.totals?.show_up_rate_pct != null ? `${booking.totals.show_up_rate_pct}` : '—'} unit="%" />
+              <VitalCard icon={User} color="#f97316" label={t('reports.kpi.new_customers')}
+                value={customer?.new_customers ?? '—'} unit=""
+                sub={customer ? t('reports.kpi.of_customers_served', { n: customer.customers_served }) : ''} />
+              <VitalCard icon={User} color="#8b5cf6" label={t('reports.kpi.repeat_customer_rate')}
+                value={customer?.repeat_rate_pct != null ? `${customer.repeat_rate_pct}` : '—'} unit="%"
+                sub={customer ? t('reports.kpi.repeat_count', { n: customer.repeat_customers }) : ''} />
+            </div>
+          </div>
+
+          {/* ── Contact channels + complaints roadmap ───────────────────── */}
+          <div className="cx-footer-row">
+            <div className="cx-channel-card">
+              <div className="cx-footer-card-head"><h4>{t('reports.kpi.by_contact_channel_title')}</h4></div>
+              {contacts?.by_channel?.length > 0 ? (
+                <div className="cx-channel-bars">
+                  {(() => {
+                    const max = Math.max(1, ...contacts.by_channel.map(row => row.count));
+                    return contacts.by_channel.map(row => (
+                      <div className="cx-channel-bar-row" key={row.channel}>
+                        <span className="cx-channel-bar-label">
+                          <ChatBubble width={13} height={13} /> {t(`reports.kpi.channel_${row.channel}`)}
+                        </span>
+                        <div className="cx-channel-bar-track">
+                          <div className="cx-channel-bar-fill" style={{ width: `${(row.count / max) * 100}%` }} />
+                        </div>
+                        <span className="cx-channel-bar-count">{row.count}</span>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
+              <p className="cx-footnote">{t('reports.kpi.contact_channel_note')}</p>
+            </div>
+
+            <div className="cx-roadmap-card">
+              <div className="cx-roadmap-badge">{t('cx.roadmap')}</div>
               <strong>{t('cx.complaints_title')}</strong>
               <p>{t('cx.complaints_note')}</p>
             </div>
@@ -267,15 +392,15 @@ export default function CustomerExperience() {
   );
 }
 
-const KPI = ({ label, value, sub, color, icon: Icon }) => (
-  <div className="rpt-kpi-card">
-    <div className="rpt-kpi-icon" style={{ background: color + '18', color }}>
-      <Icon width={20} height={20} />
+const VitalCard = ({ icon: Icon, color, label, value, unit, sub, pulse }) => (
+  <div className={`cx-vital${pulse ? ' cx-vital--pulse' : ''}`}>
+    <div className="cx-vital-icon" style={{ background: color + '18', color }}>
+      <Icon width={18} height={18} />
     </div>
-    <div className="rpt-kpi-body">
-      <div className="rpt-kpi-value">{value}</div>
-      <div className="rpt-kpi-label">{label}</div>
-      {sub && <div className="rpt-kpi-sub">{sub}</div>}
+    <div className="cx-vital-body">
+      <div className="cx-vital-value">{value}<span className="cx-vital-unit">{unit}</span></div>
+      <div className="cx-vital-label">{label}</div>
+      {sub && <div className="cx-vital-sub">{sub}</div>}
     </div>
   </div>
 );

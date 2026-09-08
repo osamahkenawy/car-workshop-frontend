@@ -3718,6 +3718,17 @@
     "followup_ok": "Marcado como acompanhado.",
     "followup_err": "Não foi possível salvar. Tente novamente.",
     "complaints_title": "Reclamações — em breve",
-    "complaints_note": "Volume de reclamações, tempo de resolução e conformidade com SLA precisam de uma lista de categorias acordada com a Gerência Geral da Pioneer antes de poderem ser registrados — nada a construir aqui até que isso exista."
+    "complaints_note": "Volume de reclamações, tempo de resolução e conformidade com SLA precisam de uma lista de categorias acordada com a Gerência Geral da Pioneer antes de poderem ser registrados — nada a construir aqui até que isso exista.",
+    "band_needs_work": "Precisa melhorar",
+    "band_good": "Bom",
+    "band_great": "Ótimo",
+    "band_excellent": "Excepcional",
+    "promoters": "Promotores",
+    "passives": "Passivos",
+    "detractors": "Detratores",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "days_ago": "Há {{n}} dias",
+    "roadmap": "Roteiro"
   }
 }

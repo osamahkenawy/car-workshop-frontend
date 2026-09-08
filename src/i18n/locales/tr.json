@@ -3718,6 +3718,17 @@
     "followup_ok": "Takip edildi olarak işaretlendi.",
     "followup_err": "Kaydedilemedi. Tekrar deneyin.",
     "complaints_title": "Şikayetler — Yakında",
-    "complaints_note": "Şikayet hacmi, çözüm süresi ve SLA uyumu kaydedilmeden önce GM Pioneer'dan onaylı bir kategori listesi gerekiyor — bu olmadan burada yapılacak bir şey yok."
+    "complaints_note": "Şikayet hacmi, çözüm süresi ve SLA uyumu kaydedilmeden önce GM Pioneer'dan onaylı bir kategori listesi gerekiyor — bu olmadan burada yapılacak bir şey yok.",
+    "band_needs_work": "Geliştirilmeli",
+    "band_good": "İyi",
+    "band_great": "Harika",
+    "band_excellent": "Mükemmel",
+    "promoters": "Destekleyiciler",
+    "passives": "Kararsızlar",
+    "detractors": "Eleştirenler",
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "days_ago": "{{n}} gün önce",
+    "roadmap": "Yol Haritası"
   }
 }

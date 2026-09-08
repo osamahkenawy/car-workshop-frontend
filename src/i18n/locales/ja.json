@@ -3718,6 +3718,17 @@
     "followup_ok": "対応済みにしました。",
     "followup_err": "保存できませんでした。再試行してください。",
     "complaints_title": "苦情管理（近日公開）",
-    "complaints_note": "苦情件数、解決時間、SLA遵守率を記録するには、GM Pioneerが承認したカテゴリー一覧が必要です。それが決まるまで、ここで構築できることはありません。"
+    "complaints_note": "苦情件数、解決時間、SLA遵守率を記録するには、GM Pioneerが承認したカテゴリー一覧が必要です。それが決まるまで、ここで構築できることはありません。",
+    "band_needs_work": "要改善",
+    "band_good": "良好",
+    "band_great": "優秀",
+    "band_excellent": "卓越",
+    "promoters": "推奨者",
+    "passives": "中立者",
+    "detractors": "批判者",
+    "today": "今日",
+    "yesterday": "昨日",
+    "days_ago": "{{n}}日前",
+    "roadmap": "ロードマップ"
   }
 }

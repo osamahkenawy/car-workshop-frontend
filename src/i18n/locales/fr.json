@@ -3718,6 +3718,17 @@
     "followup_ok": "Marqué comme suivi.",
     "followup_err": "Impossible d'enregistrer. Réessayez.",
     "complaints_title": "Réclamations — bientôt disponible",
-    "complaints_note": "Le volume des réclamations, le délai de résolution et le respect du SLA nécessitent une liste de catégories validée par la direction générale de Pioneer avant de pouvoir être enregistrés — rien à construire ici tant qu'elle n'existe pas."
+    "complaints_note": "Le volume des réclamations, le délai de résolution et le respect du SLA nécessitent une liste de catégories validée par la direction générale de Pioneer avant de pouvoir être enregistrés — rien à construire ici tant qu'elle n'existe pas.",
+    "band_needs_work": "À améliorer",
+    "band_good": "Bon",
+    "band_great": "Excellent",
+    "band_excellent": "Exceptionnel",
+    "promoters": "Promoteurs",
+    "passives": "Passifs",
+    "detractors": "Détracteurs",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "days_ago": "Il y a {{n}} jours",
+    "roadmap": "Feuille de route"
   }
 }
