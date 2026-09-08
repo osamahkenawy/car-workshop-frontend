@@ -729,7 +729,8 @@
     "crm": "客户管理",
     "customer_360": "客户360",
     "service_reminders": "保养提醒",
-    "crm_tasks": "任务与跟进"
+    "crm_tasks": "任务与跟进",
+    "customer_experience": "客户体验"
   },
   "dashboard": {
     "active_label": "活跃",
@@ -3696,5 +3697,27 @@
     "trend_sub": "最近 12 个月",
     "verbatims": "客户的原话",
     "verbatims_sub": "NPS 评分的原因 — 贪低者优先"
+  },
+  "cx": {
+    "title": "客户体验",
+    "subtitle": "客户如何体验本店 —— 调查分数、预约情况、忠诚度，以及今天需要回访的对象。",
+    "ces": "客户费力度",
+    "resolved_pct": "完全解决率",
+    "needs_followup": "需要跟进",
+    "section_survey": "调查体验",
+    "section_booking_loyalty": "预约体验与忠诚度",
+    "needs_attention_title": "待处理",
+    "needs_attention_empty": "暂无待处理 —— 所有标记的回复均已跟进。",
+    "loading": "加载中…",
+    "anonymous": "匿名",
+    "nps_score_label": "分数",
+    "not_resolved": "未解决",
+    "partially_resolved": "部分解决",
+    "mark_followed_up": "标记为已跟进",
+    "saving": "保存中…",
+    "followup_ok": "已标记为已跟进。",
+    "followup_err": "保存失败，请重试。",
+    "complaints_title": "投诉 —— 即将推出",
+    "complaints_note": "投诉数量、解决时长和SLA达标率需要Pioneer总经理确认的分类清单后才能记录 —— 在此之前这里没有可构建的内容。"
   }
 }

@@ -729,7 +729,8 @@
     "crm": "CRM",
     "customer_360": "Client 360",
     "service_reminders": "Rappels d’entretien",
-    "crm_tasks": "Tâches et relances"
+    "crm_tasks": "Tâches et relances",
+    "customer_experience": "Expérience client"
   },
   "dashboard": {
     "active_label": "Actif",
@@ -3696,5 +3697,27 @@
     "trend_sub": "12 derniers mois",
     "verbatims": "Ce que disent les clients",
     "verbatims_sub": "Raisons du score NPS — détracteurs en premier"
+  },
+  "cx": {
+    "title": "Expérience client",
+    "subtitle": "Comment le client vit l'atelier — scores de l'enquête, réservations, fidélité, et qui doit être rappelé aujourd'hui.",
+    "ces": "CES",
+    "resolved_pct": "Entièrement résolu",
+    "needs_followup": "Nécessite un suivi",
+    "section_survey": "Expérience de l'enquête",
+    "section_booking_loyalty": "Expérience de réservation et fidélité",
+    "needs_attention_title": "Nécessite une attention",
+    "needs_attention_empty": "Rien en attente — toutes les réponses signalées ont été suivies.",
+    "loading": "Chargement…",
+    "anonymous": "Anonyme",
+    "nps_score_label": "Score",
+    "not_resolved": "Non résolu",
+    "partially_resolved": "Partiellement résolu",
+    "mark_followed_up": "Marquer comme suivi",
+    "saving": "Enregistrement…",
+    "followup_ok": "Marqué comme suivi.",
+    "followup_err": "Impossible d'enregistrer. Réessayez.",
+    "complaints_title": "Réclamations — bientôt disponible",
+    "complaints_note": "Le volume des réclamations, le délai de résolution et le respect du SLA nécessitent une liste de catégories validée par la direction générale de Pioneer avant de pouvoir être enregistrés — rien à construire ici tant qu'elle n'existe pas."
   }
 }

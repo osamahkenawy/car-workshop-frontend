@@ -194,7 +194,8 @@
     "crm": "CRM",
     "customer_360": "Customer 360",
     "service_reminders": "Mga paalala sa serbisyo",
-    "crm_tasks": "Mga gawain at follow-up"
+    "crm_tasks": "Mga gawain at follow-up",
+    "customer_experience": "Karanasan ng Kustomer"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -3698,5 +3699,27 @@
     "trend_sub": "Nakaraang 12 buwan",
     "verbatims": "Ang sinabi ng mga customer",
     "verbatims_sub": "Mga dahilan ng NPS score — detractor ang una"
+  },
+  "cx": {
+    "title": "Karanasan ng Kustomer",
+    "subtitle": "Kung paano naranasan ng kustomer ang workshop — mga marka ng survey, booking, katapatan, at sino ang kailangang tawagan ngayon.",
+    "ces": "CES",
+    "resolved_pct": "Lubos na Naresolba",
+    "needs_followup": "Kailangan ng Follow-up",
+    "section_survey": "Karanasan sa Survey",
+    "section_booking_loyalty": "Karanasan sa Booking at Katapatan",
+    "needs_attention_title": "Kailangan ng Pansin",
+    "needs_attention_empty": "Walang naghihintay — nasundan na ang lahat ng na-flag na sagot.",
+    "loading": "Naglo-load…",
+    "anonymous": "Hindi Kilala",
+    "nps_score_label": "Marka",
+    "not_resolved": "Hindi Naresolba",
+    "partially_resolved": "Bahagyang Naresolba",
+    "mark_followed_up": "Markahan Bilang Nasundan",
+    "saving": "Sine-save…",
+    "followup_ok": "Namarkahan bilang nasundan.",
+    "followup_err": "Hindi na-save. Subukan muli.",
+    "complaints_title": "Mga Reklamo — Paparating Na",
+    "complaints_note": "Kailangan ng bilang ng reklamo, oras ng paglutas, at pagsunod sa SLA ng napagkasunduang listahan ng kategorya mula sa GM Pioneer bago ito maitala — walang maitatayo dito hangga't wala pa iyon."
   }
 }

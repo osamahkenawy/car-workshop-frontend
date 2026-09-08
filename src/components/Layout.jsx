@@ -7,7 +7,7 @@ import {
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
   RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
-  EmojiSatisfied, ClipboardCheck,
+  EmojiSatisfied, ClipboardCheck, StarSolid,
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -44,6 +44,7 @@ const iconMap = {
   'customer-360':     User,
   'reminders':        Bell,
   'crm-tasks':        ClipboardCheck,
+  'customer-experience': StarSolid,
 };
 
 /*
@@ -107,6 +108,7 @@ const navSections = [
       { path: '/reports',            labelKey: 'reports',         iconKey: 'reports',          moduleKey: 'reports',           roles: ['admin', 'dispatcher'] },
       { path: '/performance',        labelKey: 'performance',     iconKey: 'performance',      moduleKey: 'performance',       roles: ['admin', 'dispatcher'] },
       { path: '/customer-feedback',  labelKey: 'customer_feedback', iconKey: 'customer_feedback', moduleKey: 'customer-feedback', roles: ['admin', 'dispatcher'] },
+      { path: '/customer-experience', labelKey: 'customer_experience', iconKey: 'customer-experience', moduleKey: 'customer-experience', roles: ['admin', 'dispatcher'] },
     ]
   },
   /* â”€â”€ SYSTEM (admin-only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

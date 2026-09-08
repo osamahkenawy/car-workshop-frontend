@@ -729,7 +729,8 @@
     "crm": "CRM",
     "customer_360": "Müşteri 360",
     "service_reminders": "Servis hatırlatmaları",
-    "crm_tasks": "Görevler ve takipler"
+    "crm_tasks": "Görevler ve takipler",
+    "customer_experience": "Müşteri Deneyimi"
   },
   "dashboard": {
     "active_label": "Aktif",
@@ -3696,5 +3697,27 @@
     "trend_sub": "Son 12 ay",
     "verbatims": "Müşteriler ne dedi",
     "verbatims_sub": "NPS puanının gerekçeleri — önce kötüleyenler"
+  },
+  "cx": {
+    "title": "Müşteri Deneyimi",
+    "subtitle": "Müşterinin atölyeyi nasıl deneyimlediği — anket puanları, randevular, sadakat ve bugün kimin aranması gerektiği.",
+    "ces": "CES",
+    "resolved_pct": "Tamamen Çözüldü",
+    "needs_followup": "Takip Gerekiyor",
+    "section_survey": "Anket Deneyimi",
+    "section_booking_loyalty": "Randevu Deneyimi ve Sadakat",
+    "needs_attention_title": "Dikkat Gerekiyor",
+    "needs_attention_empty": "Bekleyen yok — işaretlenen tüm yanıtlar takip edildi.",
+    "loading": "Yükleniyor…",
+    "anonymous": "Anonim",
+    "nps_score_label": "Puan",
+    "not_resolved": "Çözülmedi",
+    "partially_resolved": "Kısmen Çözüldü",
+    "mark_followed_up": "Takip Edildi Olarak İşaretle",
+    "saving": "Kaydediliyor…",
+    "followup_ok": "Takip edildi olarak işaretlendi.",
+    "followup_err": "Kaydedilemedi. Tekrar deneyin.",
+    "complaints_title": "Şikayetler — Yakında",
+    "complaints_note": "Şikayet hacmi, çözüm süresi ve SLA uyumu kaydedilmeden önce GM Pioneer'dan onaylı bir kategori listesi gerekiyor — bu olmadan burada yapılacak bir şey yok."
   }
 }

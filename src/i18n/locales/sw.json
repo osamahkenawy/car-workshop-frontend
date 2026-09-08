@@ -729,7 +729,8 @@
     "crm": "CRM",
     "customer_360": "Mteja 360",
     "service_reminders": "Vikumbusho vya huduma",
-    "crm_tasks": "Kazi na ufuatiliaji"
+    "crm_tasks": "Kazi na ufuatiliaji",
+    "customer_experience": "Uzoefu wa Mteja"
   },
   "dashboard": {
     "active_label": "Hai",
@@ -3696,5 +3697,27 @@
     "trend_sub": "Miezi 12 iliyopita",
     "verbatims": "Wateja walisema nini",
     "verbatims_sub": "Sababu za alama za NPS — wakosoaji kwanza"
+  },
+  "cx": {
+    "title": "Uzoefu wa Mteja",
+    "subtitle": "Jinsi mteja anavyopitia karakana — alama za utafiti, miadi, uaminifu, na nani anahitaji kupigiwa simu leo.",
+    "ces": "CES",
+    "resolved_pct": "Imetatuliwa Kikamilifu",
+    "needs_followup": "Inahitaji Ufuatiliaji",
+    "section_survey": "Uzoefu wa Utafiti",
+    "section_booking_loyalty": "Uzoefu wa Miadi na Uaminifu",
+    "needs_attention_title": "Inahitaji Uangalifu",
+    "needs_attention_empty": "Hakuna kinachosubiri — majibu yote yaliyowekwa alama yamefuatiliwa.",
+    "loading": "Inapakia…",
+    "anonymous": "Jina Halisi Halijulikani",
+    "nps_score_label": "Alama",
+    "not_resolved": "Haijatatuliwa",
+    "partially_resolved": "Imetatuliwa Kiasi",
+    "mark_followed_up": "Weka Alama Imefuatiliwa",
+    "saving": "Inahifadhi…",
+    "followup_ok": "Imewekwa alama imefuatiliwa.",
+    "followup_err": "Imeshindikana kuhifadhi. Jaribu tena.",
+    "complaints_title": "Malalamiko — Yanakuja Hivi Karibuni",
+    "complaints_note": "Idadi ya malalamiko, muda wa utatuzi na uzingatiaji wa SLA vinahitaji orodha ya kategoria iliyokubaliwa na Meneja Mkuu wa Pioneer kabla ya kunaswa — hakuna cha kujenga hapa mpaka hilo liwepo."
   }
 }

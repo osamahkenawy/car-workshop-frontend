@@ -194,7 +194,8 @@
     "crm": "CRM",
     "customer_360": "Cliente 360",
     "service_reminders": "Lembretes de serviço",
-    "crm_tasks": "Tarefas e acompanhamentos"
+    "crm_tasks": "Tarefas e acompanhamentos",
+    "customer_experience": "Experiência do cliente"
   },
   "dashboard": {
     "title": "Painel",
@@ -3696,5 +3697,27 @@
     "trend_sub": "Últimos 12 meses",
     "verbatims": "O que os clientes disseram",
     "verbatims_sub": "Motivos da pontuação NPS — detratores primeiro"
+  },
+  "cx": {
+    "title": "Experiência do cliente",
+    "subtitle": "Como o cliente vive a oficina — notas da pesquisa, reservas, fidelidade e quem precisa de retorno hoje.",
+    "ces": "CES",
+    "resolved_pct": "Totalmente resolvido",
+    "needs_followup": "Precisa de acompanhamento",
+    "section_survey": "Experiência da pesquisa",
+    "section_booking_loyalty": "Experiência de reserva e fidelidade",
+    "needs_attention_title": "Requer atenção",
+    "needs_attention_empty": "Nada pendente — todas as respostas sinalizadas já tiveram acompanhamento.",
+    "loading": "Carregando…",
+    "anonymous": "Anônimo",
+    "nps_score_label": "Pontuação",
+    "not_resolved": "Não resolvido",
+    "partially_resolved": "Parcialmente resolvido",
+    "mark_followed_up": "Marcar como acompanhado",
+    "saving": "Salvando…",
+    "followup_ok": "Marcado como acompanhado.",
+    "followup_err": "Não foi possível salvar. Tente novamente.",
+    "complaints_title": "Reclamações — em breve",
+    "complaints_note": "Volume de reclamações, tempo de resolução e conformidade com SLA precisam de uma lista de categorias acordada com a Gerência Geral da Pioneer antes de poderem ser registrados — nada a construir aqui até que isso exista."
   }
 }

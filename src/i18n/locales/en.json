@@ -200,7 +200,8 @@
     "crm": "CRM",
     "customer_360": "Customer 360",
     "service_reminders": "Service Reminders",
-    "crm_tasks": "Tasks & Follow-ups"
+    "crm_tasks": "Tasks & Follow-ups",
+    "customer_experience": "Customer Experience"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -3850,5 +3851,27 @@
     "trend_sub": "Last 12 months",
     "verbatims": "What customers said",
     "verbatims_sub": "Reasons given for the NPS score — detractors first"
+  },
+  "cx": {
+    "title": "Customer Experience",
+    "subtitle": "How the customer experiences the workshop — survey scores, bookings, loyalty, and who needs a call back today.",
+    "ces": "CES",
+    "resolved_pct": "Fully Resolved",
+    "needs_followup": "Needs Follow-up",
+    "section_survey": "Survey Experience",
+    "section_booking_loyalty": "Booking Experience & Loyalty",
+    "needs_attention_title": "Needs Attention",
+    "needs_attention_empty": "Nothing waiting — every flagged response has been followed up.",
+    "loading": "Loading…",
+    "anonymous": "Anonymous",
+    "nps_score_label": "Score",
+    "not_resolved": "Not resolved",
+    "partially_resolved": "Partially resolved",
+    "mark_followed_up": "Mark Followed Up",
+    "saving": "Saving…",
+    "followup_ok": "Marked as followed up.",
+    "followup_err": "Could not save that. Try again.",
+    "complaints_title": "Complaints — Coming Soon",
+    "complaints_note": "Complaint volume, resolution time and SLA compliance need an agreed category list from GM Pioneer before they can be captured — nothing to build here until that exists."
   }
 }

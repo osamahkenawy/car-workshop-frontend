@@ -729,7 +729,8 @@
     "crm": "CRM",
     "customer_360": "顧客360",
     "service_reminders": "点検リマインダー",
-    "crm_tasks": "タスクとフォロー"
+    "crm_tasks": "タスクとフォロー",
+    "customer_experience": "カスタマーエクスペリエンス"
   },
   "dashboard": {
     "active_label": "アクティブ",
@@ -3696,5 +3697,27 @@
     "trend_sub": "直近 12 ヶ月",
     "verbatims": "お客样のコメント",
     "verbatims_sub": "NPS スコアの理由 — 批判者を優先"
+  },
+  "cx": {
+    "title": "カスタマーエクスペリエンス",
+    "subtitle": "顧客が整備工場をどう体験しているか — アンケートスコア、予約、ロイヤルティ、今日折り返すべき相手。",
+    "ces": "CES",
+    "resolved_pct": "完全解決率",
+    "needs_followup": "フォローアップが必要",
+    "section_survey": "アンケート結果",
+    "section_booking_loyalty": "予約体験とロイヤルティ",
+    "needs_attention_title": "対応が必要",
+    "needs_attention_empty": "対応待ちはありません — フラグ付き回答はすべて対応済みです。",
+    "loading": "読み込み中…",
+    "anonymous": "匿名",
+    "nps_score_label": "スコア",
+    "not_resolved": "未解決",
+    "partially_resolved": "一部解決",
+    "mark_followed_up": "対応済みにする",
+    "saving": "保存中…",
+    "followup_ok": "対応済みにしました。",
+    "followup_err": "保存できませんでした。再試行してください。",
+    "complaints_title": "苦情管理（近日公開）",
+    "complaints_note": "苦情件数、解決時間、SLA遵守率を記録するには、GM Pioneerが承認したカテゴリー一覧が必要です。それが決まるまで、ここで構築できることはありません。"
   }
 }
