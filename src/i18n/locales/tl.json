@@ -1142,7 +1142,16 @@
       "col_confirmed": "Nakumpirma",
       "col_arrived": "Dumating",
       "col_conversion": "Pagkumpirma",
-      "col_show_up": "Pagdating"
+      "col_show_up": "Pagdating",
+      "by_contact_channel_title": "Bilang ng Kontak Ayon sa Channel",
+      "col_contacts": "Mga Kontak",
+      "contact_channel_note": "Manu-manong nairehistrong kontak lamang — ang paggamit ng app o portal ng kustomer ay hindi pa awtomatikong binibilang.",
+      "channel_phone": "Telepono",
+      "channel_email": "Email",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Mobile App",
+      "channel_web_portal": "Web Portal",
+      "channel_social_media": "Social Media"
     },
     "col": {
       "reason": "Dahilan",

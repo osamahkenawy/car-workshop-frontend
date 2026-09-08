@@ -2504,7 +2504,16 @@
       "col_confirmed": "已确认",
       "col_arrived": "已到店",
       "col_conversion": "确认率",
-      "col_show_up": "到店率"
+      "col_show_up": "到店率",
+      "by_contact_channel_title": "按渠道的联系量",
+      "col_contacts": "联系次数",
+      "contact_channel_note": "仅统计手动记录的联系 —— 客户使用应用或门户尚未自动计入。",
+      "channel_phone": "电话",
+      "channel_email": "电子邮件",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "手机应用",
+      "channel_web_portal": "网页门户",
+      "channel_social_media": "社交媒体"
     },
     "last_30_days": "最近30天",
     "last_7_days": "最近7天",

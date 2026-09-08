@@ -2504,7 +2504,16 @@
       "col_confirmed": "Zilizothibitishwa",
       "col_arrived": "Waliofika",
       "col_conversion": "Uthibitisho",
-      "col_show_up": "Kuhudhuria"
+      "col_show_up": "Kuhudhuria",
+      "by_contact_channel_title": "Idadi ya Mawasiliano kwa Chaneli",
+      "col_contacts": "Mawasiliano",
+      "contact_channel_note": "Mawasiliano yaliyorekodiwa kwa mkono pekee — matumizi ya programu au tovuti bado hayahesabiwi kiotomatiki.",
+      "channel_phone": "Simu",
+      "channel_email": "Barua pepe",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Programu ya Simu",
+      "channel_web_portal": "Tovuti ya Huduma",
+      "channel_social_media": "Mitandao ya Kijamii"
     },
     "last_30_days": "Siku 30 Zilizopita",
     "last_7_days": "Siku 7 Zilizopita",

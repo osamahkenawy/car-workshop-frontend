@@ -141,15 +141,17 @@ export default function Reports() {
     setKpiLoading(true);
     try {
       const qs = `from=${kpiRange.from}&to=${kpiRange.to}`;
-      const [booking, customer, survey] = await Promise.all([
+      const [booking, customer, survey, contacts] = await Promise.all([
         api.get(`/appointments/stats?${qs}`),
         api.get(`/customers/stats?${qs}`),
         api.get(`/customer-survey/stats?${qs}`),
+        api.get(`/crm/customers/activities/stats?${qs}`),
       ]);
       setKpiMatrix({
         booking: booking.success ? booking.data : null,
         customer: customer.success ? customer.data.period : null,
         survey: survey.success ? survey.data : null,
+        contacts: contacts.success ? contacts.data : null,
       });
     } finally {
       setKpiLoading(false);
@@ -1245,6 +1247,31 @@ export default function Reports() {
                           </tbody>
                         </table>
                       ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
+                    </div>
+
+                    <div className="rpt-table-card">
+                      <div className="rpt-chart-header"><h4>{t('reports.kpi.by_contact_channel_title')}</h4></div>
+                      {kpiMatrix.contacts?.by_channel?.length > 0 ? (
+                        <table className="od-items-table">
+                          <thead>
+                            <tr>
+                              <th>{t('reports.kpi.col_channel')}</th>
+                              <th>{t('reports.kpi.col_contacts')}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {kpiMatrix.contacts.by_channel.map(row => (
+                              <tr key={row.channel}>
+                                <td><strong>{t(`reports.kpi.channel_${row.channel}`)}</strong></td>
+                                <td>{row.count}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : <div className="rpt-empty"><p>{t('reports.kpi.no_data')}</p></div>}
+                      <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 10, marginBottom: 0 }}>
+                        {t('reports.kpi.contact_channel_note')}
+                      </p>
                     </div>
                   </div>
                 </>

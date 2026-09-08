@@ -1146,7 +1146,16 @@
       "col_confirmed": "مؤكدة",
       "col_arrived": "حضروا",
       "col_conversion": "التحويل",
-      "col_show_up": "الحضور"
+      "col_show_up": "الحضور",
+      "by_contact_channel_title": "حجم التواصل حسب القناة",
+      "col_contacts": "التواصلات",
+      "contact_channel_note": "التواصلات المسجلة يدويًا فقط — استخدام العميل للتطبيق أو البوابة لا يُحتسب تلقائيًا بعد.",
+      "channel_phone": "الهاتف",
+      "channel_email": "البريد الإلكتروني",
+      "channel_whatsapp": "واتساب",
+      "channel_mobile_app": "تطبيق الجوال",
+      "channel_web_portal": "البوابة الإلكترونية",
+      "channel_social_media": "وسائل التواصل الاجتماعي"
     },
     "col": {
       "reason": "السبب",

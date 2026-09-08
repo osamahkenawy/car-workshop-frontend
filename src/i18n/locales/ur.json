@@ -2504,7 +2504,16 @@
       "col_confirmed": "تصدیق شدہ",
       "col_arrived": "آنے والے",
       "col_conversion": "تصدیق کی شرح",
-      "col_show_up": "حاضری"
+      "col_show_up": "حاضری",
+      "by_contact_channel_title": "چینل کے مطابق رابطوں کی تعداد",
+      "col_contacts": "رابطے",
+      "contact_channel_note": "صرف دستی طور پر درج کردہ رابطے — ایپ یا پورٹل کا استعمال ابھی خودکار طور پر شمار نہیں ہوتا۔",
+      "channel_phone": "فون",
+      "channel_email": "ای میل",
+      "channel_whatsapp": "واٹس ایپ",
+      "channel_mobile_app": "موبائل ایپ",
+      "channel_web_portal": "ویب پورٹل",
+      "channel_social_media": "سوشل میڈیا"
     },
     "last_30_days": "آخری 30 دن",
     "last_7_days": "آخری 7 دن",

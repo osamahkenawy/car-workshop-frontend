@@ -1163,7 +1163,16 @@
       "col_confirmed": "Confirmed",
       "col_arrived": "Arrived",
       "col_conversion": "Conversion",
-      "col_show_up": "Show-up"
+      "col_show_up": "Show-up",
+      "by_contact_channel_title": "Contact Volume by Channel",
+      "col_contacts": "Contacts",
+      "contact_channel_note": "Manually logged contacts only — a customer using the app or portal is not yet counted here automatically.",
+      "channel_phone": "Phone",
+      "channel_email": "Email",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Mobile App",
+      "channel_web_portal": "Web Portal",
+      "channel_social_media": "Social Media"
     },
     "col": {
       "reason": "Reason",

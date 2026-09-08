@@ -2504,7 +2504,16 @@
       "col_confirmed": "Onaylanan",
       "col_arrived": "Gelen",
       "col_conversion": "Onay Oranı",
-      "col_show_up": "Geliş"
+      "col_show_up": "Geliş",
+      "by_contact_channel_title": "Kanala Göre İletişim Hacmi",
+      "col_contacts": "İletişimler",
+      "contact_channel_note": "Yalnızca elle kaydedilen iletişimler — müşterinin uygulama veya portal kullanımı henüz otomatik sayılmıyor.",
+      "channel_phone": "Telefon",
+      "channel_email": "E-posta",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Mobil Uygulama",
+      "channel_web_portal": "Web Portalı",
+      "channel_social_media": "Sosyal Medya"
     },
     "last_30_days": "Son 30 Gün",
     "last_7_days": "Son 7 Gün",

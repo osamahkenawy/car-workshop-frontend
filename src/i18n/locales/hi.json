@@ -1142,7 +1142,16 @@
       "col_confirmed": "पुष्ट",
       "col_arrived": "पहुंचे",
       "col_conversion": "रूपांतरण",
-      "col_show_up": "उपस्थिति"
+      "col_show_up": "उपस्थिति",
+      "by_contact_channel_title": "चैनल के अनुसार संपर्क मात्रा",
+      "col_contacts": "संपर्क",
+      "contact_channel_note": "केवल मैन्युअल रूप से दर्ज किए गए संपर्क — ऐप या पोर्टल के उपयोग को अभी स्वतः नहीं गिना जाता।",
+      "channel_phone": "फ़ोन",
+      "channel_email": "ईमेल",
+      "channel_whatsapp": "व्हाट्सएप",
+      "channel_mobile_app": "मोबाइल ऐप",
+      "channel_web_portal": "वेब पोर्टल",
+      "channel_social_media": "सोशल मीडिया"
     },
     "col": {
       "reason": "कारण",

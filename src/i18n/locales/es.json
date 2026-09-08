@@ -1142,7 +1142,16 @@
       "col_confirmed": "Confirmadas",
       "col_arrived": "Llegaron",
       "col_conversion": "Conversión",
-      "col_show_up": "Asistencia"
+      "col_show_up": "Asistencia",
+      "by_contact_channel_title": "Volumen de contactos por canal",
+      "col_contacts": "Contactos",
+      "contact_channel_note": "Solo contactos registrados manualmente: el uso de la app o el portal por parte del cliente aún no se cuenta automáticamente.",
+      "channel_phone": "Teléfono",
+      "channel_email": "Correo electrónico",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "App móvil",
+      "channel_web_portal": "Portal web",
+      "channel_social_media": "Redes sociales"
     },
     "col": {
       "avg_value": "Valor promedio",

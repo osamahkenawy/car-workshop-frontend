@@ -2504,7 +2504,16 @@
       "col_confirmed": "Confirmées",
       "col_arrived": "Arrivées",
       "col_conversion": "Conversion",
-      "col_show_up": "Présentation"
+      "col_show_up": "Présentation",
+      "by_contact_channel_title": "Volume de contacts par canal",
+      "col_contacts": "Contacts",
+      "contact_channel_note": "Uniquement les contacts enregistrés manuellement — l'utilisation de l'appli ou du portail par le client n'est pas encore comptée automatiquement.",
+      "channel_phone": "Téléphone",
+      "channel_email": "E-mail",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Application mobile",
+      "channel_web_portal": "Portail web",
+      "channel_social_media": "Réseaux sociaux"
     },
     "last_30_days": "30 derniers jours",
     "last_7_days": "7 derniers jours",

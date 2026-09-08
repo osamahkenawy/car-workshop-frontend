@@ -2504,7 +2504,16 @@
       "col_confirmed": "確定",
       "col_arrived": "来店済み",
       "col_conversion": "確定率",
-      "col_show_up": "来店率"
+      "col_show_up": "来店率",
+      "by_contact_channel_title": "チャネル別問い合わせ件数",
+      "col_contacts": "件数",
+      "contact_channel_note": "手動で記録した問い合わせのみです。アプリやポータルの利用は現時点で自動集計されません。",
+      "channel_phone": "電話",
+      "channel_email": "メール",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "モバイルアプリ",
+      "channel_web_portal": "Webポータル",
+      "channel_social_media": "SNS"
     },
     "last_30_days": "過去30日",
     "last_7_days": "過去7日",

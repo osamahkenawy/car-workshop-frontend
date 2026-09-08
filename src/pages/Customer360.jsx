@@ -51,13 +51,18 @@ const EVENT_FILTERS = [
 ];
 
 const ACTIVITY_TYPES = [
-  { v: 'call_out',  label: 'Called them' },
-  { v: 'call_in',   label: 'They called' },
-  { v: 'whatsapp',  label: 'WhatsApp' },
-  { v: 'email',     label: 'Email' },
-  { v: 'visit',     label: 'Walk-in visit' },
-  { v: 'complaint', label: 'Complaint' },
-  { v: 'note',      label: 'Note' },
+  { v: 'call_out',     label: 'Called them' },
+  { v: 'call_in',      label: 'They called' },
+  { v: 'whatsapp',     label: 'WhatsApp' },
+  { v: 'email',        label: 'Email' },
+  { v: 'visit',        label: 'Walk-in visit' },
+  // Channels a customer used that the system did not capture automatically —
+  // logged by hand so the contact still counts on the KPI report (row 9).
+  { v: 'social_media', label: 'Social media' },
+  { v: 'mobile_app',   label: 'Mobile app (manual log)' },
+  { v: 'web_portal',   label: 'Web portal (manual log)' },
+  { v: 'complaint',    label: 'Complaint' },
+  { v: 'note',         label: 'Note' },
 ];
 
 const CHANNELS = [

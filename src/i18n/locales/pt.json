@@ -1142,7 +1142,16 @@
       "col_confirmed": "Confirmadas",
       "col_arrived": "Compareceram",
       "col_conversion": "Conversão",
-      "col_show_up": "Comparecimento"
+      "col_show_up": "Comparecimento",
+      "by_contact_channel_title": "Volume de contatos por canal",
+      "col_contacts": "Contatos",
+      "contact_channel_note": "Apenas contatos registrados manualmente — o uso do aplicativo ou portal pelo cliente ainda não é contado automaticamente.",
+      "channel_phone": "Telefone",
+      "channel_email": "E-mail",
+      "channel_whatsapp": "WhatsApp",
+      "channel_mobile_app": "Aplicativo móvel",
+      "channel_web_portal": "Portal web",
+      "channel_social_media": "Redes sociais"
     },
     "col": {
       "reason": "Motivo",
