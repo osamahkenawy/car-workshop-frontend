@@ -3719,7 +3719,12 @@
     "trend": "رجحان",
     "trend_sub": "گزشتہ 12 ماہ",
     "verbatims": "کسٹمرز نے کیا کہا",
-    "verbatims_sub": "NPS اسکور کی وجوہات — پہلے مخالفین"
+    "verbatims_sub": "NPS اسکور کی وجوہات — پہلے مخالفین",
+    "filtered_to": "فلٹر شدہ",
+    "filtered_flagged": "فالو اپ درکار",
+    "show_all": "سب دکھائیں",
+    "detail_outcome": "فالو اپ کا نتیجہ",
+    "detail_outcome_placeholder": "کال کا نتیجہ کیا نکلا؟ مثلاً: گاہک سے بات ہوئی، تشخیصی فیس واپس کی، دوبارہ جانچ بک کی"
   },
   "cx": {
     "title": "کسٹمر تجربہ",
@@ -3756,6 +3761,14 @@
     "view_complaints": "شکایات دیکھیں",
     "complaints_still_open": "ابھی تک کھلی",
     "complaints_ack_sla": "1 دن میں تسلیم شدہ",
-    "complaints_avg_resolution": "اوسط حل کا وقت"
+    "complaints_avg_resolution": "اوسط حل کا وقت",
+    "branch": "برانچ",
+    "all_branches": "تمام برانچز",
+    "branch_scope_note": "سروے اسکور کے لیے {{branch}} دکھایا جا رہا ہے۔ بکنگ، وفاداری، رابطہ اور شکایات کے پینل پوری ورکشاپ کے رہتے ہیں — ان ریکارڈز میں برانچ نہیں ہوتی۔",
+    "responses": "جوابات",
+    "responses_of_invites": "{{sent}} میں سے {{n}}",
+    "view_segment": "{{segment}} کے جوابات دیکھیں ({{n}})",
+    "export_pack": "پیک ایکسپورٹ کریں",
+    "export_pack_hint": "ماہانہ پیک ڈاؤن لوڈ کریں: اہم پیمانے، جوابات کی تعداد، NPS تقسیم، سوالات کے اسکور اور برانچ کے مطابق نتائج"
   }
 }

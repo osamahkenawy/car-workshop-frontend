@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Check, User, SendMail, ClipboardCheck,
-  WarningTriangle, Refresh, Phone, ChatBubble, Quote, Calendar, ArrowRight,
+  WarningTriangle, Refresh, Phone, ChatBubble, Quote, Calendar, ArrowRight, Download,
 } from 'iconoir-react';
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
+import { toCsv, downloadCsvText } from '../utils/csv';
 import './Reports.css';
 import './CustomerExperience.css';
 
@@ -109,6 +110,17 @@ const fmtDaysAgo = (iso, t) => {
   return t('cx.days_ago', { n: days });
 };
 
+// Sections in the pack are separated by a blank CRLF line: toCsv emits no
+// trailing newline, so one separator between a section and the empty string
+// pushed after it yields exactly one blank row in Excel.
+const SECTION_GAP = '\r\n';
+
+const NPS_SEGMENTS = [
+  { key: 'promoter',  labelKey: 'cx.promoters',  color: '#16a34a', pctKey: 'promoterPct',  countKey: 'promoters' },
+  { key: 'passive',   labelKey: 'cx.passives',   color: '#d97706', pctKey: 'passivePct',   countKey: 'passives' },
+  { key: 'detractor', labelKey: 'cx.detractors', color: '#dc2626', pctKey: 'detractorPct', countKey: 'detractors' },
+];
+
 const initials = name => String(name || '?').trim().split(/\s+/).slice(0, 2)
   .map(w => w[0]).join('').toUpperCase() || '?';
 
@@ -135,23 +147,112 @@ export default function CustomerExperience() {
   const [loading, setLoading] = useState(true);
   const [actioning, setActioning] = useState(null);
   const [resolving, setResolving] = useState(() => new Set());
+  const [branch, setBranch] = useState('');
+  // byBranch only lists branches present in the CURRENT result, so once a
+  // branch is selected it collapses to that one. Captured on the unfiltered
+  // load so the dropdown keeps every option.
+  const [branchOptions, setBranchOptions] = useState([]);
+  // The whole by-branch table as of the unfiltered load, so the exported
+  // pack can report every branch even while the page is filtered to one.
+  const [allByBranch, setAllByBranch] = useState([]);
   const [banner, setBanner] = useState(null);
+
+  // Hand the current period/branch to the feedback list so the drill-down
+  // shows the same slice the dashboard was showing.
+  const openSegment = key => {
+    const p = new URLSearchParams({ category: key, from: range.from, to: range.to });
+    if (branch) p.set('branch', branch);
+    navigate(`/customer-feedback?${p}`);
+  };
+
+  /*
+   * Monthly pack export (SOP step 8). Five sections in one file, matching
+   * what the SOP says the pack contains: headline measures, response volume,
+   * the NPS breakdown, question-level scores, and results by branch.
+   *
+   * CSV rather than PDF: the pack gets filed and re-read, and the SOP's own
+   * field reference is tabular. Sections are separate titled tables in one
+   * sheet, built through toCsv so escaping and formula-neutralisation stay in
+   * the one writer.
+   *
+   * byBranch comes from the unfiltered load, so the by-branch section is
+   * whole even when the page is filtered to one branch — a pack that silently
+   * dropped the other branches would be worse than no pack.
+   */
+  const exportPack = () => {
+    if (!survey) return;
+    const hh = survey.headline || {};
+    const nb = survey.npsBreakdown || {};
+    const blank = '';
+    const parts = [];
+
+    parts.push(toCsv(['Pioneer Car Service Center — Customer Experience pack'], []));
+    parts.push(toCsv(['Period', `${range.from} to ${range.to}`], []));
+    parts.push(toCsv(['Branch', branch || 'All branches'], []));
+    parts.push(toCsv(['Generated', new Date().toISOString().slice(0, 16).replace('T', ' ')], []));
+    parts.push(blank);
+
+    parts.push(toCsv(['Headline measures'], [
+      ['Net Promoter Score', hh.nps ?? ''],
+      ['Customer satisfaction (of 5)', hh.csatAvg ?? ''],
+      ['Customer Effort Score (of 5)', hh.cesAvg ?? ''],
+      ['Resolution rate (%)', survey.resolution?.resolvedPercent ?? ''],
+      ['Needs follow-up', hh.needsFollowUp ?? 0],
+    ]));
+    parts.push(blank);
+
+    parts.push(toCsv(['Response volume'], [
+      ['Responses received', hh.responses ?? 0],
+      ['Surveys issued', hh.invitesSent ?? 0],
+      ['Response rate (%)', hh.responseRate ?? ''],
+      ['Responses scoring NPS', hh.npsScored ?? 0],
+    ]));
+    parts.push(blank);
+
+    parts.push(toCsv(['NPS breakdown', 'Responses', 'Share (%)'], [
+      ['Promoters', nb.promoters ?? 0, nb.promoterPct ?? 0],
+      ['Passives', nb.passives ?? 0, nb.passivePct ?? 0],
+      ['Detractors', nb.detractors ?? 0, nb.detractorPct ?? 0],
+    ]));
+    parts.push(blank);
+
+    parts.push(toCsv(['Question', 'Section', 'Average (of 5)'],
+      (survey.questions || []).map(q => [q.label, q.section, q.avg ?? ''])));
+    parts.push(blank);
+
+    const branchRows = allByBranch.length ? allByBranch : (survey.byBranch || []);
+    parts.push(toCsv(['Branch', 'Responses', 'NPS', 'CSAT', 'CES'],
+      branchRows.map(b => [b.branch || 'Unspecified', b.responses ?? '', b.nps ?? '', b.csat_avg ?? '', b.ces_avg ?? ''])));
+
+    const name = `pioneer-cx-pack_${range.from}_to_${range.to}${branch ? `_${branch.replace(/[^\w-]+/g, '-')}` : ''}.csv`;
+    downloadCsvText(name, parts.join(SECTION_GAP));
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const qs = `from=${range.from}&to=${range.to}`;
+      // Branch narrows the survey-derived panels only. survey_responses is
+      // the one table here carrying a branch; appointments, customers,
+      // activities and disputes have no branch column at all, so those
+      // panels stay workshop-wide and the UI says so when a branch is set.
+      const bq = branch ? `&branch=${encodeURIComponent(branch)}` : '';
       const [s, b, c, ct, a, cp] = await Promise.all([
-        api.get(`/customer-survey/stats?${qs}`),
+        api.get(`/customer-survey/stats?${qs}${bq}`),
         api.get(`/appointments/stats?${qs}`),
         api.get(`/customers/stats?${qs}`),
         api.get(`/crm/customers/activities/stats?${qs}`),
         // Unresolved detractors and partial resolutions, most recent first —
         // the queue a person should actually clear, not every response ever.
-        api.get(`/customer-survey?flagged=1&${qs}&limit=8`),
+        api.get(`/customer-survey?flagged=1&${qs}${bq}&limit=8`),
         api.get(`/disputes/stats?${qs}`),
       ]);
       setSurvey(s.success ? s.data : null);
+      if (!branch && s.success) {
+        setBranchOptions((s.data?.byBranch || [])
+          .map(b => b.branch).filter(Boolean));
+        setAllByBranch(s.data?.byBranch || []);
+      }
       setBooking(b.success ? b.data : null);
       setCustomer(c.success ? c.data.period : null);
       setContacts(ct.success ? ct.data : null);
@@ -160,7 +261,7 @@ export default function CustomerExperience() {
     } finally {
       setLoading(false);
     }
-  }, [range.from, range.to]);
+  }, [range.from, range.to, branch]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -229,10 +330,27 @@ export default function CustomerExperience() {
             </div>
           </div>
         </div>
+        {branchOptions.length > 0 && (
+          <select className="cx-branch-select" value={branch}
+            onChange={e => setBranch(e.target.value)} aria-label={t('cx.branch')}>
+            <option value="">{t('cx.all_branches')}</option>
+            {branchOptions.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+        )}
         <button className="cx-refresh-btn" onClick={load} disabled={loading}>
           <Refresh width={14} height={14} className={loading ? 'cx-spin' : ''} /> {t('reports.refresh')}
         </button>
+        <button className="cx-export-btn" onClick={exportPack} disabled={loading || !survey}
+          title={t('cx.export_pack_hint')}>
+          <Download width={14} height={14} /> {t('cx.export_pack')}
+        </button>
       </div>
+
+      {/* Only survey_responses carries a branch, so say plainly which panels
+          the filter reached rather than letting the others look filtered. */}
+      {branch && (
+        <p className="cx-branch-note">{t('cx.branch_scope_note', { branch })}</p>
+      )}
 
       {loading && !survey ? (
         <div className="rpt-loading">
@@ -251,15 +369,32 @@ export default function CustomerExperience() {
               )}
               {npsBreakdown && (
                 <div className="cx-nps-split">
+                  {/* Each segment opens that segment's individual responses,
+                      which is the SOP's "select the detractor segment to list
+                      the individual responses". The list lives on Customer
+                      Feedback, which already filters by category server-side,
+                      rather than being duplicated here. */}
                   <div className="cx-nps-split-bar">
-                    <span style={{ width: `${npsBreakdown.promoterPct}%`, background: '#16a34a' }} title="Promoters" />
-                    <span style={{ width: `${npsBreakdown.passivePct}%`, background: '#d97706' }} title="Passives" />
-                    <span style={{ width: `${npsBreakdown.detractorPct}%`, background: '#dc2626' }} title="Detractors" />
+                    {NPS_SEGMENTS.map(seg => (
+                      <button
+                        key={seg.key}
+                        type="button"
+                        className="cx-nps-seg"
+                        style={{ width: `${npsBreakdown[seg.pctKey]}%`, background: seg.color }}
+                        title={t('cx.view_segment', { segment: t(seg.labelKey), n: npsBreakdown[seg.countKey] })}
+                        aria-label={t('cx.view_segment', { segment: t(seg.labelKey), n: npsBreakdown[seg.countKey] })}
+                        onClick={() => openSegment(seg.key)}
+                      />
+                    ))}
                   </div>
                   <div className="cx-nps-split-legend">
-                    <span><i style={{ background: '#16a34a' }} />{t('cx.promoters')} {npsBreakdown.promoterPct}%</span>
-                    <span><i style={{ background: '#d97706' }} />{t('cx.passives')} {npsBreakdown.passivePct}%</span>
-                    <span><i style={{ background: '#dc2626' }} />{t('cx.detractors')} {npsBreakdown.detractorPct}%</span>
+                    {NPS_SEGMENTS.map(seg => (
+                      <button key={seg.key} type="button" className="cx-nps-legend-btn"
+                        onClick={() => openSegment(seg.key)}>
+                        <i style={{ background: seg.color }} />
+                        {t(seg.labelKey)} {npsBreakdown[seg.pctKey]}%
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -270,9 +405,15 @@ export default function CustomerExperience() {
                 value={h.csatAvg != null ? `${h.csatAvg}` : '—'} unit="/5" />
               <VitalCard icon={Check} color="#0ea5e9" label={t('cx.ces')}
                 value={h.cesAvg != null ? `${h.cesAvg}` : '—'} unit="/5" />
+              {/* The count sits beside the rate on purpose: a small sample
+                  swings NPS/CSAT hard, so reading a score without knowing
+                  how many responses produced it is the trap the SOP warns
+                  about ("a small sample moves the score sharply"). */}
               <VitalCard icon={SendMail} color="#8b5cf6" label={t('reports.kpi.survey_response_rate')}
                 value={h.responseRate != null ? `${h.responseRate}` : '—'} unit="%"
-                sub={survey ? t('reports.kpi.invites_sent_count', { n: h.invitesSent }) : ''} />
+                sub={survey ? t('cx.responses_of_invites', { n: h.responses ?? 0, sent: h.invitesSent ?? 0 }) : ''} />
+              <VitalCard icon={ChatBubble} color="#0d9488" label={t('cx.responses')}
+                value={h.responses ?? '—'} unit="" />
               <VitalCard icon={ClipboardCheck} color="#1e3a6b" label={t('cx.resolved_pct')}
                 value={resolvedPct != null ? `${resolvedPct}` : '—'} unit="%" />
               <VitalCard icon={WarningTriangle} color={Number(h.needsFollowUp) > 0 ? '#dc2626' : '#16a34a'}

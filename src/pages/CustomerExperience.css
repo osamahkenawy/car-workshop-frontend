@@ -244,3 +244,50 @@
   .cx-hero { flex-direction: column; }
   .cx-hero-gauge { flex-basis: auto; }
 }
+
+/* ── Branch filter ────────────────────────────────────────────────── */
+.cx-branch-select {
+  flex: 0 0 auto; width: auto; max-width: 230px;
+  height: 44px; padding: 0 12px;
+  border: 1px solid #e2e7f0; border-radius: 14px;
+  background: #fff; color: var(--cx-navy);
+  font-size: 13.5px; font-weight: 600; font-family: inherit; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+}
+.cx-branch-select:focus { outline: none; border-color: var(--cx-cool); }
+
+.cx-branch-note {
+  margin: -8px 0 18px; font-size: 12.5px; color: #7d8494;
+  padding: 9px 13px; border-radius: 9px;
+  background: var(--cx-cool-tint); border: 1px solid #d3ecf9;
+}
+
+/* ── Clickable NPS segments ───────────────────────────────────────
+   The bar doubles as a drill-down into that segment's responses, so the
+   segments are real buttons: keyboard reachable and with a visible hover,
+   not just a tinted div with an onClick. */
+.cx-nps-split-bar .cx-nps-seg {
+  display: block; height: 100%; border: 0; padding: 0;
+  cursor: pointer; transition: filter .15s ease;
+}
+.cx-nps-split-bar .cx-nps-seg:hover { filter: brightness(1.12) saturate(1.1); }
+.cx-nps-split-bar .cx-nps-seg:focus-visible {
+  outline: 2px solid var(--cx-navy); outline-offset: 1px;
+}
+
+.cx-nps-legend-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 0; background: none; padding: 2px 0; cursor: pointer;
+  font-size: 10.5px; color: #64748b; font-family: inherit; white-space: nowrap;
+}
+.cx-nps-legend-btn:hover { color: var(--cx-navy); text-decoration: underline; }
+.cx-nps-legend-btn i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+
+.cx-export-btn {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  background: #fff; color: var(--cx-navy); font-size: 13px; font-weight: 600;
+  padding: 11px 16px; border-radius: 12px; border: 1px solid #e2e7f0;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04); transition: border-color .15s ease, color .15s ease;
+}
+.cx-export-btn:hover:not(:disabled) { border-color: var(--cx-cool); color: var(--cx-cool); }
+.cx-export-btn:disabled { opacity: .55; cursor: default; }

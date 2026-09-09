@@ -3719,7 +3719,12 @@
     "trend": "Tendance",
     "trend_sub": "12 derniers mois",
     "verbatims": "Ce que disent les clients",
-    "verbatims_sub": "Raisons du score NPS — détracteurs en premier"
+    "verbatims_sub": "Raisons du score NPS — détracteurs en premier",
+    "filtered_to": "Filtré sur",
+    "filtered_flagged": "à suivre",
+    "show_all": "Tout afficher",
+    "detail_outcome": "Résultat du suivi",
+    "detail_outcome_placeholder": "Qu'a donné l'appel ? Ex. : client contacté, frais de diagnostic remboursés, nouveau contrôle programmé"
   },
   "cx": {
     "title": "Expérience client",
@@ -3756,6 +3761,14 @@
     "view_complaints": "Voir les réclamations",
     "complaints_still_open": "Encore ouvertes",
     "complaints_ack_sla": "Accusées de réception en 1 jour",
-    "complaints_avg_resolution": "Résolution moyenne"
+    "complaints_avg_resolution": "Résolution moyenne",
+    "branch": "Succursale",
+    "all_branches": "Toutes les succursales",
+    "branch_scope_note": "Affichage de {{branch}} pour les scores d'enquête. Les panneaux réservations, fidélité, contacts et réclamations restent à l'échelle de l'atelier — ces enregistrements n'ont pas de succursale.",
+    "responses": "Réponses",
+    "responses_of_invites": "{{n}} sur {{sent}} invitations",
+    "view_segment": "Voir les réponses {{segment}} ({{n}})",
+    "export_pack": "Exporter le dossier",
+    "export_pack_hint": "Télécharger le dossier mensuel : mesures principales, volume de réponses, répartition du NPS, scores par question et résultats par succursale"
   }
 }

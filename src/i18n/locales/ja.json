@@ -3719,7 +3719,12 @@
     "trend": "推移",
     "trend_sub": "直近 12 ヶ月",
     "verbatims": "お客样のコメント",
-    "verbatims_sub": "NPS スコアの理由 — 批判者を優先"
+    "verbatims_sub": "NPS スコアの理由 — 批判者を優先",
+    "filtered_to": "絞り込み",
+    "filtered_flagged": "フォロー要",
+    "show_all": "すべて表示",
+    "detail_outcome": "フォロー結果",
+    "detail_outcome_placeholder": "連絡の結果は？ 例：顧客と話した、診断料を返金、再点検を予約"
   },
   "cx": {
     "title": "カスタマーエクスペリエンス",
@@ -3756,6 +3761,14 @@
     "view_complaints": "苦情を見る",
     "complaints_still_open": "未対応",
     "complaints_ack_sla": "1日以内に確認済み",
-    "complaints_avg_resolution": "平均解決時間"
+    "complaints_avg_resolution": "平均解決時間",
+    "branch": "支店",
+    "all_branches": "全支店",
+    "branch_scope_note": "アンケートのスコアは {{branch}} を表示しています。予約・リピート・問い合わせ・苦情のパネルは工場全体のままです（それらのレコードに支店情報はありません）。",
+    "responses": "回答数",
+    "responses_of_invites": "{{sent}}件中{{n}}件",
+    "view_segment": "{{segment}}の回答を見る（{{n}}件）",
+    "export_pack": "パックを書き出す",
+    "export_pack_hint": "月次パックをダウンロード：主要指標、回答数、NPS内訳、質問別スコア、支店別結果"
   }
 }

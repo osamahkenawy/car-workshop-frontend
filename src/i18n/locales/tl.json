@@ -3721,7 +3721,12 @@
     "trend": "Trend",
     "trend_sub": "Nakaraang 12 buwan",
     "verbatims": "Ang sinabi ng mga customer",
-    "verbatims_sub": "Mga dahilan ng NPS score — detractor ang una"
+    "verbatims_sub": "Mga dahilan ng NPS score — detractor ang una",
+    "filtered_to": "Nakasalang sa",
+    "filtered_flagged": "kailangan ng follow-up",
+    "show_all": "Ipakita lahat",
+    "detail_outcome": "Resulta ng follow-up",
+    "detail_outcome_placeholder": "Ano ang naging resulta ng tawag? Hal.: nakausap ang kustomer, ibinalik ang diagnostic fee, nag-book ng re-check"
   },
   "cx": {
     "title": "Karanasan ng Kustomer",
@@ -3758,6 +3763,14 @@
     "view_complaints": "Tingnan ang mga reklamo",
     "complaints_still_open": "Bukas pa rin",
     "complaints_ack_sla": "Nakumpirma sa loob ng 1 araw",
-    "complaints_avg_resolution": "Karaniwang paglutas"
+    "complaints_avg_resolution": "Karaniwang paglutas",
+    "branch": "Branch",
+    "all_branches": "Lahat ng branch",
+    "branch_scope_note": "Ipinapakita ang {{branch}} para sa survey scores. Ang booking, loyalty, contact at complaint panels ay pang-buong workshop — walang branch ang mga record na iyon.",
+    "responses": "Mga sagot",
+    "responses_of_invites": "{{n}} sa {{sent}} imbitasyon",
+    "view_segment": "Tingnan ang mga sagot ng {{segment}} ({{n}})",
+    "export_pack": "I-export ang pack",
+    "export_pack_hint": "I-download ang buwanang pack: pangunahing sukatan, dami ng sagot, NPS breakdown, score kada tanong at resulta kada branch"
   }
 }

@@ -3719,7 +3719,12 @@
     "trend": "Mwelekeo",
     "trend_sub": "Miezi 12 iliyopita",
     "verbatims": "Wateja walisema nini",
-    "verbatims_sub": "Sababu za alama za NPS — wakosoaji kwanza"
+    "verbatims_sub": "Sababu za alama za NPS — wakosoaji kwanza",
+    "filtered_to": "Imechujwa kwa",
+    "filtered_flagged": "inahitaji ufuatiliaji",
+    "show_all": "Onyesha zote",
+    "detail_outcome": "Matokeo ya ufuatiliaji",
+    "detail_outcome_placeholder": "Simu ilizaa nini? Mfano: nilizungumza na mteja, nilirudisha gharama ya uchunguzi, nikaweka nafasi ya ukaguzi"
   },
   "cx": {
     "title": "Uzoefu wa Mteja",
@@ -3756,6 +3761,14 @@
     "view_complaints": "Angalia malalamiko",
     "complaints_still_open": "Bado wazi",
     "complaints_ack_sla": "Zilizothibitishwa ndani ya siku 1",
-    "complaints_avg_resolution": "Wastani wa utatuzi"
+    "complaints_avg_resolution": "Wastani wa utatuzi",
+    "branch": "Tawi",
+    "all_branches": "Matawi yote",
+    "branch_scope_note": "Inaonyesha {{branch}} kwa alama za utafiti. Paneli za kuweka nafasi, uaminifu, mawasiliano na malalamiko zinabaki za karakana yote — rekodi hizo hazina tawi.",
+    "responses": "Majibu",
+    "responses_of_invites": "{{n}} kati ya {{sent}}",
+    "view_segment": "Ona majibu ya {{segment}} ({{n}})",
+    "export_pack": "Hamisha ripoti",
+    "export_pack_hint": "Pakua ripoti ya mwezi: vipimo vikuu, idadi ya majibu, mchanganuo wa NPS, alama za maswali na matokeo kwa tawi"
   }
 }

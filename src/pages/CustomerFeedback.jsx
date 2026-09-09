@@ -156,9 +156,23 @@ export default function CustomerFeedback() {
   const [rows, setRows]       = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
-  const [filters, setFilters] = useState({ from: '', to: '', branch: '', category: '', flagged: '' });
+  // Seeded from the URL so a drill-down (e.g. clicking the detractor segment
+  // on the CX dashboard) opens this list already narrowed to that slice. The
+  // filter *controls* are hidden behind SHOW_FILTERS, but the filter state and
+  // its query building were always live, so this needs no other change.
+  const [filters, setFilters] = useState(() => {
+    const q = new URLSearchParams(window.location.search);
+    return {
+      from: q.get('from') || '',
+      to: q.get('to') || '',
+      branch: q.get('branch') || '',
+      category: q.get('category') || '',
+      flagged: q.get('flagged') || '',
+    };
+  });
   const [search, setSearch]   = useState('');
   const [detail, setDetail]   = useState(null);
+  const [followUpNote, setFollowUpNote] = useState('');
   const [inviteLink, setLink] = useState(null);
   const [copied, setCopied]   = useState(false);
   const [compose, setCompose] = useState(null);
@@ -245,15 +259,24 @@ export default function CustomerFeedback() {
   async function openDetail(id) {
     try {
       const res = await api.get(`/customer-survey/${id}`);
+      // Clear any half-typed outcome from the previously opened response,
+      // so it can't be saved against the wrong customer.
+      setFollowUpNote('');
       if (res.success) setDetail(res.data);
       else setError(res.message || t('customerFeedback.err_load_response'));
     } catch { setError('Could not load that response'); }
   }
 
-  async function markFollowedUp(id) {
+  // The backend has always accepted `notes` here and written it to
+  // survey_responses.follow_up_notes; nothing ever sent it, so the column sat
+  // empty and "what came of the call" was lost. The SOP asks for exactly that
+  // ("record the outcome on the response"), so it's captured now.
+  async function markFollowedUp(id, notes) {
     try {
-      const res = await api.patch(`/customer-survey/${id}/follow-up`, {});
+      const res = await api.patch(`/customer-survey/${id}/follow-up`,
+        notes && notes.trim() ? { notes: notes.trim() } : {});
       if (!res.success) { setError(res.message || t('customerFeedback.err_followup')); return; }
+      setFollowUpNote('');
       setDetail(null);
       load();
     } catch {
@@ -360,6 +383,33 @@ export default function CustomerFeedback() {
       {/* ── Filters ────────────────────────────────────────────────────── */}
       {/* The search box only narrows the responses table, so it is tied to it;
           with both hidden this card would otherwise render empty. */}
+      {/* Arriving from a dashboard drill-down applies filters the controls
+          for which are hidden (SHOW_FILTERS), so say what's being narrowed
+          and give a way out — otherwise the list silently shows a subset. */}
+      {!SHOW_FILTERS && (filters.category || filters.branch || filters.flagged) && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+          margin: '0 0 14px', padding: '10px 14px', borderRadius: 9,
+          background: '#eef5ff', border: '1px solid #d6e4fb', fontSize: 13, color: '#1e3a6b' }}>
+          <span>
+            {t('customerFeedback.filtered_to')}{' '}
+            <strong>
+              {[filters.category && t(`customerFeedback.cat_${filters.category}`),
+                filters.branch,
+                filters.flagged === '1' && t('customerFeedback.filtered_flagged')]
+                .filter(Boolean).join(' · ')}
+            </strong>
+            {filters.from && filters.to ? ` · ${filters.from} → ${filters.to}` : ''}
+          </span>
+          <button
+            onClick={() => setFilters({ from: '', to: '', branch: '', category: '', flagged: '' })}
+            style={{ marginInlineStart: 'auto', border: '1px solid #c7dbf8', background: '#fff',
+              borderRadius: 7, padding: '5px 11px', fontSize: 12.5, fontWeight: 600,
+              color: '#1e3a6b', cursor: 'pointer' }}>
+            {t('customerFeedback.show_all')}
+          </button>
+        </div>
+      )}
+
       {(SHOW_FILTERS || SHOW_ALL_RESPONSES) && (
       <Card>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
@@ -790,14 +840,32 @@ export default function CustomerFeedback() {
                 <div style={{ fontSize: 12.5, color: '#9a3412', marginBottom: 9 }}>
                   {t('customerFeedback.detail_flagged')}
                 </div>
-                <button onClick={() => markFollowedUp(detail.id)} style={st.primaryBtn}>
+                <textarea
+                  value={followUpNote}
+                  onChange={e => setFollowUpNote(e.target.value)}
+                  placeholder={t('customerFeedback.detail_outcome_placeholder')}
+                  rows={3}
+                  style={{ width: '100%', boxSizing: 'border-box', marginBottom: 9, padding: '9px 11px',
+                    border: '1px solid #fed7aa', borderRadius: 8, fontSize: 13, fontFamily: 'inherit',
+                    resize: 'vertical', background: '#fff' }}
+                />
+                <button onClick={() => markFollowedUp(detail.id, followUpNote)} style={st.primaryBtn}>
                   <CheckCircle width={15} height={15} /> {t('customerFeedback.detail_mark_followed')}
                 </button>
               </div>
             )}
             {detail.followed_up_at && (
-              <div style={{ fontSize: 12, color: GREEN, fontWeight: 600 }}>
-                <CheckCircle width={13} height={13} style={{ verticalAlign: -2 }} /> {t('customerFeedback.detail_followed_on', { date: fmtDate(detail.followed_up_at, i18n.language) })}
+              <div>
+                <div style={{ fontSize: 12, color: GREEN, fontWeight: 600 }}>
+                  <CheckCircle width={13} height={13} style={{ verticalAlign: -2 }} /> {t('customerFeedback.detail_followed_on', { date: fmtDate(detail.followed_up_at, i18n.language) })}
+                </div>
+                {detail.follow_up_notes && (
+                  <div style={{ marginTop: 6, padding: '9px 11px', background: '#f4faf7',
+                    border: '1px solid #dcefe4', borderRadius: 8, fontSize: 12.5, color: '#14503d' }}>
+                    <strong style={{ display: 'block', marginBottom: 2 }}>{t('customerFeedback.detail_outcome')}</strong>
+                    {detail.follow_up_notes}
+                  </div>
+                )}
               </div>
             )}
           </div>

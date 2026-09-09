@@ -3719,7 +3719,12 @@
     "trend": "Tendência",
     "trend_sub": "Últimos 12 meses",
     "verbatims": "O que os clientes disseram",
-    "verbatims_sub": "Motivos da pontuação NPS — detratores primeiro"
+    "verbatims_sub": "Motivos da pontuação NPS — detratores primeiro",
+    "filtered_to": "Filtrado para",
+    "filtered_flagged": "requer seguimento",
+    "show_all": "Mostrar tudo",
+    "detail_outcome": "Resultado do seguimento",
+    "detail_outcome_placeholder": "Qual foi o resultado da chamada? Ex.: falei com o cliente, devolvi a taxa de diagnóstico, agendei nova verificação"
   },
   "cx": {
     "title": "Experiência do cliente",
@@ -3756,6 +3761,14 @@
     "view_complaints": "Ver reclamações",
     "complaints_still_open": "Ainda abertas",
     "complaints_ack_sla": "Reconhecidas em 1 dia",
-    "complaints_avg_resolution": "Resolução média"
+    "complaints_avg_resolution": "Resolução média",
+    "branch": "Filial",
+    "all_branches": "Todas as filiais",
+    "branch_scope_note": "A mostrar {{branch}} nas pontuações da pesquisa. Os painéis de agendamento, fidelidade, contactos e reclamações permanecem de toda a oficina — esses registos não têm filial.",
+    "responses": "Respostas",
+    "responses_of_invites": "{{n}} de {{sent}} convites",
+    "view_segment": "Ver as respostas de {{segment}} ({{n}})",
+    "export_pack": "Exportar pacote",
+    "export_pack_hint": "Descarregar o pacote mensal: medidas principais, volume de respostas, distribuição do NPS, pontuações por pergunta e resultados por filial"
   }
 }

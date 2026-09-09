@@ -93,6 +93,10 @@ export default function Complaints() {
   const [debounced, setDebounced] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  // Narrows the table to open cases already past their target date. Applied
+  // client-side off is_escalation_due, which the list query already returns
+  // per row, rather than adding another server round-trip.
+  const [pastTargetOnly, setPastTargetOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [banner, setBanner] = useState(null);
@@ -237,11 +241,24 @@ export default function Complaints() {
   const h = stats?.headline || {};
   const cards = [
     { key: 'open', label: 'Still open', value: h.stillOpen, Icon: WarningTriangle, tone: 'rose' },
+    // Open cases whose target date has already passed. The SOP's Step 7 asks
+    // to "open any case shown as past target", so it needs to be countable
+    // here rather than only visible per-row in the table.
+    {
+      key: 'late', label: 'Past target', value: h.pastTarget ?? 0,
+      Icon: ArrowUpCircle, tone: Number(h.pastTarget) > 0 ? 'rose' : 'green',
+      onClick: Number(h.pastTarget) > 0 ? () => { setView(''); setPastTargetOnly(v => !v); } : null,
+      active: pastTargetOnly,
+    },
     { key: 'ack', label: 'Acknowledged within 1 day', value: h.ackSlaPct != null ? `${h.ackSlaPct}%` : '—', Icon: Clock, tone: 'blue' },
     { key: 'res', label: 'Avg. resolution time', value: h.avgResolutionDays != null ? `${h.avgResolutionDays}d` : '—', Icon: Calendar, tone: 'amber' },
     { key: 'rate', label: 'Resolved / closed', value: h.resolutionRatePct != null ? `${h.resolutionRatePct}%` : '—', Icon: CheckCircle, tone: 'green' },
   ];
   const bySeverity = stats?.by_severity || [];
+
+  const visibleRows = pastTargetOnly
+    ? rows.filter(r => Number(r.is_escalation_due) === 1)
+    : rows;
 
   const activeFilters = channelFilter ? 1 : 0;
 
@@ -272,7 +289,15 @@ export default function Complaints() {
 
       <div className="cs-kpis">
         {cards.map(c => (
-          <div className={`cs-kpi cs-kpi--${c.tone}`} key={c.key}>
+          <div
+            className={`cs-kpi cs-kpi--${c.tone}${c.onClick ? ' is-clickable' : ''}${c.active ? ' is-active' : ''}`}
+            key={c.key}
+            onClick={c.onClick || undefined}
+            role={c.onClick ? 'button' : undefined}
+            tabIndex={c.onClick ? 0 : undefined}
+            onKeyDown={c.onClick ? (e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.onClick(); } }) : undefined}
+            title={c.onClick ? (c.active ? 'Show all' : 'Show only cases past target') : undefined}
+          >
             <div className="cs-kpi-icon"><c.Icon width={24} height={24} /></div>
             <div className="cs-kpi-body">
               <p className="cs-kpi-value">{c.value ?? 0}</p>
@@ -348,7 +373,7 @@ export default function Complaints() {
           <tbody>
             {loading ? (
               <tr><td colSpan={8} className="cs-empty">Loading…</td></tr>
-            ) : rows.length === 0 ? (
+            ) : visibleRows.length === 0 ? (
               <tr>
                 <td colSpan={8}>
                   <div className="cs-empty">
@@ -357,7 +382,7 @@ export default function Complaints() {
                   </div>
                 </td>
               </tr>
-            ) : rows.map(r => {
+            ) : visibleRows.map(r => {
               const s = STATUS_META[r.status] || STATUS_META.open;
               const ch = CHANNEL_META[r.intake_channel] || CHANNEL_META.in_person;
               const sev = SEVERITY_META[r.severity] || SEVERITY_META.S2;

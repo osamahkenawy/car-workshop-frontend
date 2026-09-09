@@ -3900,7 +3900,12 @@
     "trend": "الاتجاه",
     "trend_sub": "آخر 12 شهرًا",
     "verbatims": "ما قاله العملاء",
-    "verbatims_sub": "أسباب التقييم — المنتقدون أولًا"
+    "verbatims_sub": "أسباب التقييم — المنتقدون أولًا",
+    "filtered_to": "مُصفّى إلى",
+    "filtered_flagged": "يحتاج متابعة",
+    "show_all": "عرض الكل",
+    "detail_outcome": "نتيجة المتابعة",
+    "detail_outcome_placeholder": "ما نتيجة المكالمة؟ مثال: تم التحدث مع العميل، وإعادة رسوم الفحص، وحجز إعادة معاينة"
   },
   "cx": {
     "title": "تجربة العميل",
@@ -3937,6 +3942,14 @@
     "view_complaints": "عرض الشكاوى",
     "complaints_still_open": "لا تزال مفتوحة",
     "complaints_ack_sla": "تم الإقرار خلال يوم واحد",
-    "complaints_avg_resolution": "متوسط وقت الحل"
+    "complaints_avg_resolution": "متوسط وقت الحل",
+    "branch": "الفرع",
+    "all_branches": "كل الفروع",
+    "branch_scope_note": "يتم عرض {{branch}} لنتائج الاستبيان. أما لوحات الحجز والولاء والتواصل والشكاوى فتظل على مستوى الورشة — تلك السجلات لا تحمل فرعًا.",
+    "responses": "الردود",
+    "responses_of_invites": "{{n}} من {{sent}} دعوة",
+    "view_segment": "عرض ردود {{segment}} ({{n}})",
+    "export_pack": "تصدير الحزمة",
+    "export_pack_hint": "تنزيل الحزمة الشهرية: المؤشرات الرئيسية، حجم الردود، توزيع NPS، درجات الأسئلة، والنتائج حسب الفرع"
   }
 }

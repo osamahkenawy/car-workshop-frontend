@@ -3719,7 +3719,12 @@
     "trend": "趋势",
     "trend_sub": "最近 12 个月",
     "verbatims": "客户的原话",
-    "verbatims_sub": "NPS 评分的原因 — 贪低者优先"
+    "verbatims_sub": "NPS 评分的原因 — 贪低者优先",
+    "filtered_to": "已筛选为",
+    "filtered_flagged": "需跟进",
+    "show_all": "显示全部",
+    "detail_outcome": "跟进结果",
+    "detail_outcome_placeholder": "这次联系的结果是什么？例如：已与客户沟通、退还检测费、已预约复检"
   },
   "cx": {
     "title": "客户体验",
@@ -3756,6 +3761,14 @@
     "view_complaints": "查看投诉",
     "complaints_still_open": "仍未处理",
     "complaints_ack_sla": "1天内已确认",
-    "complaints_avg_resolution": "平均解决时间"
+    "complaints_avg_resolution": "平均解决时间",
+    "branch": "分店",
+    "all_branches": "所有分店",
+    "branch_scope_note": "问卷分数显示 {{branch}}。预约、忠诚度、联系与投诉面板仍为全车间范围 —— 这些记录不含分店信息。",
+    "responses": "回复数",
+    "responses_of_invites": "{{sent}} 份邀请中的 {{n}} 份",
+    "view_segment": "查看{{segment}}的回复（{{n}}）",
+    "export_pack": "导出报告包",
+    "export_pack_hint": "下载月度报告包：核心指标、回复量、NPS 细分、各题得分与分店结果"
   }
 }

@@ -3720,7 +3720,12 @@
     "trend": "रुझान",
     "trend_sub": "पिछले 12 महीने",
     "verbatims": "ग्राहकों ने क्या कहा",
-    "verbatims_sub": "NPS स्कोर के कारण — पहले निंदक"
+    "verbatims_sub": "NPS स्कोर के कारण — पहले निंदक",
+    "filtered_to": "फ़िल्टर किया गया",
+    "filtered_flagged": "फ़ॉलो-अप आवश्यक",
+    "show_all": "सभी दिखाएँ",
+    "detail_outcome": "फ़ॉलो-अप परिणाम",
+    "detail_outcome_placeholder": "कॉल का क्या नतीजा रहा? जैसे: ग्राहक से बात हुई, जाँच शुल्क लौटाया, पुनः जाँच बुक की"
   },
   "cx": {
     "title": "ग्राहक अनुभव",
@@ -3757,6 +3762,14 @@
     "view_complaints": "शिकायतें देखें",
     "complaints_still_open": "अभी भी खुली",
     "complaints_ack_sla": "1 दिन में स्वीकृत",
-    "complaints_avg_resolution": "औसत समाधान"
+    "complaints_avg_resolution": "औसत समाधान",
+    "branch": "शाखा",
+    "all_branches": "सभी शाखाएँ",
+    "branch_scope_note": "सर्वेक्षण स्कोर के लिए {{branch}} दिखाया जा रहा है। बुकिंग, वफ़ादारी, संपर्क और शिकायत पैनल पूरे वर्कशॉप के रहते हैं — उन रिकॉर्ड में शाखा नहीं होती।",
+    "responses": "प्रतिक्रियाएँ",
+    "responses_of_invites": "{{sent}} में से {{n}}",
+    "view_segment": "{{segment}} की प्रतिक्रियाएँ देखें ({{n}})",
+    "export_pack": "पैक निर्यात करें",
+    "export_pack_hint": "मासिक पैक डाउनलोड करें: मुख्य माप, प्रतिक्रिया मात्रा, NPS विभाजन, प्रश्न स्कोर और शाखा-वार परिणाम"
   }
 }

@@ -3719,7 +3719,12 @@
     "trend": "Tendencia",
     "trend_sub": "Últimos 12 meses",
     "verbatims": "Lo que dijeron los clientes",
-    "verbatims_sub": "Motivos de la puntuación NPS — detractores primero"
+    "verbatims_sub": "Motivos de la puntuación NPS — detractores primero",
+    "filtered_to": "Filtrado a",
+    "filtered_flagged": "requiere seguimiento",
+    "show_all": "Mostrar todo",
+    "detail_outcome": "Resultado del seguimiento",
+    "detail_outcome_placeholder": "¿Qué resultó de la llamada? Ej.: hablé con el cliente, devolví la tarifa de diagnóstico, agendé una revisión"
   },
   "cx": {
     "title": "Experiencia del cliente",
@@ -3756,6 +3761,14 @@
     "view_complaints": "Ver quejas",
     "complaints_still_open": "Aún abiertas",
     "complaints_ack_sla": "Reconocidas en 1 día",
-    "complaints_avg_resolution": "Resolución promedio"
+    "complaints_avg_resolution": "Resolución promedio",
+    "branch": "Sucursal",
+    "all_branches": "Todas las sucursales",
+    "branch_scope_note": "Mostrando {{branch}} en las puntuaciones de la encuesta. Los paneles de reservas, fidelidad, contactos y quejas siguen siendo de todo el taller: esos registros no llevan sucursal.",
+    "responses": "Respuestas",
+    "responses_of_invites": "{{n}} de {{sent}} invitaciones",
+    "view_segment": "Ver las respuestas de {{segment}} ({{n}})",
+    "export_pack": "Exportar informe",
+    "export_pack_hint": "Descargar el informe mensual: medidas principales, volumen de respuestas, desglose de NPS, puntuaciones por pregunta y resultados por sucursal"
   }
 }

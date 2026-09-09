@@ -3873,7 +3873,12 @@
     "trend": "Trend",
     "trend_sub": "Last 12 months",
     "verbatims": "What customers said",
-    "verbatims_sub": "Reasons given for the NPS score — detractors first"
+    "verbatims_sub": "Reasons given for the NPS score — detractors first",
+    "filtered_to": "Filtered to",
+    "filtered_flagged": "needs follow-up",
+    "show_all": "Show all",
+    "detail_outcome": "Follow-up outcome",
+    "detail_outcome_placeholder": "What came of the call? e.g. spoke to the customer, refunded the diagnostic fee, booked a re-check"
   },
   "cx": {
     "title": "Customer Experience",
@@ -3910,6 +3915,14 @@
     "view_complaints": "View complaints",
     "complaints_still_open": "Still open",
     "complaints_ack_sla": "Acknowledged in 1 day",
-    "complaints_avg_resolution": "Avg. resolution"
+    "complaints_avg_resolution": "Avg. resolution",
+    "branch": "Branch",
+    "all_branches": "All branches",
+    "branch_scope_note": "Showing {{branch}} for the survey scores. Booking, loyalty, contact and complaint panels stay workshop-wide — those records carry no branch.",
+    "responses": "Responses",
+    "responses_of_invites": "{{n}} of {{sent}} invites",
+    "view_segment": "View the {{segment}} responses ({{n}})",
+    "export_pack": "Export pack",
+    "export_pack_hint": "Download the monthly pack: headline measures, response volume, NPS breakdown, question scores and results by branch"
   }
 }

@@ -73,6 +73,27 @@ export function downloadCsv(filename, headers, rows) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * Hand an already-built CSV string to the browser as a download.
+ *
+ * downloadCsv covers the common case of one header + one body. A multi-section
+ * pack (several titled tables in one file, as the CX monthly pack needs) can't
+ * use it, and the alternative was re-implementing the BOM and blob dance at
+ * the call site — which is how the per-export drift this module exists to fix
+ * started. Build the sections with toCsv, join them, hand the result here.
+ */
+export function downloadCsvText(filename, csv) {
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 /** Build rows from objects using an explicit column order. */
 export function objectsToCsv(items, columns) {
   return toCsv(
