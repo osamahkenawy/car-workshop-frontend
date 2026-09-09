@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{sent}} 份邀请中的 {{n}} 份",
     "view_segment": "查看{{segment}}的回复（{{n}}）",
     "export_pack": "导出报告包",
-    "export_pack_hint": "下载月度报告包：核心指标、回复量、NPS 细分、各题得分与分店结果"
+    "export_pack_hint": "将月度报告包下载为 Excel 工作簿：核心指标、回复量、NPS 细分、各题得分与分店结果，各占一个工作表",
+    "export_excel": "导出 Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "将同一报告包下载为单个 CSV 表 —— 用于导入其他系统",
+    "exporting": "正在生成…",
+    "export_failed": "无法生成 Excel 文件，请重试。"
   }
 }

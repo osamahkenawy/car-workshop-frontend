@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{sent}} davetten {{n}}",
     "view_segment": "{{segment}} yanıtlarını gör ({{n}})",
     "export_pack": "Paketi indir",
-    "export_pack_hint": "Aylık paketi indir: ana ölçümler, yanıt hacmi, NPS dağılımı, soru puanları ve şube bazlı sonuçlar"
+    "export_pack_hint": "Aylık paketi Excel çalışma kitabı olarak indir: ana ölçümler, yanıt hacmi, NPS dağılımı, soru puanları ve şube sonuçları, her biri ayrı sekmede",
+    "export_excel": "Excel’e aktar",
+    "export_csv": "CSV",
+    "export_csv_hint": "Aynı paketi tek bir CSV sayfası olarak indir — başka bir sisteme yüklemek için",
+    "exporting": "Hazırlanıyor…",
+    "export_failed": "Excel dosyası oluşturulamadı. Tekrar deneyin."
   }
 }

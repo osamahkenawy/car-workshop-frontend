@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{n}} sur {{sent}} invitations",
     "view_segment": "Voir les réponses {{segment}} ({{n}})",
     "export_pack": "Exporter le dossier",
-    "export_pack_hint": "Télécharger le dossier mensuel : mesures principales, volume de réponses, répartition du NPS, scores par question et résultats par succursale"
+    "export_pack_hint": "Télécharger le dossier mensuel en classeur Excel : mesures principales, volume de réponses, répartition du NPS, scores par question et résultats par succursale, un onglet chacun",
+    "export_excel": "Exporter en Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "Télécharger le même dossier en une seule feuille CSV — pour l'importer dans un autre système",
+    "exporting": "Génération…",
+    "export_failed": "Impossible de générer le fichier Excel. Réessayez."
   }
 }

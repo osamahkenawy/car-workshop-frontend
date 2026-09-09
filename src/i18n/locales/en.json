@@ -3923,6 +3923,11 @@
     "responses_of_invites": "{{n}} of {{sent}} invites",
     "view_segment": "View the {{segment}} responses ({{n}})",
     "export_pack": "Export pack",
-    "export_pack_hint": "Download the monthly pack: headline measures, response volume, NPS breakdown, question scores and results by branch"
+    "export_pack_hint": "Download the monthly pack as an Excel workbook: headline measures, response volume, NPS breakdown, question scores and results by branch, one tab each",
+    "export_excel": "Export Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "Download the same pack as a single CSV sheet — for loading into another system",
+    "exporting": "Building…",
+    "export_failed": "Could not build the Excel file. Try again."
   }
 }

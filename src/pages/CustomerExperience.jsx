@@ -7,6 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
 import { toCsv, downloadCsvText } from '../utils/csv';
+import { downloadXlsx, th, title, note, num, signed } from '../utils/xlsx';
 import './Reports.css';
 import './CustomerExperience.css';
 
@@ -156,6 +157,7 @@ export default function CustomerExperience() {
   // pack can report every branch even while the page is filtered to one.
   const [allByBranch, setAllByBranch] = useState([]);
   const [banner, setBanner] = useState(null);
+  const [exporting, setExporting] = useState(false);
 
   // Hand the current period/branch to the feedback list so the drill-down
   // shows the same slice the dashboard was showing.
@@ -166,20 +168,104 @@ export default function CustomerExperience() {
   };
 
   /*
-   * Monthly pack export (SOP step 8). Five sections in one file, matching
-   * what the SOP says the pack contains: headline measures, response volume,
-   * the NPS breakdown, question-level scores, and results by branch.
+   * Monthly pack export (SOP step 8). Five sections matching what the SOP
+   * says the pack contains: headline measures, response volume, the NPS
+   * breakdown, question-level scores, and results by branch.
    *
-   * CSV rather than PDF: the pack gets filed and re-read, and the SOP's own
-   * field reference is tabular. Sections are separate titled tables in one
-   * sheet, built through toCsv so escaping and formula-neutralisation stay in
-   * the one writer.
+   * Two formats, because they are read by different people for different
+   * reasons. Excel is the default: the pack is a monthly management document
+   * that gets filed, re-opened and charted, and a workbook gives each section
+   * its own tab with real numbers and dates instead of five titled blocks in
+   * one CSV sheet. CSV stays for feeding another system.
    *
    * byBranch comes from the unfiltered load, so the by-branch section is
    * whole even when the page is filtered to one branch — a pack that silently
    * dropped the other branches would be worse than no pack.
    */
-  const exportPack = () => {
+  const packBaseName = () =>
+    `pioneer-cx-pack_${range.from}_to_${range.to}`
+    + (branch ? `_${branch.replace(/[^\w-]+/g, '-')}` : '');
+
+  const exportPackXlsx = async () => {
+    if (!survey) return;
+    const hh = survey.headline || {};
+    const nb = survey.npsBreakdown || {};
+    const branchRows = allByBranch.length ? allByBranch : (survey.byBranch || []);
+    const pct = v => (v === null || v === undefined ? null : Number(v));
+
+    setExporting(true);
+    try {
+      await downloadXlsx(`${packBaseName()}.xlsx`, [
+        {
+          name: 'Headline',
+          columns: [{ width: 34 }, { width: 16 }],
+          rows: [
+            [title('Pioneer Car Service Center — Customer Experience pack')],
+            [note(`${range.from} to ${range.to} · ${branch || t('cx.all_branches')}`)],
+            [note(`Generated ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`)],
+            null,
+            [th('Measure'), th('Value')],
+            ['Net Promoter Score', signed(pct(hh.nps))],
+            ['Customer satisfaction (of 5)', num(pct(hh.csatAvg), 2)],
+            ['Customer Effort Score (of 5)', num(pct(hh.cesAvg), 2)],
+            ['Resolution rate (%)', num(pct(survey.resolution?.resolvedPercent), 1)],
+            ['Needs follow-up', num(hh.needsFollowUp ?? 0)],
+            null,
+            [th('Response volume'), th('Value')],
+            ['Responses received', num(hh.responses ?? 0)],
+            ['Surveys issued', num(hh.invitesSent ?? 0)],
+            ['Response rate (%)', num(pct(hh.responseRate), 1)],
+            ['Responses scoring NPS', num(hh.npsScored ?? 0)],
+          ],
+        },
+        {
+          name: 'NPS breakdown',
+          stickyRows: 1,
+          columns: [{ width: 16 }, { width: 12 }, { width: 12 }],
+          rows: [
+            [th('Segment'), th('Responses'), th('Share (%)')],
+            ['Promoters', num(nb.promoters ?? 0), num(pct(nb.promoterPct), 1)],
+            ['Passives', num(nb.passives ?? 0), num(pct(nb.passivePct), 1)],
+            ['Detractors', num(nb.detractors ?? 0), num(pct(nb.detractorPct), 1)],
+          ],
+        },
+        {
+          name: 'Question scores',
+          stickyRows: 1,
+          columns: [{ width: 62 }, { width: 18 }, { width: 16 }],
+          rows: [
+            [th('Question'), th('Section'), th('Average (of 5)')],
+            ...(survey.questions || []).map(q => [q.label, q.section, num(pct(q.avg), 2)]),
+          ],
+        },
+        {
+          name: 'By branch',
+          stickyRows: 1,
+          columns: [{ width: 30 }, { width: 12 }, { width: 10 }, { width: 10 }, { width: 10 }],
+          rows: [
+            [th('Branch'), th('Responses'), th('NPS'), th('CSAT'), th('CES')],
+            ...branchRows.map(b => [
+              b.branch || 'Unspecified',
+              num(b.responses ?? 0),
+              signed(pct(b.nps)),
+              num(pct(b.csat_avg), 2),
+              num(pct(b.ces_avg), 2),
+            ]),
+          ],
+        },
+      ]);
+    } catch (e) {
+      // The workbook writer is loaded on demand, so this also covers the
+      // chunk failing to load on a flaky connection — silently doing nothing
+      // would look like a dead button.
+      console.error('[CX] Excel export failed:', e);
+      setBanner({ kind: 'error', text: e?.message || t('cx.export_failed') });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportPackCsv = () => {
     if (!survey) return;
     const hh = survey.headline || {};
     const nb = survey.npsBreakdown || {};
@@ -224,8 +310,7 @@ export default function CustomerExperience() {
     parts.push(toCsv(['Branch', 'Responses', 'NPS', 'CSAT', 'CES'],
       branchRows.map(b => [b.branch || 'Unspecified', b.responses ?? '', b.nps ?? '', b.csat_avg ?? '', b.ces_avg ?? ''])));
 
-    const name = `pioneer-cx-pack_${range.from}_to_${range.to}${branch ? `_${branch.replace(/[^\w-]+/g, '-')}` : ''}.csv`;
-    downloadCsvText(name, parts.join(SECTION_GAP));
+    downloadCsvText(`${packBaseName()}.csv`, parts.join(SECTION_GAP));
   };
 
   const load = useCallback(async () => {
@@ -340,9 +425,17 @@ export default function CustomerExperience() {
         <button className="cx-refresh-btn" onClick={load} disabled={loading}>
           <Refresh width={14} height={14} className={loading ? 'cx-spin' : ''} /> {t('reports.refresh')}
         </button>
-        <button className="cx-export-btn" onClick={exportPack} disabled={loading || !survey}
+        {/* Excel first — the pack is a management document that gets filed and
+            charted. CSV stays alongside for feeding another system. */}
+        <button className="cx-export-btn" onClick={exportPackXlsx}
+          disabled={loading || exporting || !survey}
           title={t('cx.export_pack_hint')}>
-          <Download width={14} height={14} /> {t('cx.export_pack')}
+          <Download width={14} height={14} />
+          {exporting ? t('cx.exporting') : t('cx.export_excel')}
+        </button>
+        <button className="cx-export-btn is-secondary" onClick={exportPackCsv}
+          disabled={loading || !survey} title={t('cx.export_csv_hint')}>
+          {t('cx.export_csv')}
         </button>
       </div>
 

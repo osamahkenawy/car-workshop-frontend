@@ -291,3 +291,14 @@
 }
 .cx-export-btn:hover:not(:disabled) { border-color: var(--cx-cool); color: var(--cx-cool); }
 .cx-export-btn:disabled { opacity: .55; cursor: default; }
+
+/* CSV sits beside Excel as the secondary choice: same shape, unfilled and
+   lighter, so the pair reads as one control with a default rather than as two
+   buttons of equal weight. */
+.cx-export-btn.is-secondary {
+  background: transparent;
+  box-shadow: none;
+  font-weight: 500;
+  padding-left: 13px;
+  padding-right: 13px;
+}

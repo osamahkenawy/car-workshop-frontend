@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{n}} de {{sent}} convites",
     "view_segment": "Ver as respostas de {{segment}} ({{n}})",
     "export_pack": "Exportar pacote",
-    "export_pack_hint": "Descarregar o pacote mensal: medidas principais, volume de respostas, distribuição do NPS, pontuações por pergunta e resultados por filial"
+    "export_pack_hint": "Descarregar o pacote mensal como livro Excel: medidas principais, volume de respostas, distribuição do NPS, pontuações por pergunta e resultados por filial, cada um num separador",
+    "export_excel": "Exportar para Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "Descarregar o mesmo pacote como uma única folha CSV — para carregar noutro sistema",
+    "exporting": "A gerar…",
+    "export_failed": "Não foi possível gerar o ficheiro Excel. Tente novamente."
   }
 }

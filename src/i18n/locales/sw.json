@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{n}} kati ya {{sent}}",
     "view_segment": "Ona majibu ya {{segment}} ({{n}})",
     "export_pack": "Hamisha ripoti",
-    "export_pack_hint": "Pakua ripoti ya mwezi: vipimo vikuu, idadi ya majibu, mchanganuo wa NPS, alama za maswali na matokeo kwa tawi"
+    "export_pack_hint": "Pakua ripoti ya mwezi kama kitabu cha Excel: vipimo vikuu, idadi ya majibu, mchanganuo wa NPS, alama za maswali na matokeo kwa tawi, kila kimoja kwenye kichupo",
+    "export_excel": "Hamisha Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "Pakua ripoti hiyo hiyo kama laha moja ya CSV — kwa kuingiza katika mfumo mwingine",
+    "exporting": "Inaandaa…",
+    "export_failed": "Haikuweza kuunda faili ya Excel. Jaribu tena."
   }
 }

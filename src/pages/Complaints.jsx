@@ -7,6 +7,7 @@ import {
 import api from '../lib/api';
 import CustomerPicker from '../components/CustomerPicker';
 import { toCsv, downloadCsvText } from '../utils/csv';
+import { downloadXlsx, th, title, note, num, dt, money } from '../utils/xlsx';
 import './CRMPages.css';
 import './CrmSurface.css';
 
@@ -101,6 +102,7 @@ export default function Complaints() {
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [banner, setBanner] = useState(null);
+  const [exporting, setExporting] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [resolveFor, setResolveFor] = useState(null);
   const filterRef = useRef(null);
@@ -276,10 +278,118 @@ export default function Complaints() {
    * Exports exactly what's on screen — the current date range, view, channel
    * and search filters all already shape `visibleRows` and `stats`.
    */
-  const exportPack = () => {
+  const packPeriod = () =>
+    (dateFrom || dateTo ? `${dateFrom || 'earliest'} to ${dateTo || 'latest'}` : 'All time');
+  const packBaseName = () =>
+    `pioneer-complaints-pack_${dateFrom || 'all'}_to_${dateTo || 'now'}`;
+
+  /*
+   * Excel form of the same pack, one tab per section. The case list is the
+   * reason this matters more here than on the CX page: it is the sheet people
+   * sort, filter and pivot, and as CSV the dates arrive as text and the
+   * amounts stop being numbers the moment a thousands separator appears.
+   */
+  const exportPackXlsx = async () => {
+    const nn = v => (v === null || v === undefined || v === '' ? null : Number(v));
+
+    setExporting(true);
+    try {
+      await downloadXlsx(`${packBaseName()}.xlsx`, [
+        {
+          name: 'Headline',
+          columns: [{ width: 34 }, { width: 16 }],
+          rows: [
+            [title('Pioneer Car Service Center — Complaints pack')],
+            [note(`${packPeriod()} · exported as filtered on screen`)],
+            [note(`Generated ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`)],
+            null,
+            [th('Measure'), th('Value')],
+            ['Total complaints', num(h.total ?? 0)],
+            ['Still open', num(h.stillOpen ?? 0)],
+            ['SLA compliance (%)', num(nn(compliancePct), 1)],
+            ['Acknowledged within 1 day (%)', num(nn(h.ackSlaPct), 1)],
+            ['Avg. resolution time (days)', num(nn(h.avgResolutionDays), 1)],
+            ['Resolved / closed (%)', num(nn(h.resolutionRatePct), 1)],
+          ],
+        },
+        {
+          name: 'By severity',
+          stickyRows: 1,
+          columns: [{ width: 8 }, { width: 26 }, { width: 10 }, { width: 18 },
+                    { width: 20 }, { width: 16 }],
+          rows: [
+            [th('Severity'), th('Name'), th('Logged'), th('Share of total (%)'),
+             th('Avg resolution (days)'), th('Within SLA (%)')],
+            ...bySeverity.map(sv => {
+              const m = SEVERITY_META[sv.severity] || SEVERITY_META.S2;
+              const share = h.total ? Math.round((sv.count / h.total) * 100) : 0;
+              return [sv.severity, m.name, num(sv.count ?? 0), num(share),
+                      num(nn(sv.avgResolutionDays), 1), num(nn(sv.slaCompliancePct), 1)];
+            }),
+          ],
+        },
+        {
+          name: 'By channel',
+          stickyRows: 1,
+          columns: [{ width: 22 }, { width: 10 }],
+          rows: [
+            [th('Channel'), th('Count')],
+            ...(stats?.by_channel || []).map(c =>
+              [(CHANNEL_META[c.channel] || {}).label || c.channel, num(nn(c.count))]),
+          ],
+        },
+        {
+          name: 'By outcome',
+          stickyRows: 1,
+          columns: [{ width: 22 }, { width: 10 }],
+          rows: [
+            [th('Outcome'), th('Count')],
+            ...(stats?.by_outcome || []).map(o =>
+              [(OUTCOME_META[o.outcome] || {}).label || o.outcome, num(nn(o.count))]),
+          ],
+        },
+        {
+          name: 'Cases',
+          stickyRows: 1,
+          columns: [{ width: 14 }, { width: 24 }, { width: 8 }, { width: 8 },
+                    { width: 14 }, { width: 13 }, { width: 14 }, { width: 17 },
+                    { width: 17 }, { width: 62 }],
+          rows: [
+            [th('Case'), th('Customer'), th('Severity'), th('Repeat'), th('Channel'),
+             th('Amount (AED)'), th('Status'), th('Logged'), th('Resolved'), th('Reason')],
+            ...visibleRows.map(r => [
+              r.case_number,
+              r.customer_name || '',
+              r.severity || '',
+              r.is_repeat ? 'Yes' : 'No',
+              (CHANNEL_META[r.intake_channel] || {}).label || r.intake_channel,
+              r.amount > 0 ? money(r.amount) : money(null),
+              (STATUS_META[r.status] || {}).label || r.status,
+              dt(r.created_at),
+              dt(r.resolved_at),
+              r.reason,
+            ]),
+          ],
+        },
+      ]);
+    } catch (e) {
+      // The workbook writer is loaded on demand, so this also covers the
+      // chunk failing to load — a silent no-op would look like a dead button.
+      console.error('[Complaints] Excel export failed:', e);
+      setBanner({
+        kind: 'error',
+        text: e?.message ? `Could not build the Excel file — ${e.message}`
+                         : 'Could not build the Excel file. Try again.',
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportPackCsv = () => {
     const blank = '';
     const parts = [];
-    const period = dateFrom || dateTo ? `${dateFrom || 'earliest'} to ${dateTo || 'latest'}` : 'All time';
+    const period = packPeriod();
 
     parts.push(toCsv(['Pioneer Car Service Center — Complaints pack'], []));
     parts.push(toCsv(['Period', period], []));
@@ -342,8 +452,16 @@ export default function Complaints() {
               Clear dates
             </button>
           )}
-          <button className="cs-btn-ghost" onClick={exportPack} disabled={loading || !visibleRows.length}>
-            <Download width={16} height={16} /> Export pack
+          {/* Excel first: the case list is the sheet people sort and pivot,
+              and CSV loses the date and amount types. CSV stays for feeding
+              another system. */}
+          <button className="cs-btn-ghost" onClick={exportPackXlsx}
+            disabled={loading || exporting || !visibleRows.length}>
+            <Download width={16} height={16} /> {exporting ? 'Building…' : 'Export Excel'}
+          </button>
+          <button className="cs-btn-ghost" onClick={exportPackCsv}
+            disabled={loading || !visibleRows.length}>
+            CSV
           </button>
           <button className="cs-generate" onClick={() => setShowNew(true)}>
             <Plus width={17} height={17} /> New complaint

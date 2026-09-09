@@ -3769,6 +3769,11 @@
     "responses_of_invites": "{{sent}}件中{{n}}件",
     "view_segment": "{{segment}}の回答を見る（{{n}}件）",
     "export_pack": "パックを書き出す",
-    "export_pack_hint": "月次パックをダウンロード：主要指標、回答数、NPS内訳、質問別スコア、支店別結果"
+    "export_pack_hint": "月次パックをExcelブックでダウンロード：主要指標、回答数、NPS内訳、質問別スコア、支店別結果をそれぞれ別タブに",
+    "export_excel": "Excelで書き出す",
+    "export_csv": "CSV",
+    "export_csv_hint": "同じパックを単一のCSVシートでダウンロード（他システムへの取り込み用）",
+    "exporting": "作成中…",
+    "export_failed": "Excelファイルを作成できませんでした。もう一度お試しください。"
   }
 }

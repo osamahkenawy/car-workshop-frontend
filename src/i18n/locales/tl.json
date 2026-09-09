@@ -3771,6 +3771,11 @@
     "responses_of_invites": "{{n}} sa {{sent}} imbitasyon",
     "view_segment": "Tingnan ang mga sagot ng {{segment}} ({{n}})",
     "export_pack": "I-export ang pack",
-    "export_pack_hint": "I-download ang buwanang pack: pangunahing sukatan, dami ng sagot, NPS breakdown, score kada tanong at resulta kada branch"
+    "export_pack_hint": "I-download ang buwanang pack bilang Excel workbook: pangunahing sukatan, dami ng sagot, NPS breakdown, score kada tanong at resulta kada branch, tig-isang tab",
+    "export_excel": "I-export sa Excel",
+    "export_csv": "CSV",
+    "export_csv_hint": "I-download ang parehong pack bilang isang CSV sheet — para i-load sa ibang sistema",
+    "exporting": "Binubuo…",
+    "export_failed": "Hindi nabuo ang Excel file. Subukan muli."
   }
 }
