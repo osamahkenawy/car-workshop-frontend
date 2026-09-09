@@ -5,6 +5,7 @@ import {
   ArrowUpCircle, ShieldCheck,
 } from 'iconoir-react';
 import api from '../lib/api';
+import CustomerPicker from '../components/CustomerPicker';
 import './CRMPages.css';
 import './CrmSurface.css';
 
@@ -87,7 +88,6 @@ const fmtDate = iso => iso ? new Date(iso).toLocaleDateString(undefined, { day: 
 export default function Complaints() {
   const [rows, setRows] = useState([]);
   const [stats, setStats] = useState(null);
-  const [customers, setCustomers] = useState([]);
   const [view, setView] = useState('');
   const [search, setSearch] = useState('');
   const [debounced, setDebounced] = useState('');
@@ -103,6 +103,7 @@ export default function Complaints() {
   const [form, setForm] = useState({
     reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor', severity: 'S2',
   });
+  const [pickedCustomer, setPickedCustomer] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
 
   const [resolveForm, setResolveForm] = useState({
@@ -143,11 +144,6 @@ export default function Complaints() {
   }, [view, debounced, channelFilter, dateFrom, dateTo]);
 
   useEffect(() => { load(); }, [load]);
-
-  useEffect(() => {
-    if (!showNew) return;
-    api.get('/customers?limit=300').then(r => { if (r?.success) setCustomers(r.data || []); }).catch(() => {});
-  }, [showNew]);
 
   useEffect(() => {
     if (showFilters === false) return;
@@ -227,6 +223,7 @@ export default function Complaints() {
       if (res?.success) {
         setShowNew(false);
         setForm({ reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor', severity: 'S2' });
+        setPickedCustomer(null);
         setBanner({ kind: 'ok', text: `Logged as ${res.data.case_number}.` });
         load();
       } else {
@@ -480,11 +477,14 @@ export default function Complaints() {
                 <div className="form-grid-2">
                   <div className="form-group">
                     <label className="form-label">Customer</label>
-                    <select className="form-control" value={form.customer_id}
-                      onChange={e => setForm({ ...form, customer_id: e.target.value })}>
-                      <option value="">No customer linked yet</option>
-                      {customers.map(c => <option key={c.id} value={c.id}>{c.full_name} — {c.phone}</option>)}
-                    </select>
+                    <CustomerPicker
+                      value={pickedCustomer}
+                      onChange={c => {
+                        setPickedCustomer(c);
+                        setForm(f => ({ ...f, customer_id: c ? c.id : '' }));
+                      }}
+                      emptyLabel="No customer linked yet"
+                    />
                   </div>
                   <div className="form-group">
                     <label className="form-label">How it came in</label>
