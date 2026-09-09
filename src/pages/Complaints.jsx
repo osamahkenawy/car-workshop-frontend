@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   WarningTriangle, Clock, CheckCircle, Calendar, Plus, Search, Xmark,
   Filter, Phone, Mail, MessageText, Page, MailOut, ClipboardCheck, ArrowRight,
-  ArrowUpCircle, ShieldCheck,
+  ArrowUpCircle, ShieldCheck, Download,
 } from 'iconoir-react';
 import api from '../lib/api';
 import CustomerPicker from '../components/CustomerPicker';
+import { toCsv, downloadCsvText } from '../utils/csv';
 import './CRMPages.css';
 import './CrmSurface.css';
 
@@ -262,6 +263,62 @@ export default function Complaints() {
 
   const activeFilters = channelFilter ? 1 : 0;
 
+  /*
+   * Monthly export pack — same shape as the Customer Experience one: a few
+   * titled tables in one CSV (headline measures, severity/channel/outcome
+   * breakdowns, then the case list) built through toCsv so escaping and
+   * formula-neutralisation stay in the one writer, handed to the browser
+   * with downloadCsvText rather than re-implementing the BOM/blob dance here.
+   * Exports exactly what's on screen — the current date range, view, channel
+   * and search filters all already shape `visibleRows` and `stats`.
+   */
+  const exportPack = () => {
+    const blank = '';
+    const parts = [];
+    const period = dateFrom || dateTo ? `${dateFrom || 'earliest'} to ${dateTo || 'latest'}` : 'All time';
+
+    parts.push(toCsv(['Pioneer Car Service Center — Complaints pack'], []));
+    parts.push(toCsv(['Period', period], []));
+    parts.push(toCsv(['Generated', new Date().toISOString().slice(0, 16).replace('T', ' ')], []));
+    parts.push(blank);
+
+    parts.push(toCsv(['Headline measures'], [
+      ['Still open', h.stillOpen ?? 0],
+      ['Past target', h.pastTarget ?? 0],
+      ['Acknowledged within 1 day (%)', h.ackSlaPct ?? ''],
+      ['Avg. resolution time (days)', h.avgResolutionDays ?? ''],
+      ['Resolved / closed (%)', h.resolutionRatePct ?? ''],
+    ]));
+    parts.push(blank);
+
+    parts.push(toCsv(['Severity', 'Name', 'Logged', 'Avg resolution (days)', 'Within SLA (%)'],
+      bySeverity.map(sv => {
+        const m = SEVERITY_META[sv.severity] || SEVERITY_META.S2;
+        return [sv.severity, m.name, sv.count ?? 0, sv.avgResolutionDays ?? '', sv.slaCompliancePct ?? ''];
+      })));
+    parts.push(blank);
+
+    parts.push(toCsv(['Channel', 'Count'],
+      (stats?.by_channel || []).map(c => [(CHANNEL_META[c.channel] || {}).label || c.channel, c.count])));
+    parts.push(blank);
+
+    parts.push(toCsv(['Outcome', 'Count'],
+      (stats?.by_outcome || []).map(o => [(OUTCOME_META[o.outcome] || {}).label || o.outcome, o.count])));
+    parts.push(blank);
+
+    parts.push(toCsv(
+      ['Case', 'Customer', 'Severity', 'Repeat', 'Channel', 'Amount (AED)', 'Status', 'Logged', 'Resolved', 'Reason'],
+      visibleRows.map(r => [
+        r.case_number, r.customer_name || '', r.severity || '', r.is_repeat ? 'Yes' : 'No',
+        (CHANNEL_META[r.intake_channel] || {}).label || r.intake_channel,
+        r.amount > 0 ? Number(r.amount) : '', (STATUS_META[r.status] || {}).label || r.status,
+        fmtDate(r.created_at), fmtDate(r.resolved_at), r.reason,
+      ])));
+
+    const name = `pioneer-complaints-pack_${dateFrom || 'all'}_to_${dateTo || 'now'}.csv`;
+    downloadCsvText(name, parts.join('\r\n'));
+  };
+
   return (
     <div className="page-container cs">
       <header className="cs-head">
@@ -279,6 +336,9 @@ export default function Complaints() {
               Clear dates
             </button>
           )}
+          <button className="cs-btn-ghost" onClick={exportPack} disabled={loading || !visibleRows.length}>
+            <Download width={16} height={16} /> Export pack
+          </button>
           <button className="cs-generate" onClick={() => setShowNew(true)}>
             <Plus width={17} height={17} /> New complaint
           </button>
