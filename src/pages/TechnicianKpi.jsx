@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Wrench, DollarCircle, Clock, GraphUp, Search } from 'iconoir-react';
+import { Wrench, DollarCircle, Clock, GraphUp, Search, Page, Table } from 'iconoir-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import api from '../lib/api';
+import { downloadCsv } from '../utils/csv';
+import pioneerLogoPdf from '../assets/pioneer-logo-pdf.png';
 import './CRMPages.css';
 import './CrmSurface.css';
 import './TechnicianKpi.css';
@@ -91,6 +95,67 @@ export default function TechnicianKpi() {
     return [...list].sort((a, b) => Number(b[sortKey] ?? -1) - Number(a[sortKey] ?? -1));
   }, [rows, search, designationFilter, bandFilter, sortKey]);
 
+  const periodTag = selected ? `${selected.period_start}_to_${selected.period_end}` : 'export';
+
+  const exportExcel = () => {
+    if (!filtered.length) return;
+    const headers = ['Technician', 'Employee Code', 'Designation', 'Days Present', 'Worked Hrs', 'Billed Value', 'Utilization %', 'Productivity %', 'Efficiency %'];
+    const rows = filtered.map(r => [
+      r.mechanic_name, r.employee_code, r.designation || '',
+      r.days_present, Number(r.worked_hrs).toFixed(1), Number(r.billed_value || 0).toFixed(2),
+      Math.round(r.utilization_pct), Math.round(r.productivity_pct), Math.round(r.efficiency_pct),
+    ]);
+    downloadCsv(`technician-kpi_${periodTag}.csv`, headers, rows);
+  };
+
+  const exportPDF = async () => {
+    if (!filtered.length) return;
+    const doc = new jsPDF();
+
+    // Source PNG is 928x166 (aspect 5.59:1) — a fixed width keeps it sensible
+    // across page sizes, matching the same embed pattern used in Reports.jsx.
+    let logoHeight = 0;
+    try {
+      const logoResp = await fetch(pioneerLogoPdf);
+      if (logoResp.ok) {
+        const bytes = new Uint8Array(await logoResp.arrayBuffer());
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const logoWidthMm = 44;
+        logoHeight = logoWidthMm * (166 / 928);
+        doc.addImage('data:image/png;base64,' + btoa(binary), 'PNG', 14, 10, logoWidthMm, logoHeight);
+      }
+    } catch (e) {
+      console.warn('Failed to embed the Pioneer logo in the PDF export:', e);
+    }
+
+    const margin = 14;
+    const titleY = 10 + logoHeight + 10;
+    doc.setFontSize(18);
+    doc.setTextColor(36, 64, 102);
+    doc.text('Technician KPI Report', margin, titleY);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    const periodText = selected ? `${fmtDate(selected.period_start)} \u2013 ${fmtDate(selected.period_end)}` : '';
+    const generated = `Generated ${new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}`;
+    doc.text([periodText, generated].filter(Boolean).join('   \u00b7   '), margin, titleY + 7);
+
+    autoTable(doc, {
+      startY: titleY + 12,
+      head: [['Technician', 'Designation', 'Days Present', 'Worked Hrs', 'Billed Value', 'U%', 'P%', 'E%']],
+      body: filtered.map(r => [
+        r.mechanic_name, r.designation || '\u2014', r.days_present,
+        Number(r.worked_hrs).toFixed(1), fmtMoney(r.billed_value),
+        `${Math.round(r.utilization_pct)}%`, `${Math.round(r.productivity_pct)}%`, `${Math.round(r.efficiency_pct)}%`,
+      ]),
+      headStyles: { fillColor: [36, 64, 102], fontStyle: 'bold' },
+      styles: { fontSize: 8.5 },
+      margin: { left: margin, right: margin },
+    });
+
+    doc.save(`technician-kpi_${periodTag}.pdf`);
+  };
+
   const cards = summary ? [
     { key: 'count', label: 'Technicians in report', value: summary.technician_count, Icon: Wrench, tone: 'blue' },
     { key: 'billed', label: 'Total billed value', value: fmtMoney(summary.total_billed_value), Icon: DollarCircle, tone: 'green' },
@@ -107,19 +172,29 @@ export default function TechnicianKpi() {
             {selected ? `${fmtDate(selected.period_start)} – ${fmtDate(selected.period_end)}` : 'Attendance, hours and billing performance by technician'}
           </p>
         </div>
-        {periods.length > 1 && (
-          <select className="form-control" style={{ maxWidth: 260 }}
-            value={selected ? `${selected.period_start}|${selected.period_end}` : ''}
-            onChange={e => {
-              const [ps, pe] = e.target.value.split('|');
-              setSelected(periods.find(p => p.period_start === ps && p.period_end === pe));
-            }}>
-            {periods.map(p => (
-              <option key={`${p.period_start}|${p.period_end}`} value={`${p.period_start}|${p.period_end}`}>
-                {fmtDate(p.period_start)} – {fmtDate(p.period_end)}
-              </option>
-            ))}
-          </select>
+        {selected && (
+          <div className="cs-actions">
+            {periods.length > 1 && (
+              <select className="form-control tk-fixed-select"
+                value={`${selected.period_start}|${selected.period_end}`}
+                onChange={e => {
+                  const [ps, pe] = e.target.value.split('|');
+                  setSelected(periods.find(p => p.period_start === ps && p.period_end === pe));
+                }}>
+                {periods.map(p => (
+                  <option key={`${p.period_start}|${p.period_end}`} value={`${p.period_start}|${p.period_end}`}>
+                    {fmtDate(p.period_start)} – {fmtDate(p.period_end)}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button type="button" className="cs-btn-ghost" onClick={exportPDF} disabled={!filtered.length}>
+              <Page width={15} height={15} /> Export PDF
+            </button>
+            <button type="button" className="cs-btn-ghost" onClick={exportExcel} disabled={!filtered.length}>
+              <Table width={15} height={15} /> Export Excel
+            </button>
+          </div>
         )}
       </header>
 
