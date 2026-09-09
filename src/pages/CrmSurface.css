@@ -55,6 +55,11 @@
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
 }
+/* The title+subtitle block is a flex item with no explicit width, so its
+   default min-width:auto stops the subtitle from wrapping and lets it
+   overflow behind whatever sits in .cs-actions instead — give it room to
+   shrink and wrap like normal block text. */
+.cs-head > div:first-child { flex: 1 1 320px; min-width: 0; }
 .cs-title {
   font-size: 28px; font-weight: 700; letter-spacing: -.02em;
   margin: 0 0 4px; color: var(--cs-ink);
@@ -220,7 +225,13 @@
 }
 
 /* Action group */
-.cs-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.cs-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+/* .form-control's width:100% (CRMPages.css) becomes a flex-basis here and
+   fights the row for space — same bug as the Technician KPI controls had.
+   Shared here (rather than duplicated per-page) so any date/period input
+   dropped into .cs-actions gets a sane fixed width instead of blowing out
+   the row. */
+.cs-fixed-input { flex: 0 0 auto; width: auto; min-width: 150px; max-width: 190px; }
 .cs-send {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 9px 16px; border: 0; border-radius: 9px; cursor: pointer;

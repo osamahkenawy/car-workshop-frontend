@@ -253,9 +253,9 @@ export default function Complaints() {
           <p className="cs-sub">Intake to resolution — acknowledgement, decision and follow-through in one place</p>
         </div>
         <div className="cs-actions">
-          <input type="date" className="form-control tk-fixed-select" value={dateFrom}
+          <input type="date" className="form-control cs-fixed-input" value={dateFrom}
             onChange={e => setDateFrom(e.target.value)} aria-label="From date" />
-          <input type="date" className="form-control tk-fixed-select" value={dateTo}
+          <input type="date" className="form-control cs-fixed-input" value={dateTo}
             onChange={e => setDateTo(e.target.value)} aria-label="To date" />
           {(dateFrom || dateTo) && (
             <button className="cs-filter-clear" style={{ flex: 'none' }} onClick={() => { setDateFrom(''); setDateTo(''); }}>
