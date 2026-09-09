@@ -22,10 +22,10 @@ import './CrmSurface.css';
  */
 
 const STATUS_META = {
-  open:          { label: 'Open',          color: '#c0392b', bg: '#fdeaea' },
-  investigating: { label: 'Investigating', color: '#b26a00', bg: '#fdf2e0' },
-  resolved:      { label: 'Resolved',      color: '#2563eb', bg: '#eaf1fe' },
-  closed:        { label: 'Closed',        color: '#17734f', bg: '#e7f3ec' },
+  open:          { label: 'Pending',     color: '#c0392b', bg: '#fdeaea' },
+  investigating: { label: 'In Progress', color: '#b26a00', bg: '#fdf2e0' },
+  resolved:      { label: 'Completed',   color: '#2563eb', bg: '#eaf1fe' },
+  closed:        { label: 'Closed',      color: '#17734f', bg: '#e7f3ec' },
 };
 
 const CHANNEL_META = {
@@ -47,9 +47,9 @@ const OUTCOME_META = {
 
 const VIEWS = [
   { key: '',              label: 'Active' },
-  { key: 'open',          label: 'Open' },
-  { key: 'investigating', label: 'Investigating' },
-  { key: 'resolved',      label: 'Resolved' },
+  { key: 'open',          label: 'Pending' },
+  { key: 'investigating', label: 'In Progress' },
+  { key: 'resolved',      label: 'Completed' },
   { key: 'closed',        label: 'Closed' },
   { key: 'all',           label: 'All' },
 ];
@@ -329,7 +329,6 @@ export default function Complaints() {
                   <td className="cs-service">{r.amount > 0 ? `AED ${Number(r.amount).toLocaleString()}` : '—'}</td>
                   <td>
                     <span className="cs-pill" style={{ color: s.color, background: s.bg }}>{s.label}</span>
-                    {r.is_ack_overdue ? <div className="cs-meta" style={{ color: 'var(--cs-rose)' }}>Ack overdue</div> : null}
                   </td>
                   <td>
                     <div className="cs-due">{fmtDate(r.created_at)}</div>
