@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   WarningTriangle, Clock, CheckCircle, Calendar, Plus, Search, Xmark,
   Filter, Phone, Mail, MessageText, Page, MailOut, ClipboardCheck, ArrowRight,
+  ArrowUpCircle, ShieldCheck,
 } from 'iconoir-react';
 import api from '../lib/api';
 import './CRMPages.css';
@@ -9,17 +10,36 @@ import './CrmSurface.css';
 
 /**
  * Complaints — wires up the `disputes` table (intake, ack/response SLA
- * timestamps, outcome, authority level) that existed in the schema but had
- * no route or page. Deliberately no category field: the KPI matrix wanted a
- * categorised breakdown, but that taxonomy has not come from GM Pioneer yet.
- * Everything here works without it — a `category` column is a one-line
- * additive migration whenever that list exists, nothing here needs reshaping.
+ * timestamps, outcome, authority level, and — as of
+ * 20260911_complaint_severity_workflow.sql — severity, root cause and
+ * customer-confirmed closure) against the workshop's actual complaint
+ * management policy.
  *
- * Workflow mirrors what the schema already commits to:
+ * Severity drives everything downstream: S1 (safety/repeat) targets 1-2
+ * working days and requires a root cause before closing; S2 (workmanship/
+ * billing) targets 3-5; S3 (conduct/information) targets 2-3. A second
+ * complaint on the same customer within 90 days is auto-flagged "repeat"
+ * and forced to S1 server-side, so the severity shown here may not match
+ * whatever was picked on the form.
+ *
+ * Workflow:
  *   open (unacknowledged) → Acknowledge → Start investigating →
- *   Resolve (outcome + resolution + what changed) → Mark communicated
- *   (told the customer, in writing) → Close
+ *   Resolve (outcome + resolution + root cause + what changed) →
+ *   Mark communicated (told the customer, in writing) →
+ *   Confirm resolution (the CUSTOMER confirmed the outcome — not staff
+ *   finishing the paperwork) → Close
+ *
+ * "Escalate" is the manual trigger for a customer asking to speak to someone
+ * more senior; the policy's automatic "time" trigger (target date passed)
+ * is surfaced as is_escalation_due rather than auto-escalating, since
+ * nothing pages anyone yet.
  */
+
+const SEVERITY_META = {
+  S1: { label: 'S1', name: 'Safety / repeat failure', color: '#c0392b', bg: '#fdeaea', hint: 'Safety consequence, a fault returning after repair, a vehicle left unusable, or any regulatory/insurer/legal dimension.' },
+  S2: { label: 'S2', name: 'Workmanship / billing',   color: '#b26a00', bg: '#fdf2e0', hint: 'Work not to standard, invoice disputed, promised date missed, wrong part, or vehicle damage/condition discrepancy.' },
+  S3: { label: 'S3', name: 'Conduct / information',   color: '#1f7a72', bg: '#e3f4f2', hint: 'Staff manner or professionalism, unclear advice, unanswered calls/messages, or site/waiting-area conditions.' },
+};
 
 const STATUS_META = {
   open:          { label: 'Pending',     color: '#c0392b', bg: '#fdeaea' },
@@ -81,11 +101,16 @@ export default function Complaints() {
   const filterRef = useRef(null);
 
   const [form, setForm] = useState({
-    reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor',
+    reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor', severity: 'S2',
   });
   const [formErrors, setFormErrors] = useState([]);
 
-  const [resolveForm, setResolveForm] = useState({ outcome: 'pending', resolution: '', changes_made: '' });
+  const [resolveForm, setResolveForm] = useState({
+    outcome: 'pending', resolution: '', changes_made: '',
+    root_cause: '', root_cause_category: '', corrective_action: '',
+  });
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   useEffect(() => {
     const id = setTimeout(() => setDebounced(search.trim()), 280);
@@ -99,9 +124,14 @@ export default function Complaints() {
       if (view) qs.set('status', view);
       if (debounced) qs.set('search', debounced);
       if (channelFilter) qs.set('intake_channel', channelFilter);
+      if (dateFrom) qs.set('from', dateFrom);
+      if (dateTo) qs.set('to', dateTo);
+      const statsQs = new URLSearchParams();
+      if (dateFrom) statsQs.set('from', dateFrom);
+      if (dateTo) statsQs.set('to', dateTo);
       const [list, s] = await Promise.all([
         api.get(`/disputes?${qs}`),
-        api.get('/disputes/stats'),
+        api.get(`/disputes/stats?${statsQs}`),
       ]);
       if (list?.success) setRows(list.data || []);
       if (s?.success) setStats(s.data);
@@ -110,7 +140,7 @@ export default function Complaints() {
     } finally {
       setLoading(false);
     }
-  }, [view, debounced, channelFilter]);
+  }, [view, debounced, channelFilter, dateFrom, dateTo]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -159,13 +189,17 @@ export default function Complaints() {
 
   async function submitResolve(e) {
     e.preventDefault();
+    if (resolveFor.severity === 'S1' && !resolveForm.root_cause.trim()) {
+      setBanner({ kind: 'error', text: 'Root cause is required for an S1 complaint before it can be resolved.' });
+      return;
+    }
     setBusyId(resolveFor.id);
     try {
       const res = await api.post(`/disputes/${resolveFor.id}/resolve`, resolveForm);
       if (res?.success) {
         setBanner({ kind: 'ok', text: 'Marked resolved.' });
         setResolveFor(null);
-        setResolveForm({ outcome: 'pending', resolution: '', changes_made: '' });
+        setResolveForm({ outcome: 'pending', resolution: '', changes_made: '', root_cause: '', root_cause_category: '', corrective_action: '' });
         load();
       } else {
         setBanner({ kind: 'error', text: res?.message || 'Could not resolve that complaint.' });
@@ -192,7 +226,7 @@ export default function Complaints() {
       });
       if (res?.success) {
         setShowNew(false);
-        setForm({ reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor' });
+        setForm({ reason: '', customer_id: '', amount: '', intake_channel: 'phone', authority_level: 'advisor', severity: 'S2' });
         setBanner({ kind: 'ok', text: `Logged as ${res.data.case_number}.` });
         load();
       } else {
@@ -210,6 +244,7 @@ export default function Complaints() {
     { key: 'res', label: 'Avg. resolution time', value: h.avgResolutionDays != null ? `${h.avgResolutionDays}d` : '—', Icon: Calendar, tone: 'amber' },
     { key: 'rate', label: 'Resolved / closed', value: h.resolutionRatePct != null ? `${h.resolutionRatePct}%` : '—', Icon: CheckCircle, tone: 'green' },
   ];
+  const bySeverity = stats?.by_severity || [];
 
   const activeFilters = channelFilter ? 1 : 0;
 
@@ -220,9 +255,20 @@ export default function Complaints() {
           <h1 className="cs-title">Complaints</h1>
           <p className="cs-sub">Intake to resolution — acknowledgement, decision and follow-through in one place</p>
         </div>
-        <button className="cs-generate" onClick={() => setShowNew(true)}>
-          <Plus width={17} height={17} /> New complaint
-        </button>
+        <div className="cs-actions">
+          <input type="date" className="form-control tk-fixed-select" value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)} aria-label="From date" />
+          <input type="date" className="form-control tk-fixed-select" value={dateTo}
+            onChange={e => setDateTo(e.target.value)} aria-label="To date" />
+          {(dateFrom || dateTo) && (
+            <button className="cs-filter-clear" style={{ flex: 'none' }} onClick={() => { setDateFrom(''); setDateTo(''); }}>
+              Clear dates
+            </button>
+          )}
+          <button className="cs-generate" onClick={() => setShowNew(true)}>
+            <Plus width={17} height={17} /> New complaint
+          </button>
+        </div>
       </header>
 
       {banner && <div role="status" className={`cs-banner is-${banner.kind}`}>{banner.text}</div>}
@@ -238,6 +284,20 @@ export default function Complaints() {
           </div>
         ))}
       </div>
+
+      {bySeverity.length > 0 && (
+        <div className="cs-meta" style={{ display: 'flex', gap: 14, marginBottom: 18, flexWrap: 'wrap' }}>
+          {bySeverity.map(sv => {
+            const m = SEVERITY_META[sv.severity] || SEVERITY_META.S2;
+            return (
+              <span key={sv.severity} className="cs-pill" style={{ color: m.color, background: m.bg }}>
+                {m.label} · {m.name}: {sv.count} logged
+                {sv.slaCompliancePct != null ? `, ${sv.slaCompliancePct}% within SLA` : ''}
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       <div className="cs-controls">
         <div className="cs-views" role="tablist" aria-label="Complaint views">
@@ -280,6 +340,7 @@ export default function Complaints() {
             <tr>
               <th>Case</th>
               <th>Customer</th>
+              <th>Severity</th>
               <th>Channel</th>
               <th>Amount</th>
               <th>Status</th>
@@ -289,10 +350,10 @@ export default function Complaints() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="cs-empty">Loading…</td></tr>
+              <tr><td colSpan={8} className="cs-empty">Loading…</td></tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={7}>
+                <td colSpan={8}>
                   <div className="cs-empty">
                     <CheckCircle width={40} height={40} />
                     <p>{activeFilters > 0 || debounced ? 'No complaints match those filters.' : 'Nothing here — no complaints logged for this view.'}</p>
@@ -302,6 +363,7 @@ export default function Complaints() {
             ) : rows.map(r => {
               const s = STATUS_META[r.status] || STATUS_META.open;
               const ch = CHANNEL_META[r.intake_channel] || CHANNEL_META.in_person;
+              const sev = SEVERITY_META[r.severity] || SEVERITY_META.S2;
               const busy = busyId === r.id;
               return (
                 <tr key={r.id}>
@@ -320,6 +382,10 @@ export default function Complaints() {
                     <div className="cs-name">{r.customer_name || '—'}</div>
                     {r.customer_phone && <div className="cs-meta">{r.customer_phone}</div>}
                     {r.work_order_number && <div className="cs-meta">{r.work_order_number}</div>}
+                  </td>
+                  <td>
+                    <span className="cs-pill" style={{ color: sev.color, background: sev.bg }} title={sev.hint}>{sev.label}</span>
+                    {r.is_repeat ? <div className="cs-meta">Repeat</div> : null}
                   </td>
                   <td className="cs-service">
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -357,9 +423,19 @@ export default function Complaints() {
                           <MailOut width={15} height={15} /> {busy ? '…' : 'Mark communicated'}
                         </button>
                       )}
-                      {r.status === 'resolved' && r.outcome_communicated_at && (
+                      {r.status === 'resolved' && r.outcome_communicated_at && !r.customer_confirmed_at && (
+                        <button className="cs-send" disabled={busy} onClick={() => act(r, 'confirm', 'Customer confirmation recorded.')}>
+                          <ShieldCheck width={15} height={15} /> {busy ? '…' : 'Confirm resolution'}
+                        </button>
+                      )}
+                      {r.status === 'resolved' && r.customer_confirmed_at && (
                         <button className="cs-send" disabled={busy} onClick={() => act(r, 'close', 'Closed.')}>
                           <CheckCircle width={15} height={15} /> {busy ? '…' : 'Close'}
+                        </button>
+                      )}
+                      {['open', 'investigating'].includes(r.status) && r.authority_level !== 'senior' && (
+                        <button className="cs-btn-ghost" disabled={busy} onClick={() => act(r, 'escalate', 'Escalated.')}>
+                          <ArrowUpCircle width={15} height={15} /> Escalate
                         </button>
                       )}
                     </div>
@@ -392,6 +468,14 @@ export default function Complaints() {
                   <textarea className="form-control" rows={3} autoFocus value={form.reason}
                     onChange={e => setForm({ ...form, reason: e.target.value })}
                     placeholder="Customer says the AC repair did not fix the issue…" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Severity</label>
+                  <select className="form-control" value={form.severity}
+                    onChange={e => setForm({ ...form, severity: e.target.value })}>
+                    {Object.entries(SEVERITY_META).map(([v, m]) => <option key={v} value={v}>{m.label} — {m.name}</option>)}
+                  </select>
+                  <p className="cs-meta" style={{ marginTop: 4 }}>{SEVERITY_META[form.severity].hint}</p>
                 </div>
                 <div className="form-grid-2">
                   <div className="form-group">
@@ -463,6 +547,35 @@ export default function Complaints() {
                   <textarea className="form-control" rows={2} value={resolveForm.changes_made}
                     onChange={e => setResolveForm({ ...resolveForm, changes_made: e.target.value })}
                     placeholder="Replaced compressor, refunded diagnostic fee." />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Root cause{resolveFor.severity === 'S1' ? ' (required for S1)' : ' (optional)'}
+                  </label>
+                  <textarea className="form-control" rows={2} value={resolveForm.root_cause}
+                    onChange={e => setResolveForm({ ...resolveForm, root_cause: e.target.value })}
+                    placeholder="Five-whys result — the process, control or resource that would have prevented this." />
+                </div>
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label className="form-label">Root cause category</label>
+                    <select className="form-control" value={resolveForm.root_cause_category}
+                      onChange={e => setResolveForm({ ...resolveForm, root_cause_category: e.target.value })}>
+                      <option value="">—</option>
+                      <option value="method">Method</option>
+                      <option value="machine">Machine</option>
+                      <option value="material">Material</option>
+                      <option value="manpower">Manpower</option>
+                      <option value="measurement">Measurement</option>
+                      <option value="environment">Environment</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Corrective action</label>
+                    <input className="form-control" value={resolveForm.corrective_action}
+                      onChange={e => setResolveForm({ ...resolveForm, corrective_action: e.target.value })}
+                      placeholder="What changes to stop this recurring" />
+                  </div>
                 </div>
               </div>
               <div className="modal-footer">
