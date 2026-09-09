@@ -240,14 +240,17 @@ export default function Complaints() {
   }
 
   const h = stats?.headline || {};
+  // Share of currently-open cases still within their target date — 100%
+  // when nothing is open at all, since there's nothing to be out of
+  // compliance with. The SOP's Step 7 wants "open any case shown as past
+  // target" surfaced too, so the card keeps that click-to-filter behaviour,
+  // just reads as a rate instead of a raw count.
+  const compliancePct = h.stillOpen ? Math.round(((h.stillOpen - h.pastTarget) / h.stillOpen) * 100) : 100;
   const cards = [
     { key: 'open', label: 'Still open', value: h.stillOpen, Icon: WarningTriangle, tone: 'rose' },
-    // Open cases whose target date has already passed. The SOP's Step 7 asks
-    // to "open any case shown as past target", so it needs to be countable
-    // here rather than only visible per-row in the table.
     {
-      key: 'late', label: 'Past target', value: h.pastTarget ?? 0,
-      Icon: ArrowUpCircle, tone: Number(h.pastTarget) > 0 ? 'rose' : 'green',
+      key: 'compliance', label: 'SLA compliance', value: `${compliancePct}%`,
+      Icon: ArrowUpCircle, tone: compliancePct === 100 ? 'green' : 'rose',
       onClick: Number(h.pastTarget) > 0 ? () => { setView(''); setPastTargetOnly(v => !v); } : null,
       active: pastTargetOnly,
     },
@@ -284,7 +287,7 @@ export default function Complaints() {
 
     parts.push(toCsv(['Headline measures'], [
       ['Still open', h.stillOpen ?? 0],
-      ['Past target', h.pastTarget ?? 0],
+      ['SLA compliance (%)', compliancePct],
       ['Acknowledged within 1 day (%)', h.ackSlaPct ?? ''],
       ['Avg. resolution time (days)', h.avgResolutionDays ?? ''],
       ['Resolved / closed (%)', h.resolutionRatePct ?? ''],
