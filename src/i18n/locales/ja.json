@@ -3724,7 +3724,12 @@
     "filtered_flagged": "フォロー要",
     "show_all": "すべて表示",
     "detail_outcome": "フォロー結果",
-    "detail_outcome_placeholder": "連絡の結果は？ 例：顧客と話した、診断料を返金、再点検を予約"
+    "detail_outcome_placeholder": "連絡の結果は？ 例：顧客と話した、診断料を返金、再点検を予約",
+    "export_excel": "Excelで書き出す",
+    "exporting": "作成中…",
+    "export_failed": "Excelファイルを作成できませんでした。もう一度お試しください。",
+    "export_empty": "現在の絞り込みに該当する回答がないため、書き出すものがありません。",
+    "export_truncated": "最初の5,000件を書き出しました。残りは期間を絞って取得してください。"
   },
   "cx": {
     "title": "カスタマーエクスペリエンス",

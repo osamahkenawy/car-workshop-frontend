@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   StatsUpSquare, EmojiSatisfied, Flash, WarningTriangle, Xmark, Link as LinkIcon,
   Copy, CheckCircle, Search, Refresh, MessageText, Building, Wrench, QrCode,
+  Download,
 } from 'iconoir-react';
 import { useTranslation } from 'react-i18next';
 import * as QRCodeModule from 'qrcode';
 import api from '../lib/api';
+import { downloadXlsx } from '../utils/xlsx';
+import { responsesSheet } from '../utils/survey-export';
 
 /**
  * Customer Feedback — CES / NPS / CSAT analysis.
@@ -179,6 +182,7 @@ export default function CustomerFeedback() {
   const [creating, setCreating] = useState(false);
   const [qrModal, setQrModal]   = useState(null);   // URL string when QR modal is open
   const [qrCopied, setQrCopied]   = useState(false);
+  const [exporting, setExporting]  = useState(false);
   const qrCanvasRef = useRef(null);
 
   const qs = useMemo(() => {
@@ -215,6 +219,54 @@ export default function CustomerFeedback() {
   }, [qs]);
 
   useEffect(() => { load(); }, [load]);
+
+  /*
+   * Excel export of every response in the current filter, one row per
+   * respondent with all eleven answers and the question wording as the header.
+   *
+   * It refetches rather than exporting `rows`, for two reasons: the table is
+   * capped at 100 and a month of responses runs past that, so exporting what
+   * is on screen would silently truncate; and the list endpoint returns only
+   * the derived averages, not the individual answers, which are the whole
+   * point of this export. /customer-survey/export returns both, unpaginated.
+   *
+   * The client-side text search is deliberately NOT applied — it narrows what
+   * is on screen out of the fetched page only, so honouring it would mean
+   * exporting a filter the server never saw and could not reproduce. The
+   * date / branch / category filters, which the server does apply, are all
+   * carried through in `qs`.
+   */
+  const exportXlsx = async () => {
+    setExporting(true);
+    setError('');
+    try {
+      const res = await api.get(`/customer-survey/export${qs ? `?${qs}` : ''}`);
+      if (!res?.success) throw new Error(res?.message || t('customerFeedback.err_load'));
+
+      const rowsOut = res.data || [];
+      if (!rowsOut.length) {
+        setError(t('customerFeedback.export_empty'));
+        return;
+      }
+
+      const from = filters.from || 'earliest';
+      const to = filters.to || 'latest';
+      const parts = ['pioneer-survey-responses', from, 'to', to];
+      if (filters.branch) parts.push(filters.branch.replace(/[^\w-]+/g, '-'));
+      if (filters.category) parts.push(filters.category);
+
+      await downloadXlsx(`${parts.join('_')}.xlsx`, [
+        responsesSheet(rowsOut, res.questions || {}),
+      ]);
+
+      if (res.truncated) setError(t('customerFeedback.export_truncated'));
+    } catch (e) {
+      console.error('[CustomerFeedback] Excel export failed:', e);
+      setError(e?.message || t('customerFeedback.export_failed'));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // Client-side text search over the already-fetched page: the server filters
   // by date / branch / category, this narrows what is on screen.
@@ -304,6 +356,10 @@ export default function CustomerFeedback() {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button onClick={load} style={st.ghostBtn}><Refresh width={15} height={15} /> {t('common.refresh')}</button>
+          <button onClick={exportXlsx} disabled={exporting} style={st.ghostBtn}>
+            <Download width={15} height={15} />
+            {exporting ? t('customerFeedback.exporting') : t('customerFeedback.export_excel')}
+          </button>
           <button
             onClick={() => { setQrModal(publicSurveyUrl); setQrCopied(false); }}
             style={st.ghostBtn}

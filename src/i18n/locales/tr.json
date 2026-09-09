@@ -3724,7 +3724,12 @@
     "filtered_flagged": "takip gerekli",
     "show_all": "Tümünü göster",
     "detail_outcome": "Takip sonucu",
-    "detail_outcome_placeholder": "Görüşmenin sonucu ne oldu? Örn: müşteriyle konuşuldu, teşhis ücreti iade edildi, yeniden kontrol planlandı"
+    "detail_outcome_placeholder": "Görüşmenin sonucu ne oldu? Örn: müşteriyle konuşuldu, teşhis ücreti iade edildi, yeniden kontrol planlandı",
+    "export_excel": "Excel’e aktar",
+    "exporting": "Hazırlanıyor…",
+    "export_failed": "Excel dosyası oluşturulamadı. Tekrar deneyin.",
+    "export_empty": "Geçerli filtrede yanıt yok, bu yüzden aktarılacak bir şey de yok.",
+    "export_truncated": "İlk 5.000 yanıt aktarıldı — kalanı için tarih aralığını daraltın."
   },
   "cx": {
     "title": "Müşteri Deneyimi",

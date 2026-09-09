@@ -3724,7 +3724,12 @@
     "filtered_flagged": "需跟进",
     "show_all": "显示全部",
     "detail_outcome": "跟进结果",
-    "detail_outcome_placeholder": "这次联系的结果是什么？例如：已与客户沟通、退还检测费、已预约复检"
+    "detail_outcome_placeholder": "这次联系的结果是什么？例如：已与客户沟通、退还检测费、已预约复检",
+    "export_excel": "导出 Excel",
+    "exporting": "正在生成…",
+    "export_failed": "无法生成 Excel 文件，请重试。",
+    "export_empty": "当前筛选条件下没有回复，无内容可导出。",
+    "export_truncated": "已导出前 5,000 条回复 —— 缩小日期范围以获取其余部分。"
   },
   "cx": {
     "title": "客户体验",

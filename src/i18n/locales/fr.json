@@ -3724,7 +3724,12 @@
     "filtered_flagged": "à suivre",
     "show_all": "Tout afficher",
     "detail_outcome": "Résultat du suivi",
-    "detail_outcome_placeholder": "Qu'a donné l'appel ? Ex. : client contacté, frais de diagnostic remboursés, nouveau contrôle programmé"
+    "detail_outcome_placeholder": "Qu'a donné l'appel ? Ex. : client contacté, frais de diagnostic remboursés, nouveau contrôle programmé",
+    "export_excel": "Exporter en Excel",
+    "exporting": "Génération…",
+    "export_failed": "Impossible de générer le fichier Excel. Réessayez.",
+    "export_empty": "Aucune réponse dans le filtre actuel, il n'y a donc rien à exporter.",
+    "export_truncated": "Les 5 000 premières réponses ont été exportées — réduisez la plage de dates pour obtenir le reste."
   },
   "cx": {
     "title": "Expérience client",

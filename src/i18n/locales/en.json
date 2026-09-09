@@ -3878,7 +3878,12 @@
     "filtered_flagged": "needs follow-up",
     "show_all": "Show all",
     "detail_outcome": "Follow-up outcome",
-    "detail_outcome_placeholder": "What came of the call? e.g. spoke to the customer, refunded the diagnostic fee, booked a re-check"
+    "detail_outcome_placeholder": "What came of the call? e.g. spoke to the customer, refunded the diagnostic fee, booked a re-check",
+    "export_excel": "Export Excel",
+    "exporting": "Building…",
+    "export_failed": "Could not build the Excel file. Try again.",
+    "export_empty": "No responses in the current filter, so there is nothing to export.",
+    "export_truncated": "Exported the first 5,000 responses — narrow the date range to get the rest."
   },
   "cx": {
     "title": "Customer Experience",

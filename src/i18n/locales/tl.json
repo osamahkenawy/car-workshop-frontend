@@ -3726,7 +3726,12 @@
     "filtered_flagged": "kailangan ng follow-up",
     "show_all": "Ipakita lahat",
     "detail_outcome": "Resulta ng follow-up",
-    "detail_outcome_placeholder": "Ano ang naging resulta ng tawag? Hal.: nakausap ang kustomer, ibinalik ang diagnostic fee, nag-book ng re-check"
+    "detail_outcome_placeholder": "Ano ang naging resulta ng tawag? Hal.: nakausap ang kustomer, ibinalik ang diagnostic fee, nag-book ng re-check",
+    "export_excel": "I-export sa Excel",
+    "exporting": "Binubuo…",
+    "export_failed": "Hindi nabuo ang Excel file. Subukan muli.",
+    "export_empty": "Walang sagot sa kasalukuyang filter, kaya wala pang ma-export.",
+    "export_truncated": "Na-export ang unang 5,000 sagot — paliitin ang date range para sa iba."
   },
   "cx": {
     "title": "Karanasan ng Kustomer",

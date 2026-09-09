@@ -3724,7 +3724,12 @@
     "filtered_flagged": "requiere seguimiento",
     "show_all": "Mostrar todo",
     "detail_outcome": "Resultado del seguimiento",
-    "detail_outcome_placeholder": "¿Qué resultó de la llamada? Ej.: hablé con el cliente, devolví la tarifa de diagnóstico, agendé una revisión"
+    "detail_outcome_placeholder": "¿Qué resultó de la llamada? Ej.: hablé con el cliente, devolví la tarifa de diagnóstico, agendé una revisión",
+    "export_excel": "Exportar a Excel",
+    "exporting": "Generando…",
+    "export_failed": "No se pudo generar el archivo de Excel. Inténtalo de nuevo.",
+    "export_empty": "No hay respuestas en el filtro actual, así que no hay nada que exportar.",
+    "export_truncated": "Se exportaron las primeras 5.000 respuestas: reduce el rango de fechas para obtener el resto."
   },
   "cx": {
     "title": "Experiencia del cliente",

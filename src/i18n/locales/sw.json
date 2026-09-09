@@ -3724,7 +3724,12 @@
     "filtered_flagged": "inahitaji ufuatiliaji",
     "show_all": "Onyesha zote",
     "detail_outcome": "Matokeo ya ufuatiliaji",
-    "detail_outcome_placeholder": "Simu ilizaa nini? Mfano: nilizungumza na mteja, nilirudisha gharama ya uchunguzi, nikaweka nafasi ya ukaguzi"
+    "detail_outcome_placeholder": "Simu ilizaa nini? Mfano: nilizungumza na mteja, nilirudisha gharama ya uchunguzi, nikaweka nafasi ya ukaguzi",
+    "export_excel": "Hamisha Excel",
+    "exporting": "Inaandaa…",
+    "export_failed": "Haikuweza kuunda faili ya Excel. Jaribu tena.",
+    "export_empty": "Hakuna majibu katika kichujio cha sasa, hivyo hakuna kitu cha kuhamisha.",
+    "export_truncated": "Yamehamishwa majibu 5,000 ya kwanza — punguza kipindi cha tarehe kupata mengine."
   },
   "cx": {
     "title": "Uzoefu wa Mteja",

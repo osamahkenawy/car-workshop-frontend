@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../lib/api';
 import { toCsv, downloadCsvText } from '../utils/csv';
 import { downloadXlsx, th, title, note, num, signed } from '../utils/xlsx';
+import { responsesSheet } from '../utils/survey-export';
 import './Reports.css';
 import './CustomerExperience.css';
 
@@ -116,6 +117,28 @@ const fmtDaysAgo = (iso, t) => {
 // pushed after it yields exactly one blank row in Excel.
 const SECTION_GAP = '\r\n';
 
+/*
+ * The workshop lists its branches in this order — Abu Dhabi, Sharjah, Dubai,
+ * Al Ain — and it is not volume order, so the API's "ORDER BY responses DESC"
+ * cannot produce it and the dropdown and by-branch table sort by this instead.
+ *
+ * A branch not on the list still appears, after the known ones and
+ * alphabetically among themselves. That covers a new site opening, a value
+ * renamed in the data but not here, and the legacy "area — emirate" labels
+ * that scripts/rename-branches.js has not been run against yet. Dropping
+ * unknown branches would silently hide real responses.
+ */
+const BRANCH_ORDER = ['Abu Dhabi', 'Sharjah', 'Dubai', 'Al Ain'];
+
+const byBranchOrder = (a, b) => {
+  const ia = BRANCH_ORDER.indexOf(a);
+  const ib = BRANCH_ORDER.indexOf(b);
+  if (ia !== -1 && ib !== -1) return ia - ib;
+  if (ia !== -1) return -1;
+  if (ib !== -1) return 1;
+  return String(a).localeCompare(String(b));
+};
+
 const NPS_SEGMENTS = [
   { key: 'promoter',  labelKey: 'cx.promoters',  color: '#16a34a', pctKey: 'promoterPct',  countKey: 'promoters' },
   { key: 'passive',   labelKey: 'cx.passives',   color: '#d97706', pctKey: 'passivePct',   countKey: 'passives' },
@@ -186,15 +209,42 @@ export default function CustomerExperience() {
     `pioneer-cx-pack_${range.from}_to_${range.to}`
     + (branch ? `_${branch.replace(/[^\w-]+/g, '-')}` : '');
 
+  /*
+   * The whole branch set from the unfiltered load where we have it, so a
+   * branch-filtered page still exports every branch, sorted into the
+   * workshop's order. The fallback matters on the very first render, before
+   * an unfiltered load has happened, and it needs sorting too — which is why
+   * both exports go through here rather than each sorting its own copy.
+   */
+  const orderedBranchRows = () =>
+    [...(allByBranch.length ? allByBranch : (survey?.byBranch || []))]
+      .sort((x, y) => byBranchOrder(x.branch, y.branch));
+
   const exportPackXlsx = async () => {
     if (!survey) return;
     const hh = survey.headline || {};
     const nb = survey.npsBreakdown || {};
-    const branchRows = allByBranch.length ? allByBranch : (survey.byBranch || []);
+    const branchRows = orderedBranchRows();
     const pct = v => (v === null || v === undefined ? null : Number(v));
 
     setExporting(true);
     try {
+      // The aggregates come from the stats already on screen; the individual
+      // responses do not, so fetch them. The pack is not much use for acting
+      // on without the people in it — an NPS of +41 does not tell anyone who
+      // to call. Same range and branch as the page, so the tabs agree.
+      const bq = branch ? `&branch=${encodeURIComponent(branch)}` : '';
+      const people = await api
+        .get(`/customer-survey/export?from=${range.from}&to=${range.to}${bq}`)
+        .catch(e => {
+          // A pack without the Responses tab still beats no pack, so this
+          // degrades rather than failing the whole export.
+          console.error('[CX] response-level export unavailable:', e);
+          return null;
+        });
+      const rows = people?.success ? (people.data || []) : [];
+      const labels = people?.questions || {};
+
       await downloadXlsx(`${packBaseName()}.xlsx`, [
         {
           name: 'Headline',
@@ -253,6 +303,9 @@ export default function CustomerExperience() {
             ]),
           ],
         },
+        // One row per respondent with every answer they gave, shared with
+        // the Customer Feedback export so the two cannot disagree.
+        responsesSheet(rows, labels),
       ]);
     } catch (e) {
       // The workbook writer is loaded on demand, so this also covers the
@@ -306,7 +359,7 @@ export default function CustomerExperience() {
       (survey.questions || []).map(q => [q.label, q.section, q.avg ?? ''])));
     parts.push(blank);
 
-    const branchRows = allByBranch.length ? allByBranch : (survey.byBranch || []);
+    const branchRows = orderedBranchRows();
     parts.push(toCsv(['Branch', 'Responses', 'NPS', 'CSAT', 'CES'],
       branchRows.map(b => [b.branch || 'Unspecified', b.responses ?? '', b.nps ?? '', b.csat_avg ?? '', b.ces_avg ?? ''])));
 
@@ -334,9 +387,12 @@ export default function CustomerExperience() {
       ]);
       setSurvey(s.success ? s.data : null);
       if (!branch && s.success) {
+        // Both sorted into the workshop's own branch order, not the API's
+        // volume order, so the dropdown, the table and the export agree.
         setBranchOptions((s.data?.byBranch || [])
-          .map(b => b.branch).filter(Boolean));
-        setAllByBranch(s.data?.byBranch || []);
+          .map(b => b.branch).filter(Boolean).sort(byBranchOrder));
+        setAllByBranch([...(s.data?.byBranch || [])]
+          .sort((x, y) => byBranchOrder(x.branch, y.branch)));
       }
       setBooking(b.success ? b.data : null);
       setCustomer(c.success ? c.data.period : null);
