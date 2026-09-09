@@ -2856,7 +2856,8 @@
       "roles": "Roles",
       "users": "Usuarios",
       "subscription": "Suscripción",
-      "labels": "Etiquetas de envío"
+      "labels": "Etiquetas de envío",
+      "surveys": "Encuestas"
     },
     "tab_descriptions": {
       "general": "Información de la empresa, marca y preferencias regionales",
@@ -2866,7 +2867,8 @@
       "roles": "Definir roles y configurar permisos de módulos",
       "users": "Gestionar miembros del equipo y sus roles",
       "subscription": "Ver su plan actual, límites de uso y opciones de mejora",
-      "labels": "Diseño de etiquetas de envío, contenido y configuración AWB"
+      "labels": "Diseño de etiquetas de envío, contenido y configuración AWB",
+      "surveys": "Encuesta automática al cerrar el trabajo"
     },
     "general": {
       "company_info": "Información de la Empresa",
@@ -3020,6 +3022,25 @@
       "apply_on_delivery_desc": "Incluir cálculo de IVA en los cargos de envío",
       "vat_enabled_desc": "Aplicar IVA a tarifas de envío y facturas (estándar EAU: 5%)",
       "title": "Configuración de impuestos e IVA"
+    },
+    "surveys": {
+      "trigger": "Disparador de la encuesta",
+      "trigger_sub": "Enviar la encuesta de satisfacción automáticamente al completar un trabajo",
+      "auto_issue": "Enviar automáticamente al cerrar el trabajo",
+      "auto_issue_desc": "Desactivado por defecto. Al activarlo se empezará a enviar mensajes a clientes reales.",
+      "branch_note": "Esta configuración se aplica solo a {{branch}}. Cada sucursal tiene su propio disparador.",
+      "this_branch": "esta sucursal",
+      "channel": "Enviar por",
+      "channel_email": "Correo electrónico",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — no configurado",
+      "channel_email_hint": "Requiere datos SMTP en Notificaciones. Se omiten los clientes sin correo electrónico.",
+      "channel_sms_hint": "Requiere datos de Twilio en Notificaciones. Se omiten los clientes sin teléfono.",
+      "expiry": "Enlace válido (días)",
+      "expiry_hint": "Después de esto el enlace deja de funcionar. El valor por defecto es 30 días.",
+      "public_link": "Enlace público de la encuesta y código QR",
+      "public_link_sub": "El código QR presencial usa la misma encuesta que la automática",
+      "qr_where": "Abre Comentarios de clientes y usa «Enlace público» para ver o imprimir el código QR."
     }
   },
   "footer": {

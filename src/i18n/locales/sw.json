@@ -2923,7 +2923,8 @@
       "notifications": "Arifa",
       "roles": "Fafanua majukumu na sanidi ruhusa za kiwango cha moduli",
       "subscription": "Tazama mpango wako wa sasa, mipaka ya matumizi na chaguzi za kuboresha",
-      "users": "Watumiaji"
+      "users": "Watumiaji",
+      "surveys": "Utafiti wa kiotomatiki wakati kazi inafungwa"
     },
     "tabs": {
       "categories": "Kategoria",
@@ -2933,7 +2934,8 @@
       "notifications": "Arifa",
       "roles": "Majukumu",
       "subscription": "Usajili",
-      "users": "Watumiaji"
+      "users": "Watumiaji",
+      "surveys": "Tafiti"
     },
     "tax": {
       "apply_on_delivery": "Tumia VAT kwa Ada ya Uwasilishaji",
@@ -2971,6 +2973,25 @@
       "title": "Mipangilio",
       "username": "Jina la Mtumiaji *",
       "welcome_email_sent": "Barua pepe ya kukaribisha imetumwa kwa {{email}}"
+    },
+    "surveys": {
+      "trigger": "Kianzishi cha utafiti",
+      "trigger_sub": "Tuma utafiti wa kuridhika kiotomatiki kazi inapokamilika",
+      "auto_issue": "Tuma kiotomatiki kazi ikifungwa",
+      "auto_issue_desc": "Imezimwa kwa chaguo-msingi. Kuiwasha huanza kutuma ujumbe kwa wateja halisi.",
+      "branch_note": "Mpangilio huu unahusu {{branch}} pekee. Kila tawi lina kianzishi chake.",
+      "this_branch": "tawi hili",
+      "channel": "Tuma kwa",
+      "channel_email": "Barua pepe",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — haijasanidiwa",
+      "channel_email_hint": "Inahitaji taarifa za SMTP kwenye Arifa. Wateja wasio na barua pepe hurukwa.",
+      "channel_sms_hint": "Inahitaji taarifa za Twilio kwenye Arifa. Wateja wasio na simu hurukwa.",
+      "expiry": "Kiungo halali kwa (siku)",
+      "expiry_hint": "Baada ya hapo kiungo hakitafanya kazi. Chaguo-msingi ni siku 30.",
+      "public_link": "Kiungo cha umma cha utafiti na msimbo QR",
+      "public_link_sub": "Msimbo QR wa tawi hutumia utafiti sawa na ule wa kiotomatiki",
+      "qr_where": "Fungua Maoni ya Wateja na tumia \"Kiungo cha umma\" kuona au kuchapisha msimbo QR."
     }
   },
   "shipmentTracking": {

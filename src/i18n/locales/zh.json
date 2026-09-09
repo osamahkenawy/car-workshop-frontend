@@ -2923,7 +2923,8 @@
       "notifications": "通知设置",
       "roles": "角色管理",
       "subscription": "订阅",
-      "users": "用户管理"
+      "users": "用户管理",
+      "surveys": "工单关闭时自动发送问卷"
     },
     "tabs": {
       "categories": "分类",
@@ -2933,7 +2934,8 @@
       "notifications": "通知设置",
       "roles": "角色管理",
       "subscription": "订阅",
-      "users": "用户管理"
+      "users": "用户管理",
+      "surveys": "问卷调查"
     },
     "tax": {
       "apply_on_delivery": "配送费加收增值税",
@@ -2971,6 +2973,25 @@
       "title": "设置",
       "username": "用户名 *",
       "welcome_email_sent": "欢迎邮件已发送至 {{email}}"
+    },
+    "surveys": {
+      "trigger": "问卷触发条件",
+      "trigger_sub": "工单完成后自动发送满意度问卷",
+      "auto_issue": "工单关闭时自动发送",
+      "auto_issue_desc": "默认关闭。开启后将开始向真实客户发送消息。",
+      "branch_note": "此设置仅适用于 {{branch}}。每个分店有各自的触发条件。",
+      "this_branch": "本分店",
+      "channel": "发送方式",
+      "channel_email": "电子邮件",
+      "channel_sms": "短信",
+      "channel_whatsapp_unavailable": "WhatsApp — 未配置",
+      "channel_email_hint": "需在「通知」中配置 SMTP。没有邮箱的客户会被跳过。",
+      "channel_sms_hint": "需在「通知」中配置 Twilio。没有电话号码的客户会被跳过。",
+      "expiry": "链接有效期（天）",
+      "expiry_hint": "超过此期限后问卷链接将失效。默认 30 天。",
+      "public_link": "公开问卷链接与二维码",
+      "public_link_sub": "门店二维码与自动发送使用同一份问卷",
+      "qr_where": "打开「客户反馈」并使用“公开链接”查看或打印二维码。"
     }
   },
   "shipmentTracking": {

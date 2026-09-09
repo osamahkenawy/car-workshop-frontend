@@ -2967,7 +2967,8 @@
       "categories": "Categories",
       "roles": "Roles",
       "users": "Users",
-      "subscription": "Subscription"
+      "subscription": "Subscription",
+      "surveys": "Surveys"
     },
     "tab_descriptions": {
       "general": "Company info, branding and regional preferences",
@@ -2977,7 +2978,8 @@
       "categories": "Manage order categories and service types",
       "roles": "Define roles and configure module-level permissions",
       "users": "Manage team members and their roles",
-      "subscription": "View your current plan, usage limits and upgrade options"
+      "subscription": "View your current plan, usage limits and upgrade options",
+      "surveys": "Automatic survey on job closure"
     },
     "general": {
       "company_info": "Company Information",
@@ -3142,6 +3144,25 @@
       "dispatcher": "Service Advisor",
       "mechanic": "Mechanic",
       "customer": "Customer"
+    },
+    "surveys": {
+      "trigger": "Survey trigger",
+      "trigger_sub": "Issue the satisfaction survey automatically when a job is completed",
+      "auto_issue": "Send automatically on job closure",
+      "auto_issue_desc": "Off by default. Turning this on starts messaging real customers.",
+      "branch_note": "This setting applies to {{branch}} only. Each branch has its own trigger.",
+      "this_branch": "this branch",
+      "channel": "Send by",
+      "channel_email": "Email",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — not configured",
+      "channel_email_hint": "Requires SMTP details under Notifications. Customers without an email address are skipped.",
+      "channel_sms_hint": "Requires Twilio details under Notifications. Customers without a phone number are skipped.",
+      "expiry": "Link valid for (days)",
+      "expiry_hint": "After this the survey link stops working. 30 days is the default.",
+      "public_link": "Public survey link and QR code",
+      "public_link_sub": "The walk-in QR code uses the same survey as the automatic one",
+      "qr_where": "Open Customer Feedback and use \"Public link\" to view or print the QR code."
     }
   },
   "signup": {

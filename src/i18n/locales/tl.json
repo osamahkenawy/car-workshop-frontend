@@ -2839,7 +2839,8 @@
       "categories": "Mga Kategorya",
       "roles": "Mga Tungkulin",
       "users": "Mga User",
-      "subscription": "Subscription"
+      "subscription": "Subscription",
+      "surveys": "Mga Survey"
     },
     "tab_descriptions": {
       "general": "Info ng kumpanya, branding at mga regional na kagustuhan",
@@ -2849,7 +2850,8 @@
       "categories": "Pamahalaan ang mga kategorya ng order at uri ng padala",
       "roles": "Tukuyin ang mga tungkulin at i-configure ang mga pahintulot ng module",
       "users": "Pamahalaan ang mga miyembro ng team at ang kanilang mga tungkulin",
-      "subscription": "Tingnan ang kasalukuyang plano, mga limitasyon sa paggamit at mga opsyon sa pag-upgrade"
+      "subscription": "Tingnan ang kasalukuyang plano, mga limitasyon sa paggamit at mga opsyon sa pag-upgrade",
+      "surveys": "Awtomatikong survey kapag natapos ang trabaho"
     },
     "general": {
       "company_info": "Impormasyon ng Kumpanya",
@@ -3003,6 +3005,25 @@
       "dispatcher": "Service Advisor",
       "mechanic": "Mechanic",
       "customer": "Kliyente"
+    },
+    "surveys": {
+      "trigger": "Trigger ng survey",
+      "trigger_sub": "Ipadala ang satisfaction survey kapag natapos ang trabaho",
+      "auto_issue": "Awtomatikong ipadala kapag nagsara ang trabaho",
+      "auto_issue_desc": "Naka-off bilang default. Kapag binuksan, magsisimulang magpadala sa tunay na kustomer.",
+      "branch_note": "Para lang sa {{branch}} ang setting na ito. May sariling trigger ang bawat branch.",
+      "this_branch": "ang branch na ito",
+      "channel": "Ipadala sa",
+      "channel_email": "Email",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — hindi naka-configure",
+      "channel_email_hint": "Kailangan ang SMTP sa Notifications. Nilalaktawan ang walang email.",
+      "channel_sms_hint": "Kailangan ang Twilio sa Notifications. Nilalaktawan ang walang numero.",
+      "expiry": "Bisa ng link (araw)",
+      "expiry_hint": "Pagkatapos nito, hindi na gagana ang link. 30 araw ang default.",
+      "public_link": "Pampublikong survey link at QR code",
+      "public_link_sub": "Pareho ang survey ng walk-in QR code at ng awtomatiko",
+      "qr_where": "Buksan ang Customer Feedback at gamitin ang \"Public link\" para tingnan o i-print ang QR code."
     }
   },
   "auth": {

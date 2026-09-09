@@ -2923,7 +2923,8 @@
       "notifications": "Bildirimler",
       "roles": "Rolleri tanımlayın ve modül düzeyinde izinleri yapılandırın",
       "subscription": "Mevcut planınızı, kullanım limitlerini ve yükseltme seçeneklerini görüntüleyin",
-      "users": "Kullanicilar"
+      "users": "Kullanicilar",
+      "surveys": "İş kapanışında otomatik anket"
     },
     "tabs": {
       "categories": "Kategoriler",
@@ -2933,7 +2934,8 @@
       "notifications": "Bildirimler",
       "roles": "Roller",
       "subscription": "Abonelik",
-      "users": "Kullanicilar"
+      "users": "Kullanicilar",
+      "surveys": "Anketler"
     },
     "tax": {
       "apply_on_delivery": "Teslimat Ücreti Üzerinde KDV Uygula",
@@ -2971,6 +2973,25 @@
       "title": "Ayarlar",
       "username": "Kullanıcı Adı *",
       "welcome_email_sent": "{{email}} adresine hoş geldiniz e-postası gönderildi"
+    },
+    "surveys": {
+      "trigger": "Anket tetikleyicisi",
+      "trigger_sub": "Bir iş tamamlandığında memnuniyet anketini otomatik gönder",
+      "auto_issue": "İş kapanışında otomatik gönder",
+      "auto_issue_desc": "Varsayılan olarak kapalı. Açmak gerçek müşterilere mesaj göndermeye başlar.",
+      "branch_note": "Bu ayar yalnızca {{branch}} için geçerlidir. Her şubenin kendi tetikleyicisi vardır.",
+      "this_branch": "bu şube",
+      "channel": "Gönderim kanalı",
+      "channel_email": "E-posta",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — yapılandırılmadı",
+      "channel_email_hint": "Bildirimler altındaki SMTP bilgileri gerekir. E-postası olmayan müşteriler atlanır.",
+      "channel_sms_hint": "Bildirimler altındaki Twilio bilgileri gerekir. Telefonu olmayan müşteriler atlanır.",
+      "expiry": "Bağlantı geçerlilik (gün)",
+      "expiry_hint": "Bu süreden sonra anket bağlantısı çalışmaz. Varsayılan 30 gündür.",
+      "public_link": "Genel anket bağlantısı ve QR kodu",
+      "public_link_sub": "Şubedeki QR kodu, otomatik gönderimle aynı anketi kullanır",
+      "qr_where": "Müşteri Geri Bildirimi'ni açın ve QR kodunu görmek veya yazdırmak için \"Genel bağlantı\"yı kullanın."
     }
   },
   "shipmentTracking": {

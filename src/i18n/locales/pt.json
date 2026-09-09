@@ -2813,7 +2813,8 @@
       "roles": "Funções",
       "users": "Usuários",
       "labels": "Etiquetas de envio",
-      "subscription": "Assinatura"
+      "subscription": "Assinatura",
+      "surveys": "Pesquisas"
     },
     "tab_descriptions": {
       "general": "Informações da empresa, marca e preferências regionais",
@@ -2823,7 +2824,8 @@
       "roles": "Definir funções e configurar permissões de módulos",
       "users": "Gerencie membros da equipe e seus papéis",
       "labels": "Layout de etiquetas de envio, conteúdo e configurações AWB",
-      "subscription": "Veja seu plano atual, limites de uso e opções de upgrade"
+      "subscription": "Veja seu plano atual, limites de uso e opções de upgrade",
+      "surveys": "Pesquisa automática no encerramento do serviço"
     },
     "general": {
       "company_info": "Informações da empresa",
@@ -2977,6 +2979,25 @@
       "dispatcher": "Despachante",
       "mechanic": "Motorista",
       "customer": "Customere"
+    },
+    "surveys": {
+      "trigger": "Disparador da pesquisa",
+      "trigger_sub": "Enviar a pesquisa de satisfação automaticamente ao concluir um serviço",
+      "auto_issue": "Enviar automaticamente no encerramento",
+      "auto_issue_desc": "Desativado por padrão. Ativar começa a enviar mensagens a clientes reais.",
+      "branch_note": "Esta configuração aplica-se apenas a {{branch}}. Cada filial tem o seu próprio disparador.",
+      "this_branch": "esta filial",
+      "channel": "Enviar por",
+      "channel_email": "E-mail",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — não configurado",
+      "channel_email_hint": "Requer dados SMTP em Notificações. Clientes sem e-mail são ignorados.",
+      "channel_sms_hint": "Requer dados do Twilio em Notificações. Clientes sem telefone são ignorados.",
+      "expiry": "Link válido por (dias)",
+      "expiry_hint": "Depois disso o link deixa de funcionar. O padrão é 30 dias.",
+      "public_link": "Link público da pesquisa e código QR",
+      "public_link_sub": "O código QR presencial usa a mesma pesquisa que o envio automático",
+      "qr_where": "Abra Feedback do cliente e use \"Link público\" para ver ou imprimir o código QR."
     }
   },
   "auth": {

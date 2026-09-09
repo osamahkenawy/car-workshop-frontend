@@ -7,7 +7,7 @@ import {
   MapPin, Wallet, Clock, EditPencil, Xmark, Upload, Eye, EyeClosed,
   NavArrowRight, SwitchOn as ToggleOn, ShieldCheck, Printer, Camera,
   Home, Package, StatsUpSquare, Wrench, Page, WarningTriangle, Check,
-  Search as SearchIcon,
+  Search as SearchIcon, EmojiSatisfied,
 } from 'iconoir-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -2043,11 +2043,113 @@ function UsageCard({ label, current = 0, max = 0, pct = 0, color }) {
 /* ═══════════════════════════════════════════════════════════
    MAIN SETTINGS PAGE
 ═══════════════════════════════════════════════════════════════ */
+/*
+ * Surveys — the auto-issue trigger the CX SOP describes ("the survey issues
+ * automatically on job closure"). Backed by the single `survey_auto_issue`
+ * JSON setting, so it needs no dedicated endpoint; PUT /api/settings already
+ * upserts arbitrary keys.
+ *
+ * Settings are per workshop row, and in this schema a branch IS a workshop
+ * row — so what's saved here applies to the signed-in branch only, which is
+ * what the SOP means by "the trigger is active for your branch". The branch
+ * name is shown so that isn't ambiguous.
+ *
+ * WhatsApp is shown but disabled: survey_invites.channel accepts the value,
+ * but there is no WhatsApp sender in the backend, so offering it as a live
+ * option would mean a toggle that silently sends nothing.
+ */
+function SurveysTab({ data, setData, onSave, saving }) {
+  const { t } = useTranslation();
+  const s = data.settings || {};
+  const cfg = s.survey_auto_issue || {};
+  const setCfg = (k, v) => setData(d => ({
+    ...d,
+    settings: { ...d.settings, survey_auto_issue: { ...(d.settings?.survey_auto_issue || {}), [k]: v } },
+  }));
+  const enabled = !!cfg.enabled;
+  const channel = cfg.channel || 'email';
+
+  return (
+    <form onSubmit={onSave} className="stg-content">
+      <div className="stg-save-bar" style={{ marginBottom: 16 }}>
+        <button type="submit" className="stg-btn-primary" disabled={saving}>
+          {saving ? <><span className="stg-spin"/>{t('settings.saving')}</> : <><CheckCircle width={16} height={16}/>{t('settings.save_changes')}</>}
+        </button>
+      </div>
+
+      <div className="stg-section">
+        <div className="stg-section-head">
+          <div className="stg-section-icon purple"><EmojiSatisfied width={18} height={18}/></div>
+          <div>
+            <div className="stg-section-title">{t('settings.surveys.trigger')}</div>
+            <div className="stg-section-sub">{t('settings.surveys.trigger_sub')}</div>
+          </div>
+        </div>
+
+        <div className="stg-toggles" style={{ marginBottom: 16 }}>
+          <div className="stg-toggle-row">
+            <div>
+              <div className="stg-toggle-label">{t('settings.surveys.auto_issue')}</div>
+              <div className="stg-toggle-desc">{t('settings.surveys.auto_issue_desc')}</div>
+            </div>
+            <Toggle on={enabled} onChange={v => setCfg('enabled', v)} />
+          </div>
+        </div>
+
+        <div style={{...{display:'flex',alignItems:'flex-start',gap:8,padding:'10px 14px',borderRadius:8,background:'#f8fafc',border:'1px solid #e2e8f0',fontSize:12.5,color:'#475569'}, marginBottom:16}}>
+          <WarningCircle width={15} height={15}/>
+          <span>{t('settings.surveys.branch_note', { branch: data.name || t('settings.surveys.this_branch') })}</span>
+        </div>
+
+        {enabled && (
+          <div className="stg-grid">
+            <div className="stg-field">
+              <label>{t('settings.surveys.channel')}</label>
+              <select value={channel} onChange={e => setCfg('channel', e.target.value)}>
+                <option value="email">{t('settings.surveys.channel_email')}</option>
+                <option value="sms">{t('settings.surveys.channel_sms')}</option>
+                <option value="whatsapp" disabled>{t('settings.surveys.channel_whatsapp_unavailable')}</option>
+              </select>
+              <div style={{fontSize:11,color:'#94A3B8',marginTop:4}}>
+                {channel === 'email' ? t('settings.surveys.channel_email_hint') : t('settings.surveys.channel_sms_hint')}
+              </div>
+            </div>
+            <div className="stg-field">
+              <label>{t('settings.surveys.expiry')}</label>
+              <input
+                type="number" min="1" max="365"
+                value={cfg.expires_in_days ?? 30}
+                onChange={e => setCfg('expires_in_days', Number(e.target.value) || 30)}
+              />
+              <div style={{fontSize:11,color:'#94A3B8',marginTop:4}}>{t('settings.surveys.expiry_hint')}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="stg-section">
+        <div className="stg-section-head">
+          <div className="stg-section-icon teal"><Page width={18} height={18}/></div>
+          <div>
+            <div className="stg-section-title">{t('settings.surveys.public_link')}</div>
+            <div className="stg-section-sub">{t('settings.surveys.public_link_sub')}</div>
+          </div>
+        </div>
+        <div style={{display:'flex',alignItems:'flex-start',gap:8,padding:'10px 14px',borderRadius:8,background:'#f8fafc',border:'1px solid #e2e8f0',fontSize:12.5,color:'#475569'}}>
+          <WarningCircle width={15} height={15}/>
+          <span>{t('settings.surveys.qr_where')}</span>
+        </div>
+      </div>
+    </form>
+  );
+}
+
 const TABS = [
   { id:'general',       icon: Building,      color:'#f97316' },
   { id:'delivery',      icon: DeliveryTruck, color:'#3b82f6' },
   { id:'labels',        icon: Printer,       color:'#ea580c' },
   { id:'notifications', icon: Bell,          color:'#8b5cf6' },
+  { id:'surveys',       icon: EmojiSatisfied, color:'#0ea5e9' },
   { id:'categories',    icon: Tag,           color:'#0d9488' },
   { id:'roles',         icon: ShieldCheck,   color:'#7c3aed' },
   { id:'users',         icon: User,          color:'#f43f5e' },
@@ -2152,6 +2254,7 @@ export default function Settings() {
             {tab==='delivery'      && <DeliveryTab      data={data} setData={setData} onSave={handleSave} saving={saving}/>}
             {tab==='labels'        && <ShippingLabelsTab data={data} setData={setData} onSave={handleSave} saving={saving}/>}
             {tab==='notifications' && <NotificationsTab data={data} setData={setData} onSave={handleSave} saving={saving}/>}
+            {tab==='surveys'       && <SurveysTab       data={data} setData={setData} onSave={handleSave} saving={saving}/>}
             {tab==='categories'    && <CategoriesTab    toast={toast}/>}
             {tab==='roles'         && <RolesTab         toast={toast}/>}
             {tab==='users'         && <UsersTab         toast={toast}/>}

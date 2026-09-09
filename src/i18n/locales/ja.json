@@ -2923,7 +2923,8 @@
       "notifications": "通知",
       "roles": "ロールを定義しモジュールレベルの権限を設定",
       "subscription": "現在のプラン、使用量制限、アップグレードオプションを表示",
-      "users": "ユーザー"
+      "users": "ユーザー",
+      "surveys": "作業完了時に自動でアンケート"
     },
     "tabs": {
       "categories": "カテゴリ",
@@ -2933,7 +2934,8 @@
       "notifications": "通知",
       "roles": "役割",
       "subscription": "サブスクリプション",
-      "users": "ユーザー"
+      "users": "ユーザー",
+      "surveys": "アンケート"
     },
     "tax": {
       "apply_on_delivery": "配送料にVATを適用",
@@ -2971,6 +2973,25 @@
       "title": "設定",
       "username": "ユーザー名 *",
       "welcome_email_sent": "ウェルカムメールを{{email}}に送信しました"
+    },
+    "surveys": {
+      "trigger": "アンケートのトリガー",
+      "trigger_sub": "作業が完了したら満足度アンケートを自動送信します",
+      "auto_issue": "作業完了時に自動送信",
+      "auto_issue_desc": "既定ではオフです。オンにすると実際の顧客への送信が始まります。",
+      "branch_note": "この設定は {{branch}} のみに適用されます。支店ごとに個別のトリガーがあります。",
+      "this_branch": "この支店",
+      "channel": "送信方法",
+      "channel_email": "メール",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — 未設定",
+      "channel_email_hint": "「通知」のSMTP設定が必要です。メールアドレスのない顧客はスキップされます。",
+      "channel_sms_hint": "「通知」のTwilio設定が必要です。電話番号のない顧客はスキップされます。",
+      "expiry": "リンクの有効期間（日）",
+      "expiry_hint": "この期間を過ぎるとアンケートのリンクは無効になります。既定は30日です。",
+      "public_link": "公開アンケートのリンクとQRコード",
+      "public_link_sub": "店頭のQRコードは自動送信と同じアンケートを使用します",
+      "qr_where": "「顧客フィードバック」を開き、「公開リンク」からQRコードを表示・印刷できます。"
     }
   },
   "shipmentTracking": {

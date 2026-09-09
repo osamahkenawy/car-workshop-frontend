@@ -2923,7 +2923,8 @@
       "notifications": "Notifications",
       "roles": "Définir les rôles et configurer les permissions par module",
       "subscription": "Voir votre plan actuel, les limites d'utilisation et les options de mise à niveau",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs",
+      "surveys": "Enquête automatique à la clôture du travail"
     },
     "tabs": {
       "categories": "Catégories",
@@ -2933,7 +2934,8 @@
       "notifications": "Notifications",
       "roles": "Rôles",
       "subscription": "Abonnement",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs",
+      "surveys": "Enquêtes"
     },
     "tax": {
       "apply_on_delivery": "Appliquer la TVA sur les frais de livraison",
@@ -2971,6 +2973,25 @@
       "title": "Paramètres",
       "username": "Nom d'utilisateur *",
       "welcome_email_sent": "Un e-mail de bienvenue a été envoyé à {{email}}"
+    },
+    "surveys": {
+      "trigger": "Déclencheur de l'enquête",
+      "trigger_sub": "Envoyer l'enquête de satisfaction automatiquement à la fin d'un travail",
+      "auto_issue": "Envoyer automatiquement à la clôture",
+      "auto_issue_desc": "Désactivé par défaut. L'activer commence à envoyer des messages à de vrais clients.",
+      "branch_note": "Ce paramètre s'applique uniquement à {{branch}}. Chaque succursale a son propre déclencheur.",
+      "this_branch": "cette succursale",
+      "channel": "Envoyer par",
+      "channel_email": "E-mail",
+      "channel_sms": "SMS",
+      "channel_whatsapp_unavailable": "WhatsApp — non configuré",
+      "channel_email_hint": "Nécessite les paramètres SMTP dans Notifications. Les clients sans e-mail sont ignorés.",
+      "channel_sms_hint": "Nécessite les paramètres Twilio dans Notifications. Les clients sans téléphone sont ignorés.",
+      "expiry": "Lien valable (jours)",
+      "expiry_hint": "Passé ce délai, le lien ne fonctionne plus. 30 jours par défaut.",
+      "public_link": "Lien public de l'enquête et code QR",
+      "public_link_sub": "Le code QR en agence utilise la même enquête que l'envoi automatique",
+      "qr_where": "Ouvrez Retours clients et utilisez « Lien public » pour voir ou imprimer le code QR."
     }
   },
   "shipmentTracking": {
