@@ -247,6 +247,7 @@ export default function Complaints() {
   // just reads as a rate instead of a raw count.
   const compliancePct = h.stillOpen ? Math.round(((h.stillOpen - h.pastTarget) / h.stillOpen) * 100) : 100;
   const cards = [
+    { key: 'total', label: 'Total complaints', value: h.total ?? 0, Icon: ClipboardCheck, tone: 'blue' },
     { key: 'open', label: 'Still open', value: h.stillOpen, Icon: WarningTriangle, tone: 'rose' },
     {
       key: 'compliance', label: 'SLA compliance', value: `${compliancePct}%`,
@@ -286,6 +287,7 @@ export default function Complaints() {
     parts.push(blank);
 
     parts.push(toCsv(['Headline measures'], [
+      ['Total complaints', h.total ?? 0],
       ['Still open', h.stillOpen ?? 0],
       ['SLA compliance (%)', compliancePct],
       ['Acknowledged within 1 day (%)', h.ackSlaPct ?? ''],
@@ -294,10 +296,11 @@ export default function Complaints() {
     ]));
     parts.push(blank);
 
-    parts.push(toCsv(['Severity', 'Name', 'Logged', 'Avg resolution (days)', 'Within SLA (%)'],
+    parts.push(toCsv(['Severity', 'Name', 'Logged', 'Share of total (%)', 'Avg resolution (days)', 'Within SLA (%)'],
       bySeverity.map(sv => {
         const m = SEVERITY_META[sv.severity] || SEVERITY_META.S2;
-        return [sv.severity, m.name, sv.count ?? 0, sv.avgResolutionDays ?? '', sv.slaCompliancePct ?? ''];
+        const shareOfTotal = h.total ? Math.round((sv.count / h.total) * 100) : 0;
+        return [sv.severity, m.name, sv.count ?? 0, shareOfTotal, sv.avgResolutionDays ?? '', sv.slaCompliancePct ?? ''];
       })));
     parts.push(blank);
 
@@ -374,9 +377,10 @@ export default function Complaints() {
         <div className="cs-meta" style={{ display: 'flex', gap: 14, marginBottom: 18, flexWrap: 'wrap' }}>
           {bySeverity.map(sv => {
             const m = SEVERITY_META[sv.severity] || SEVERITY_META.S2;
+            const shareOfTotal = h.total ? Math.round((sv.count / h.total) * 100) : 0;
             return (
               <span key={sv.severity} className="cs-pill" style={{ color: m.color, background: m.bg }}>
-                {m.label} · {m.name}: {sv.count} logged
+                {m.label} · {m.name}: {sv.count} logged ({shareOfTotal}% of total)
                 {sv.slaCompliancePct != null ? `, ${sv.slaCompliancePct}% within SLA` : ''}
               </span>
             );
