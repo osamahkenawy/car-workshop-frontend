@@ -282,16 +282,16 @@ export default function Layout({ children }) {
               <div className="lang-dropdown">
                 {[
                   { code: 'en', label: 'English' },
-                  { code: 'ar', label: 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©' },
-                  { code: 'es', label: 'EspaÃ±ol' },
-                  { code: 'pt', label: 'PortuguÃªs' },
-                  { code: 'zh', label: 'ä¸­æ–‡' },
-                  { code: 'ja', label: 'æ—¥æœ¬èªž' },
-                  { code: 'fr', label: 'FranÃ§ais' },
-                  { code: 'ur', label: 'Ø§Ø±Ø¯Ùˆ' },
-                  { code: 'hi', label: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€' },
+                  { code: 'ar', label: 'العربية' },
+                  { code: 'es', label: 'Español' },
+                  { code: 'pt', label: 'Português' },
+                  { code: 'zh', label: '中文' },
+                  { code: 'ja', label: '日本語' },
+                  { code: 'fr', label: 'Français' },
+                  { code: 'ur', label: 'اردو' },
+                  { code: 'hi', label: 'हिन्दी' },
                   { code: 'tl', label: 'Tagalog' },
-                  { code: 'tr', label: 'TÃ¼rkÃ§e' },
+                  { code: 'tr', label: 'Türkçe' },
                   { code: 'sw', label: 'Kiswahili' },
                 ].map(lang => (
                   <button
@@ -308,7 +308,7 @@ export default function Layout({ children }) {
 
           {/* The five original roles keep their own badge and colour. Anything
               else is a custom role from the `roles` table, and falls back to
-              the role's own name â€” otherwise a Service Advisor or Part Advisor
+              the role's own name — otherwise a Service Advisor or Part Advisor
               signs in and the header shows no role at all. */}
           {user?.role === 'superadmin'  && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
           {user?.role === 'super_admin' && <span className="role-badge super-admin">{t('roles.super_admin')}</span>}
@@ -351,15 +351,13 @@ export default function Layout({ children }) {
       </header>
 
       <main className={`main-content ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        {/* D.5 â€” Trial expiry banner */}
+        {/* D.5 — Trial expiry banner */}
         <TrialBanner />
         {children}
       </main>
 
       <footer className={`custom-footer ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-        {i18n.language === 'ar'
-          ? `Â© ${new Date().getFullYear()} Ù…Ø±ÙƒØ² Ø¨Ø§ÙŠÙˆÙ†ÙŠØ± Ù„Ø®Ø¯Ù…Ø© Ø§Ù„Ø³ÙŠØ§Ø±Ø§Øª â€” Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ‚ Ù…Ø­ÙÙˆØ¸Ø©`
-          : `Â© ${new Date().getFullYear()} Pioneer Car Service Center â€” All rights reserved`}
+        {t('footer.copyright', { year: new Date().getFullYear() })}
       </footer>
     </div>
   );
