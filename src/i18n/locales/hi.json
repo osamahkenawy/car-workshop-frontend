@@ -197,7 +197,9 @@
     "crm_tasks": "कार्य और फ़ॉलो-अप",
     "customer_experience": "ग्राहक अनुभव",
     "complaints": "शिकायतें",
-    "technician_kpi": "तकनीशियन KPI"
+    "technician_kpi": "तकनीशियन KPI",
+    "team_board": "टीम बोर्ड",
+    "fleet_intake": "फ़्लीट इनटेक"
   },
   "dashboard": {
     "title": "डैशबोर्ड",
@@ -314,6 +316,7 @@
     "loading": "ऑर्डर लोड हो रहे हैं...",
     "walk_in": "वॉक-इन",
     "status": {
+      "estimate_approved": "अनुमान स्वीकृत",
       "pending": "लंबित",
       "confirmed": "पुष्ट",
       "assigned": "असाइन किया गया",

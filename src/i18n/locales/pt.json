@@ -197,7 +197,9 @@
     "crm_tasks": "Tarefas e acompanhamentos",
     "customer_experience": "Experiência do cliente",
     "complaints": "Reclamações",
-    "technician_kpi": "KPI dos técnicos"
+    "technician_kpi": "KPI dos técnicos",
+    "team_board": "Painel da equipa",
+    "fleet_intake": "Receção de frota"
   },
   "dashboard": {
     "title": "Painel",
@@ -314,6 +316,7 @@
     "loading": "Carregando pedidos...",
     "walk_in": "Balcão",
     "status": {
+      "estimate_approved": "Orçamento aprovado",
       "pending": "Pendente",
       "confirmed": "Confirmado",
       "assigned": "Atribuído",

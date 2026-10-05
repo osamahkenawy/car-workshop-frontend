@@ -732,7 +732,9 @@
     "crm_tasks": "タスクとフォロー",
     "customer_experience": "カスタマーエクスペリエンス",
     "complaints": "苦情",
-    "technician_kpi": "技術者KPI"
+    "technician_kpi": "技術者KPI",
+    "team_board": "チームボード",
+    "fleet_intake": "車両受付"
   },
   "dashboard": {
     "active_label": "アクティブ",
@@ -2125,6 +2127,7 @@
       "total_orders": "総注文数"
     },
     "status": {
+      "estimate_approved": "見積承認済み",
       "assigned": "割り当て済み",
       "accepted": "承認済み",
       "cancelled": "注文がキャンセルされました",

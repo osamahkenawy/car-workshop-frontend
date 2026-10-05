@@ -10,10 +10,14 @@ import Dashboard from './pages/Dashboard';
 const WorkOrders        = lazy(() => import('./pages/WorkOrders'));
 const WorkOrderDetail   = lazy(() => import('./pages/WorkOrderDetail'));
 const VehicleInspection = lazy(() => import('./pages/VehicleInspection'));
+const TeamLeader = lazy(() => import('./pages/TeamLeader'));
+const FleetIntake = lazy(() => import('./pages/FleetIntake'));
+const FleetIntakeQueue = lazy(() => import('./pages/FleetIntakeQueue'));
 const Customers         = lazy(() => import('./pages/Customers'));
 const Enquiries         = lazy(() => import('./pages/Enquiries'));
 const CustomerFeedback  = lazy(() => import('./pages/CustomerFeedback'));
 const CustomerSurveyPublic = lazy(() => import('./pages/CustomerSurveyPublic'));
+const EstimateApproval = lazy(() => import('./pages/EstimateApproval'));
 const Vehicles          = lazy(() => import('./pages/Vehicles'));
 const Parts             = lazy(() => import('./pages/Parts'));
 const Mechanics         = lazy(() => import('./pages/Mechanics'));
@@ -133,6 +137,10 @@ export default function App() {
         {/* Public customer feedback survey — personalised link or anonymous / QR */}
         <Route path="/survey" element={<CustomerSurveyPublic />} />
         <Route path="/survey/:token" element={<CustomerSurveyPublic />} />
+        {/* Public estimate approval — link emailed from POST /estimates/:id/send */}
+        <Route path="/estimate-approval/:token" element={<EstimateApproval />} />
+        {/* Fleet coordinator intake — no login; the token names the fleet account */}
+        <Route path="/fleet-intake/:token" element={<FleetIntake />} />
 
         {/* ── Staff app ── */}
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
@@ -146,6 +154,8 @@ export default function App() {
         <Route path="/parts" element={<Protected><Parts /></Protected>} />
         <Route path="/mechanics" element={<Protected><Mechanics /></Protected>} />
         <Route path="/job-assignment" element={<Protected><JobAssignment /></Protected>} />
+        <Route path="/team-leader" element={<Protected><TeamLeader /></Protected>} />
+        <Route path="/fleet-intake" element={<Protected><FleetIntakeQueue /></Protected>} />
         <Route path="/service-tracking" element={<Protected><ServiceTracking /></Protected>} />
         <Route path="/warranty-claims" element={<Protected><WarrantyClaims /></Protected>} />
         {/* CRM. /crm/customers with no id shows a search; with an id, the 360 view. */}

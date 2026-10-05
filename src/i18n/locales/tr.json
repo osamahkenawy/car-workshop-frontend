@@ -732,7 +732,9 @@
     "crm_tasks": "Görevler ve takipler",
     "customer_experience": "Müşteri Deneyimi",
     "complaints": "Şikayetler",
-    "technician_kpi": "Teknisyen KPI"
+    "technician_kpi": "Teknisyen KPI",
+    "team_board": "Ekip Panosu",
+    "fleet_intake": "Filo Kabulü"
   },
   "dashboard": {
     "active_label": "Aktif",
@@ -2125,6 +2127,7 @@
       "total_orders": "Toplam Siparişler"
     },
     "status": {
+      "estimate_approved": "Teklif Onaylandı",
       "assigned": "Atandı",
       "accepted": "Kabul Edildi",
       "cancelled": "İptal Edildi",

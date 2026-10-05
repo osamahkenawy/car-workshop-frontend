@@ -732,7 +732,9 @@
     "crm_tasks": "کام اور فالو اپ",
     "customer_experience": "کسٹمر تجربہ",
     "complaints": "شکایات",
-    "technician_kpi": "ٹیکنیشن KPI"
+    "technician_kpi": "ٹیکنیشن KPI",
+    "team_board": "ٹیم بورڈ",
+    "fleet_intake": "فلیٹ کی وصولی"
   },
   "dashboard": {
     "active_label": "فعال",
@@ -2125,6 +2127,7 @@
       "total_orders": "کل آرڈرز"
     },
     "status": {
+      "estimate_approved": "تخمینہ منظور شدہ",
       "assigned": "تفویض شدہ",
       "accepted": "قبول شدہ",
       "cancelled": "منسوخ",

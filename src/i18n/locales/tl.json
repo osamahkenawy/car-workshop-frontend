@@ -197,7 +197,9 @@
     "crm_tasks": "Mga gawain at follow-up",
     "customer_experience": "Karanasan ng Kustomer",
     "complaints": "Mga Reklamo",
-    "technician_kpi": "KPI ng Technician"
+    "technician_kpi": "KPI ng Technician",
+    "team_board": "Team Board",
+    "fleet_intake": "Pagtanggap ng Fleet"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -314,6 +316,7 @@
     "loading": "Naglo-load ng mga order...",
     "walk_in": "Walk-in",
     "status": {
+      "estimate_approved": "Naaprubahan ang Estimate",
       "pending": "Nakabinbin",
       "confirmed": "Nakumpirma",
       "assigned": "Naka-assign",

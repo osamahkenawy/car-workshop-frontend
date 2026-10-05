@@ -200,7 +200,9 @@
     "crm_tasks": "المهام والمتابعات",
     "customer_experience": "تجربة العميل",
     "complaints": "الشكاوى",
-    "technician_kpi": "مؤشرات أداء الفنيين"
+    "technician_kpi": "مؤشرات أداء الفنيين",
+    "team_board": "لوحة الفريق",
+    "fleet_intake": "استقبال الأسطول"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -317,6 +319,7 @@
     "loading": "جاري تحميل الطلبات...",
     "walk_in": "طلب مباشر",
     "status": {
+      "estimate_approved": "تمت الموافقة على التقدير",
       "pending": "معلق",
       "confirmed": "مؤكد",
       "assigned": "مُعيَّن",

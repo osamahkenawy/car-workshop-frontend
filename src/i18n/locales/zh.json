@@ -732,7 +732,9 @@
     "crm_tasks": "任务与跟进",
     "customer_experience": "客户体验",
     "complaints": "投诉",
-    "technician_kpi": "技工KPI"
+    "technician_kpi": "技工KPI",
+    "team_board": "团队看板",
+    "fleet_intake": "车队接收"
   },
   "dashboard": {
     "active_label": "活跃",
@@ -2125,6 +2127,7 @@
       "total_orders": "总订单"
     },
     "status": {
+      "estimate_approved": "预估已批准",
       "assigned": "已分配",
       "accepted": "已接受",
       "cancelled": "订单已取消",

@@ -7,7 +7,7 @@ import {
   DollarCircle, Bell, Wallet, Page, StatsUpSquare, Settings,
   Network, Menu, LogOut, Language, Dashboard, Upload,
   RefreshDouble, CreditCard, Medal, Search, QrCode, ScanBarcode, Wrench, Archive, Megaphone,
-  EmojiSatisfied, ClipboardCheck, StarSolid, WarningTriangle, GraphUp,
+  EmojiSatisfied, ClipboardCheck, StarSolid, WarningTriangle, GraphUp, Group, Truck,
 } from 'iconoir-react';
 import NotificationBell from './NotificationBell';
 import PlanBadge from './dashboard/PlanBadge';
@@ -19,6 +19,8 @@ const iconMap = {
   'orders':           Package,
   'mechanics':          DeliveryTruck,
   'job-assignment':         Map,
+  'team-leader':            Group,
+  'fleet-intake':           Truck,
   'mechanic-scan':      ScanBarcode,
   'my-deliveries':    Package,
   'mechanic-dashboard': HomeSimple,
@@ -81,6 +83,8 @@ const navSections = [
       { path: '/vehicles',           labelKey: 'vehicles',        iconKey: 'vehicles',         moduleKey: 'vehicles',          roles: ['admin', 'dispatcher'] },
       { path: '/mechanics',          labelKey: 'mechanics',       iconKey: 'mechanics',        moduleKey: 'mechanics',         roles: ['admin', 'dispatcher'] },
       { path: '/job-assignment',     labelKey: 'job_assignment',  iconKey: 'job-assignment',   moduleKey: 'job-assignment',    roles: ['admin', 'dispatcher'] },
+      { path: '/team-leader',        labelKey: 'team_board',      iconKey: 'team-leader',      moduleKey: 'team-leader',       roles: ['admin', 'dispatcher'] },
+      { path: '/fleet-intake',       labelKey: 'fleet_intake',    iconKey: 'fleet-intake',     moduleKey: 'fleet-intake',      roles: ['admin', 'dispatcher'] },
     ]
   },
 

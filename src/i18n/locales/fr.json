@@ -732,7 +732,9 @@
     "crm_tasks": "Tâches et relances",
     "customer_experience": "Expérience client",
     "complaints": "Réclamations",
-    "technician_kpi": "KPI des techniciens"
+    "technician_kpi": "KPI des techniciens",
+    "team_board": "Tableau d'équipe",
+    "fleet_intake": "Réception de flotte"
   },
   "dashboard": {
     "active_label": "Actif",
@@ -2125,6 +2127,7 @@
       "total_orders": "Total des commandes"
     },
     "status": {
+      "estimate_approved": "Devis approuvé",
       "assigned": "Assigné",
       "accepted": "Accepté",
       "cancelled": "Commande annulée",
