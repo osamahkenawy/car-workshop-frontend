@@ -8,13 +8,14 @@ import {
   WarningTriangle, CheckCircle, StatsUpSquare, Wallet,
   DollarCircle, Calendar, Box3dPoint, Hashtag,
   CreditCard, Weight, Prohibition, Refresh, Group, OpenNewWindow, ShareAndroid,
-  ScanBarcode, Printer, Wrench,
+  ScanBarcode, Printer, Wrench, SendMail,
 } from 'iconoir-react';
 import api from '../lib/api';
 import { TableSkeleton } from '../components/Loader';
 import usePlanUsage, { dispatchPlanUpdate } from '../hooks/usePlanUsage';
 import UpgradeModal from '../components/dashboard/UpgradeModal';
 import NewWorkOrderModal from '../components/NewWorkOrderModal';
+import NewEstimateModal from '../components/NewEstimateModal';
 import PhoneInput, { getPhoneCodeForCountry } from '../components/PhoneInput';
 import JsBarcode from 'jsbarcode';
 import Toast, { useToast } from '../components/Toast';
@@ -38,6 +39,11 @@ L.Icon.Default.mergeOptions({
    CONSTANTS
    ══════════════════════════════════════════════════════════════ */
 const STATUS_META = {
+  // Additive — the new first state for a job card born from an approved
+  // estimate (routes/estimates.js). The full pending/confirmed/assigned/
+  // accepted rename is a separate, deliberately-deferred migration; see
+  // 20260914_work_order_status_rename_widen.sql on the backend.
+  estimate_approved: { label:'Estimate Approved', bg:'#eef2ff', color:'#4f46e5', icon: Check },
   pending:          { label:'Pending',          bg:'#fef3c7', color:'#d97706', icon: Clock },
   confirmed:        { label:'Confirmed',        bg:'#dbeafe', color:'#2563eb', icon: Check },
   assigned:         { label:'Assigned',         bg:'#ede9fe', color:'#7c3aed', icon: User },
@@ -51,6 +57,7 @@ const STATUS_META = {
 const ORDER_TYPES   = ['standard','express','same_day','scheduled','return'];
 // Valid status transitions — mirrors backend VALID_TRANSITIONS
 const VALID_TRANSITIONS_FRONTEND = {
+  estimate_approved: ['confirmed', 'cancelled'],
   pending:          ['confirmed', 'cancelled'],
   confirmed:        ['assigned', 'in_progress', 'cancelled'],
   assigned:         ['accepted', 'in_progress', 'cancelled', 'confirmed'],
@@ -629,6 +636,7 @@ export default function WorkOrders() {
   const { usage, plan, isAtOrderLimit, hasFeature, refresh: refreshPlan } = usePlanUsage();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showNewWO, setShowNewWO] = useState(false);
+  const [showNewEstimate, setShowNewEstimate] = useState(false);
   const [newWOPresetCustomerId, setNewWOPresetCustomerId] = useState(null);
   const [editWorkOrder, setEditWorkOrder] = useState(null);
   // Prompt shown right after a job card is created, offering to jump straight
@@ -1197,6 +1205,18 @@ export default function WorkOrders() {
               <Printer width={15} height={15} /> Print Labels ({labelSelected.size})
             </button>
           )}
+          {/* Estimate-first path: build labour/parts lines, the customer
+              approves or rejects each from their phone, and the job card is
+              created automatically the moment every line is decided. Sits
+              alongside New Job Card rather than replacing it — a walk-in
+              whose car is already on the ramp cannot wait on an email
+              round-trip, so immediate creation stays available too. */}
+          <button onClick={() => setShowNewEstimate(true)}
+            style={{ padding:'10px 20px', borderRadius:10, border:'1.5px solid #e2e8f0',
+              background:'#fff', color:'#1e3a6b', cursor:'pointer', fontWeight:700, fontSize:14,
+              display:'flex', alignItems:'center', gap:7 }}>
+            <SendMail width={16} height={16} /> New Estimate
+          </button>
           <button onClick={() => openNew()}
             style={{ padding:'10px 22px', borderRadius:10, border:'none',
               background: isAtOrderLimit ? '#9ca3af' : 'linear-gradient(135deg,#f97316,#ea580c)', color:'#fff',
@@ -3218,6 +3238,18 @@ export default function WorkOrders() {
           fetchStats();
           if (drawerFull && drawerFull.id === updated?.id) setDrawerFull(prev => ({ ...prev, ...updated }));
           showToast(`Job card updated${updated?.work_order_number ? ` — ${updated.work_order_number}` : ''} ✓`, 'success');
+        }}
+      />
+
+      <NewEstimateModal
+        open={showNewEstimate}
+        onClose={() => setShowNewEstimate(false)}
+        onSent={() => {
+          // No job card exists yet at this point — one appears only once the
+          // customer has decided every line — so there is nothing to refresh
+          // in the work orders list. The confirmation lives inside the modal
+          // itself (estimate number, who it was sent to).
+          showToast('Estimate sent for approval ✓', 'success');
         }}
       />
 
